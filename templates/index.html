@@ -1,0 +1,50 @@
+{% extends 'base/base.html'%}
+
+{% block title %} {{ title }} {% endblock  %}
+
+{% block content %}
+    {% from "_macro.html" import render_field %}
+    <form method="POST">
+        {{ render_field(form.id_vertice) }}
+        <input type="submit" value="Go">
+    </form>
+
+    {% from "_macro.html" import imprimir_grafica %}
+    {{ imprimir_grafica( grafica ) }}
+    <div id="mynetwork"></div>
+    <script type="text/javascript">
+        var vertices= '{{ grafica.lista_vertices }}'
+        console.log(vertices)
+        var nodes = [];
+        for(var i= 6; i < vertices.length; i+=63){
+            console.log(vertices[i])
+            var n_id= vertices[i];
+            nodes.push({
+                id: n_id,
+                label: n_id
+            });
+        };
+        var nodes = new vis.DataSet(nodes);
+
+        // create an array with edges
+        var edges = new vis.DataSet([
+            {from: 'a', to: 'b'},
+            {from: 1, to: 2},
+            {from: 2, to: 4},
+            {from: 2, to: 5}
+        ]);
+
+        // create a network
+        var container = document.getElementById('mynetwork');
+
+        // provide the data in the vis format
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+        var options = {};
+
+        // initialize your network!
+        var network = new vis.Network(container, data, options);
+    </script>
+{% endblock %}
