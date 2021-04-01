@@ -12,10 +12,16 @@
     {% from "_macro.html" import imprimir_grafica %}
     {{ imprimir_grafica( grafica ) }}
     <div id="mynetwork"></div>
-    <script type="text/javascript">
-        var vertices= '{{ grafica.lista_vertices }}'
-        console.log(vertices)
+    <script>
+        //var vertices= '{{ grafica.lista_vertices }}'
+        //console.log(vertices)
         var nodes = [];
+        {% for v in vertices %}
+        console.log('{{v}}')
+        nodes.push({id: '{{v}}', label: '{{v}}'})
+        {% endfor %}
+
+        /*var nodes = [];
         for(var i= 6; i < vertices.length; i+=63){
             console.log(vertices[i])
             var n_id= vertices[i];
@@ -23,7 +29,7 @@
                 id: n_id,
                 label: n_id
             });
-        };
+        };*/
         var nodes = new vis.DataSet(nodes);
 
         // create an array with edges
