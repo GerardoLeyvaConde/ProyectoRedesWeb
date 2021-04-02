@@ -4,8 +4,11 @@
 
 {% block content %}
 
-    {% from "_macro.html" import imprimir_grafica %}
-    {{ imprimir_grafica( grafica ) }}
+    <!--{% from "_macro.html" import imprimir_grafica %}
+    {{ imprimir_grafica( grafica ) }}-->
+    {% for v in grafica %}
+        <p>{{v}}</p>
+    {% endfor %}
     <div id="mynetwork"></div>
     <script>
         var nodes = [];
