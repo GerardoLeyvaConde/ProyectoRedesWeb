@@ -1,5 +1,4 @@
-from flask import Flask, render_template, request
-import forms
+from flask import Flask, render_template, request, redirect, url_for
 from config import DevelopmentConfig
 from grafica import Grafica
 
@@ -7,18 +6,38 @@ app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 g= Grafica()
 
-@app.route('/', methods= ['GET', 'POST'])
+@app.route('/')
 def index():
-    añadir_vertice= forms.AñadirVertice(request.form)
-    if(request.method == 'POST'):
-        g.agregarVertice(añadir_vertice.id_vertice.data)
-        print(añadir_vertice.id_vertice.data)
-    title= "Prueba de Interfaz"
+    title = "Prueba de Interfaz"
     vertices = []
     for key, data in g.lista_vertices.items():
         vertices.append(key)
 
-    return render_template('index.html', title= title, form= añadir_vertice, grafica= g, vertices=vertices)
+    aristas = []
+    for key, data in g.lista_aristas.items():
+        aristas.append([data.origen, data.destino])
+
+    num_v = g.numero_vertices
+    num_a = g.numero_aristas
+
+    return render_template('index.html', num_v = num_v, num_a = num_a, title=title, grafica=g, vertices=vertices, aristas=aristas)
+
+@app.route('/vertices', methods= ['POST'])
+def agregarVertice():
+    if(request.method == 'POST'):
+        vertice = request.form.get('id_vertice')
+        g.agregarVertice(vertice)
+        print(vertice)
+    return redirect(url_for('index'))
+
+@app.route('/aristas', methods= ['POST'])
+def agregarArista():
+    if(request.method == 'POST'):
+        a1 = request.form.get('id_a1')
+        a2 = request.form.get('id_a2')
+        #Cambiar clave
+        g.agregarArista(a1+a2, a1, a2)
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run()

@@ -1,25 +1,192 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style type="text/css">
-        #mynetwork{
-            width: 600px;
-            height: 400px;
-            border: 1px;
-        }
+        #mynetwork { width: 100%; height: 64vh; border: 1px; }
+        .menu-div { padding: 10px; }
+        .just { justify-content: normal !important; }
+        .fwidth { display: flex !important; width: 100% !important; }
+        .da-m { border: rgba(72,199,116,.25) solid; }
+        .dv-m { border: rgba(50,115,220,.25) solid; }
     </style>
     <title>{% block title %}{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@700&display=swap" rel="stylesheet">
+    <!--<link rel="stylesheet" href="estilos.css">-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 </head>
 <body>
-    {% block content %}
-    {% endblock %}
-    <footer>
-        <div class="container">
-            <div class="row">
+    <div class="container is-fluid pl-0 pr-0">
+    <div class="columns">
+        <div class="column is-one-fifth pr-0">
+            <aside class="menu">
+                <div class="menu-div has-background-link-light">
+                    <p class="menu-label">Vértices</p>
+                    <ul class="menu-list">
+                        <li>
+                            <div class="dropdown dv fwidth is-fullwidth">
+                              <div class="dropdown-trigger dv-t fwidth is-fullwidth">
+                                <button class="button just is-fullwidth is-link is-light" aria-haspopup="true" aria-controls="dropdown-menu">
+                                  <span>Agregar</span>
+                                  <span class="icon">
+                                    <ion-icon name="add-outline"></ion-icon>
+                                </span>
+                                </button>
+                              </div>
+                              <div class="dropdown-menu dv-m" id="dropdown-menu" role="menu">
+                                <div class="dropdown-content has-background-link-light pt-1 px-4 pb-4">
+                                  <p class="dropdown-item">
+                                      <form method="POST" action="/vertices">
+                                          <div class="field has-addons">
+                                              <div class="control">
+                                                <input class="input is-link" type="text" name="id_vertice" placeholder="ID vértice">
+                                              </div>
+                                              <div class="control">
+                                                <button type="submit" class="button is-link">Agregar</button>
+                                              </div>
+                                            </div>
+                                      </form>
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                        </li>
+                        <li><button class="button is-fullwidth is-link is-light just">Buscar</button></li>
+                        <li><button class="button is-fullwidth is-link is-light just">Calcular grado</button></li>
+                    </ul>
+                </div>
+                <div class="menu-div has-background-success-light">
+                    <p class="menu-label">Aristas</p>
+                    <ul class="menu-list">
+                        <li>
+                            <div class="dropdown da fwidth is-fullwidth">
+                              <div class="dropdown-trigger da-t fwidth is-fullwidth">
+                                <button class="button just is-fullwidth is-success is-light" aria-haspopup="true" aria-controls="dropdown-menu">
+                                  <span>Agregar</span>
+                                  <span class="icon">
+                                    <ion-icon name="add-outline"></ion-icon>
+                                </span>
+                                </button>
+                              </div>
+                              <div class="dropdown-menu da-m" id="dropdown-menu" role="menu">
+                                <div class="dropdown-content has-background-success-light pt-1 px-4 pb-4">
+                                  <p class="dropdown-item">
+                                      <form method="POST" action="/aristas">
+                                          <div class="field is-horizontal">
+                                              <div class="control is-expanded pr-2">
+                                                  <input class="input is-success" type="text" name="id_a1" placeholder="ID origen">
+                                              </div>
+                                              <div class="control is-expanded">
+                                                  <input class="input is-success" type="text" name="id_a2" placeholder="ID destino">
+                                              </div>
+                                          </div>
+                                              <div class="control">
+                                                <button type="submit" class="button is-success is-fullwidth">Agregar</button>
+                                              </div>
+                                      </form>
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                        </li>
+                        <li><button class="button is-fullwidth is-success is-light just">Buscar</button></li>
+                    </ul>
+                </div>
+                <div class="menu-div has-background-primary-light">
+                    <p class="menu-label">Vaciar</p>
+                    <ul class="menu-list">
+                        <li><button class="button is-fullwidth is-primary is-light just">Vaciar vértice</button></li>
+                        <li><button class="button is-fullwidth is-primary is-light just">Vaciar gráfica</button></li>
+                    </ul>
+                </div>
+                <div class="menu-div has-background-info-light">
+                    <p class="menu-label">Copias</p>
+                    <ul class="menu-list">
+                        <li><button class="button is-fullwidth is-info is-light just">Copiar gráfica</button></li>
+                        <li><button class="button is-fullwidth is-info is-light just">Cargar copia</button></li>
+                    </ul>
+                </div>
+                <hr>
+                <div class="menu-div pt-0">
+                    <p class="menu-label">Total</p>
+                    <ul class="menu-list">
+                        <li><a class="has-text-link-dark">Número de vertices: {{ num_v }}</a></li>
+                        <li><a class="has-text-success-dark">Número de aristas: {{ num_a }}</a></li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+
+        <div class="column pl-0 pr-0">
+            <nav class="navbar is-light" role="banner" aria-label="main navigation">
+                <div class="navbar-brand">
+                    <p class="navbar-item pl-3 is-size-3 has-text-weight-bold" style="font-family: Jura">Algoritmos</p>
+
+                    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                      <span aria-hidden="true"></span>
+                      <span aria-hidden="true"></span>
+                      <span aria-hidden="true"></span>
+                    </a>
+                </div>
+
+                <div id="navbarBasicExample" class="navbar-menu">
+                    <div class="navbar-start">
+                        <a class="navbar-item">Buscar bipartición</a>
+                        <a class="navbar-item">Paseo de Euler (Fleury)</a>
+
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            <a class="navbar-link">Árbol de expansión</a>
+                            <div class="navbar-dropdown">
+                                <a class="navbar-item">Búsqueda a lo ancho</a>
+                                <a class="navbar-item">Búsqueda a lo profundo</a>
+                                <a class="navbar-item">Kruskal</a>
+                                <a class="navbar-item">Prim</a>
+                            </div>
+                        </div>
+
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            <a class="navbar-link">Arborescencia</a>
+                            <div class="navbar-dropdown">
+                                <a class="navbar-item">Dijkstra</a>
+                                <a class="navbar-item">Floyd</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </nav>
+            <div class="pl-2">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+    <!--<footer>
+        <div class="">
+            <div class="">
                 <p class="copyright text-muted">&copy; Linces Team</p>
             </div>
         </div>
-    </footer>
+    </footer>-->
+    <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+    <script>
+        //vertices
+        var dv = document.querySelector('.dv');
+        var dvt = document.querySelector('.dv-t');
+        dvt.addEventListener('click', function(event) {
+            event.stopPropagation();
+            dv.classList.toggle('is-active');
+        });
+        var da = document.querySelector('.da');
+        var dat = document.querySelector('.da-t');
+        dat.addEventListener('click', function(event) {
+            event.stopPropagation();
+            da.classList.toggle('is-active');
+        });
+    </script>
 </body>
 </html>
