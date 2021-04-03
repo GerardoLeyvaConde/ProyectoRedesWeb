@@ -28,30 +28,30 @@
                     <ul class="menu-list">
                         <li>
                             <div class="dropdown dv fwidth is-fullwidth">
-                              <div class="dropdown-trigger dv-t fwidth is-fullwidth">
-                                <button class="button just is-fullwidth is-link is-light" aria-haspopup="true" aria-controls="dropdown-menu">
-                                  <span>Agregar</span>
-                                  <span class="icon">
-                                    <ion-icon name="add-outline"></ion-icon>
-                                </span>
-                                </button>
-                              </div>
-                              <div class="dropdown-menu dv-m" id="dropdown-menu" role="menu">
-                                <div class="dropdown-content has-background-link-light pt-1 px-4 pb-4">
-                                  <p class="dropdown-item">
-                                      <form method="POST" action="/vertices">
-                                          <div class="field has-addons">
-                                              <div class="control">
-                                                <input class="input is-link" type="text" name="id_vertice" placeholder="ID vértice">
-                                              </div>
-                                              <div class="control">
-                                                <button type="submit" class="button is-link">Agregar</button>
-                                              </div>
-                                            </div>
-                                      </form>
-                                  </p>
+                                <div class="dropdown-trigger dv-t fwidth is-fullwidth">
+                                    <button class="button just is-fullwidth is-link is-light" aria-haspopup="true" aria-controls="dropdown-menu">
+                                        <span>Agregar</span>
+                                        <span class="icon">
+                                            <ion-icon name="add-outline"></ion-icon>
+                                        </span>
+                                    </button>
                                 </div>
-                              </div>
+                                <div class="dropdown-menu dv-m" id="dropdown-menu" role="menu">
+                                    <div class="dropdown-content has-background-link-light pt-1 px-4 pb-4">
+                                        <p class="dropdown-item">
+                                            <form method="POST" action="/vertices">
+                                                <div class="field has-addons">
+                                                    <div class="control">
+                                                        <input class="input is-link" type="text" name="id_vertice" placeholder="ID vértice">
+                                                    </div>
+                                                    <div class="control">
+                                                        <button type="submit" class="button is-link">Agregar</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </li>
                         <li><button class="button is-fullwidth is-link is-light just">Buscar</button></li>
@@ -63,33 +63,33 @@
                     <ul class="menu-list">
                         <li>
                             <div class="dropdown da fwidth is-fullwidth">
-                              <div class="dropdown-trigger da-t fwidth is-fullwidth">
-                                <button class="button just is-fullwidth is-success is-light" aria-haspopup="true" aria-controls="dropdown-menu">
-                                  <span>Agregar</span>
-                                  <span class="icon">
-                                    <ion-icon name="add-outline"></ion-icon>
-                                </span>
-                                </button>
-                              </div>
-                              <div class="dropdown-menu da-m" id="dropdown-menu" role="menu">
-                                <div class="dropdown-content has-background-success-light pt-1 px-4 pb-4">
-                                  <p class="dropdown-item">
-                                      <form method="POST" action="/aristas">
-                                          <div class="field is-horizontal">
-                                              <div class="control is-expanded pr-2">
-                                                  <input class="input is-success" type="text" name="id_a1" placeholder="ID origen">
-                                              </div>
-                                              <div class="control is-expanded">
-                                                  <input class="input is-success" type="text" name="id_a2" placeholder="ID destino">
-                                              </div>
-                                          </div>
-                                              <div class="control">
-                                                <button type="submit" class="button is-success is-fullwidth">Agregar</button>
-                                              </div>
-                                      </form>
-                                  </p>
+                                <div class="dropdown-trigger da-t fwidth is-fullwidth">
+                                    <button class="button just is-fullwidth is-success is-light" aria-haspopup="true" aria-controls="dropdown-menu">
+                                        <span>Agregar</span>
+                                        <span class="icon">
+                                            <ion-icon name="add-outline"></ion-icon>
+                                        </span>
+                                    </button>
                                 </div>
-                              </div>
+                                <div class="dropdown-menu da-m" id="dropdown-menu" role="menu">
+                                    <div class="dropdown-content has-background-success-light pt-1 px-4 pb-4">
+                                        <p class="dropdown-item">
+                                            <form method="POST" action="/aristas">
+                                                <div class="field is-horizontal">
+                                                    <div class="control is-expanded pr-2">
+                                                        <input class="input is-success" type="text" name="id_a1" placeholder="ID origen">
+                                                    </div>
+                                                    <div class="control is-expanded">
+                                                        <input class="input is-success" type="text" name="id_a2" placeholder="ID destino">
+                                                    </div>
+                                                </div>
+                                                    <div class="control">
+                                                        <button type="submit" class="button is-success is-fullwidth">Agregar</button>
+                                                    </div>
+                                            </form>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </li>
                         <li><button class="button is-fullwidth is-success is-light just">Buscar</button></li>
@@ -126,9 +126,9 @@
                     <p class="navbar-item pl-3 is-size-3 has-text-weight-bold" style="font-family: Jura">Algoritmos</p>
 
                     <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-                      <span aria-hidden="true"></span>
-                      <span aria-hidden="true"></span>
-                      <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
                     </a>
                 </div>
 
@@ -183,7 +183,7 @@
         var dvt = document.querySelector('.dv-t');
         dvt.addEventListener('click', function(event) {
             event.stopPropagation();
-            dv.classList.toggle('is-active');
+            dv.classList.toggle('is-active');+
         });
         var da = document.querySelector('.da');
         var dat = document.querySelector('.da-t');
