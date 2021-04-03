@@ -32,7 +32,7 @@
                                     <button class="button just is-fullwidth is-link is-light" aria-haspopup="true" aria-controls="dropdown-menu">
                                         <span>Agregar</span>
                                         <span class="icon">
-                                            <ion-icon name="add-outline"></ion-icon>
+                                            <ion-icon class="dv-i" name="add-outline"></ion-icon>
                                         </span>
                                     </button>
                                 </div>
@@ -67,7 +67,7 @@
                                     <button class="button just is-fullwidth is-success is-light" aria-haspopup="true" aria-controls="dropdown-menu">
                                         <span>Agregar</span>
                                         <span class="icon">
-                                            <ion-icon name="add-outline"></ion-icon>
+                                            <ion-icon class="da-i" name="add-outline"></ion-icon>
                                         </span>
                                     </button>
                                 </div>
@@ -181,15 +181,22 @@
         //vertices
         var dv = document.querySelector('.dv');
         var dvt = document.querySelector('.dv-t');
+        var dvi = document.querySelector('.dv-i');
         dvt.addEventListener('click', function(event) {
             event.stopPropagation();
-            dv.classList.toggle('is-active');+
+            dv.classList.toggle('is-active');
+            if (dvi.name == "add-outline") dvi.setAttribute("name", "remove-outline")
+            else dvi.setAttribute("name", "add-outline")
         });
+
         var da = document.querySelector('.da');
         var dat = document.querySelector('.da-t');
+        var dai = document.querySelector('.da-i');
         dat.addEventListener('click', function(event) {
             event.stopPropagation();
             da.classList.toggle('is-active');
+            if (dai.name == "add-outline") dai.setAttribute("name", "remove-outline")
+            else dai.setAttribute("name", "add-outline")
         });
     </script>
 </body>
