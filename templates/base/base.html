@@ -122,7 +122,37 @@
                                 </div>
                             </div>
                         </li>
-                        <li><button class="button is-fullwidth is-success is-light just">Buscar</button></li>
+                        <li>
+                            <div class="dropdown dab fwidth is-fullwidth">
+                                <div class="dropdown-trigger dab-t fwidth is-fullwidth">
+                                    <button class="button just is-fullwidth is-success is-light" aria-haspopup="true" aria-controls="dropdown-menu">
+                                        <span>Buscar Arista</span>
+                                        <span class="icon">
+                                            <ion-icon class="dab-i" name="chevron-down-outline"></ion-icon>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu dab-m" id="dropdown-menu" role="menu">
+                                    <div class="dropdown-content has-background-success-light pt-1 px-4 pb-4">
+                                        <p class="dropdown-item">
+                                            <form method="POST" action="/buscarArista">
+                                                <div class="field is-horizontal">
+                                                    <div class="control is-expanded pr-2">
+                                                        <input class="input is-success" type="text" name="id_a1_b" placeholder="ID origen">
+                                                    </div>
+                                                    <div class="control is-expanded">
+                                                        <input class="input is-success" type="text" name="id_a2_b" placeholder="ID destino">
+                                                    </div>
+                                                </div>
+                                                    <div class="control">
+                                                        <button type="submit" class="button is-success is-fullwidth">Buscar</button>
+                                                    </div>
+                                            </form>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
                     </ul>
                 </div>
                 <div class="menu-div has-background-primary-light">
@@ -268,6 +298,16 @@
             da.classList.toggle('is-active');
             if (dai.name == "add-outline") dai.setAttribute("name", "remove-outline")
             else dai.setAttribute("name", "add-outline")
+        });
+
+        var dab = document.querySelector('.dab');
+        var dabt = document.querySelector('.dab-t');
+        var dabi = document.querySelector('.dab-i');
+        dabt.addEventListener('click', function(event) {
+            event.stopPropagation();
+            dab.classList.toggle('is-active');
+            if (dabi.name == "chevron-down-outline") dabi.setAttribute("name", "chevron-up-outline")
+            else dabi.setAttribute("name", "add-outline")
         });
     </script>
 </body>

@@ -119,6 +119,7 @@ class Arista:
         self.origen = origen     #Identificador del vertice donde empieza la arista
         self.destino = destino   #Identificador del vertice donde termina la arista
         self.peso = peso         #Peso de la arista
+        self.color = -1
 
     """
     Sobrecargo de operador para imprimir la arista de la forma deseada.
@@ -369,6 +370,12 @@ class Grafica:
             self.lista_vertices[vertice].bandera= 0 #Y a la variable bandera
             self.lista_vertices[vertice].padre= None  #Regresamos a su valor predeterminado la variable color
             self.lista_vertices[vertice].peso_minimo= math.inf 
+    
+    def restablecerColores(self):
+        for v in self.lista_vertices:
+            self.lista_vertices[v].color= -1 
+        for a in self.lista_aristas:
+            self.lista_aristas[a].color = -1
 
     """
     Función auxiliar que ayuda a determinar si la grafica es bipartita,

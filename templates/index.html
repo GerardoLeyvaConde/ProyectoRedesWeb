@@ -17,16 +17,19 @@
             console.log('{{v.color}}')
             {% if v.color == 1 %}
                 nodes.push({id: '{{v.id}}', label: '{{v.id}}', color: 'red'})
-            {% endif %}
-            {% if v.color != 1 %}
+            {% else %}
                 nodes.push({id: '{{v.id}}', label: '{{v.id}}'})
             {% endif %}
         {% endfor %}
         var nodes = new vis.DataSet(nodes);
 
         var edges = [];
-        {% for a in aristas %}
-            edges.push({from: '{{a[0]}}', to: '{{a[1]}}'})
+        {% for a in grafica.lista_aristas %}
+            {% if grafica.lista_aristas[a].color == 1 %}
+                edges.push({from: '{{grafica.lista_aristas[a].origen}}', to: '{{grafica.lista_aristas[a].destino}}' , color: 'red'})
+            {% else %}
+                edges.push({from: '{{grafica.lista_aristas[a].origen}}', to: '{{grafica.lista_aristas[a].destino}}'})
+            {% endif %}
         {% endfor %}
         var edges = new vis.DataSet(edges);
 
@@ -37,6 +40,11 @@
         var data = { nodes: nodes, edges: edges };
 
         var options = {
+            edges: {
+                color: {
+                    inherit: false
+                }
+            }
         };
 
         // initialize your network!

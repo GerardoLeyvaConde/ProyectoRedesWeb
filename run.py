@@ -37,15 +37,28 @@ def agregarArista():
         a1 = request.form.get('id_a1')
         a2 = request.form.get('id_a2')
         #Cambiar clave
-        g.agregarArista(a1+a2, a1, a2)
+        i = g.numero_aristas
+        g.agregarArista("e"+str(i+1), a1, a2)
+        i+=1
     return redirect(url_for('index'))
 
 @app.route('/buscarVertice', methods= ['POST'])
 def buscarVertice():
+    g.restablecerColores()
     if(request.method == 'POST'):
         vertice = request.form.get('id_vertice_buscar')
         v = g.buscarVertice(vertice)
         v.color= 1
+    return redirect(url_for('index'))
+
+@app.route('/buscarArista', methods= ['POST'])
+def buscarArista():
+    g.restablecerColores()
+    if(request.method == 'POST'):
+        a1 = request.form.get('id_a1_b')
+        a2 = request.form.get('id_a2_b')
+        a = g.buscarArista(a1, a2)
+        a.color= 1
     return redirect(url_for('index'))
 
 @app.route('/obtenerGrado', methods= ['POST'])
