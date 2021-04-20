@@ -12,21 +12,17 @@
     <div id="mynetwork"></div>
     <script>
         var nodes = [];
-        {% for v in vertices %}
+        {% for v in grafica %}
             //console.log('{{v}}')
-            nodes.push({id: '{{v}}', label: '{{v}}'})
+            console.log('{{v.color}}')
+            {% if v.color == 1 %}
+                nodes.push({id: '{{v.id}}', label: '{{v.id}}', color: 'red'})
+            {% endif %}
+            {% if v.color != 1 %}
+                nodes.push({id: '{{v.id}}', label: '{{v.id}}'})
+            {% endif %}
         {% endfor %}
         var nodes = new vis.DataSet(nodes);
-
-        /*var nodes = [];
-        for(var i= 6; i < vertices.length; i+=63){
-            console.log(vertices[i])
-            var n_id= vertices[i];
-            nodes.push({
-                id: n_id,
-                label: n_id
-            });
-        };*/
 
         var edges = [];
         {% for a in aristas %}

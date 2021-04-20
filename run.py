@@ -5,6 +5,7 @@ from grafica import Grafica
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 g= Grafica()
+dirigida= Grafica(True)
 
 @app.route('/')
 def index():
@@ -37,6 +38,22 @@ def agregarArista():
         a2 = request.form.get('id_a2')
         #Cambiar clave
         g.agregarArista(a1+a2, a1, a2)
+    return redirect(url_for('index'))
+
+@app.route('/buscarVertice', methods= ['POST'])
+def buscarVertice():
+    if(request.method == 'POST'):
+        vertice = request.form.get('id_vertice_buscar')
+        v = g.buscarVertice(vertice)
+        v.color= 1
+    return redirect(url_for('index'))
+
+@app.route('/obtenerGrado', methods= ['POST'])
+def obtenerGrado():
+    if(request.method == 'POST'):
+        vertice = request.form.get('id_vertice_grado')
+        v = g.gradoVertice(vertice)
+        print(v)
     return redirect(url_for('index'))
 
 if __name__ == '__main__':

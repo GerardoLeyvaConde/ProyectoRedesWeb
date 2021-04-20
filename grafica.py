@@ -11,7 +11,8 @@ class Vertice:
     def __init__(self, clave):
         self.id= clave              # Identificador del vertice
         self.grado= 0               # Grado del vertice
-        self.lista_conectado= []    # Lista de los verices a los que esta conectado el vertice
+        self.lista_entrantes= []    # Lista de los verices a los que esta conectado el vertice
+        self.lista_salientes= []
         self.color= -1              # Variable utlizada para el algoritmo de Bipartita: Asiga un color al nodo
         self.bandera= 0             # Indica si el nodo fue visitado o no
         self.padre = None           # Vértice anterior a este
@@ -27,53 +28,81 @@ class Vertice:
     Sobrecargo de operador para imprimir el objeto de la manera deseada
     """
     def __str__(self):
-        return str(self.id) + ' conectado a: ' + str([id for id in self.lista_conectado])
+        return str(self.id) + ' conectado a: E:' + str([id for id in self.lista_entrantes]) + ' S:'+str([id for id in self.lista_salientes])
+
+    def conectarSalientes(self, clave):
+        self.lista_salientes.append(clave)
+
+    def conectarEntrantes(self, clave):
+        self.lista_entrantes.append(clave)
 
     """
     Función para agregar que agrega a que vertice esta conectado cada vertice y aumenta el grado de este.
 
     @param destino: Identificador del vertice que se desea agregar a los que esta conectado
     """
-    def conectar(self, destino):
+    def conectar(self, destino, dirigida):
         self.grado= self.grado+ 1
-        self.lista_conectado.append(destino)
+        self.conectarSalientes(destino.id)
+        destino.conectarEntrantes(self.id)
+        if not dirigida:
+            destino.conectarSalientes(self.id)
+            self.conectarEntrantes(destino.id)
+            destino.grado += 1
 
     """
     Función para revisar si un vertice esta conectado a otro.
 
     @param clave:   Identificador de vertice que se desea buscar.
 
-    @return:        True o False si se encontro el vertice deseado en la lista_conectados
+    @return:        True o False si se encontro el vertice deseado en la lista_entrantess
     """
-    def existeConexion(self, clave):
-        if clave in self.lista_conectado:
+    def existeConexion(self, clave, dirigida):
+        if clave in self.lista_salientes:
             return True
         else:
+            if(not dirigida):
+                if clave in self.lista_entrantes:
+                    return True
             return False
 
+    def eliminarEntrantes(self, clave):
+        self.lista_entrantes.remove(clave)
+    
+    def eliminarSalientes(self, clave):
+        self.lista_salientes.remove(clave)
+
     """
-    Función para eliminar un vertice de la lista_conectados.
+    Función para eliminar un vertice de la lista_entrantess.
 
     @param clave: Identificador de vertice que se desea eliminar.
     """
-    def eliminarConexion(self, clave):
-        self.lista_conectado.remove(clave)
+    def eliminarConexion(self, clave, dirigida):
         self.grado= self.grado- 1
+        self.eliminarSalientes(clave.id)
+        clave.eliminarEntrantes(self.id)
+        if not dirigida:
+            clave.eliminarSalientes(self.id)
+            self.eliminarEntrantes(clave.id)
 
     """
     Función para revisar el grado de un vertice.
 
     @return: Un Int que representa el grado del vertice.
     """
-    def obtenerGrado(self):
-        return self.grado
+    def obtenerGrado(self, dirigida):
+        if not dirigida:
+            return self.grado
+        else:
+            return (len(self.lista_entrantes), len(self.lista_salientes))
 
     """
     Función que restea el grado del vertice y vacia su lista_cinectado.
     """
     def vaciar(self):
         self.grado= 0
-        self.lista_conectado= []
+        self.lista_entrantes= []
+        self.lista_salientes= []
 
 
 class Arista:
@@ -107,11 +136,13 @@ class Grafica:
     """
     Contructor de la clase Grafica
     """
-    def __init__(self):
+    def __init__(self, dirigida= False):
         self.lista_vertices= {}     #Diccionario donde estan todos los vertices de la grafica
         self.lista_aristas= {}      #Diccionario donde estan todas las aristas de la grafica
         self.numero_aristas= 0      #Int que representa el número total de vertices en la grafica
         self.numero_vertices= 0     #Int que representa el número total de aristas en la grafica
+        self.dirigida= dirigida
+        self.peso_grafica= 0
 
     def __contains__(self, n):
         return n in self.lista_vertices
@@ -153,19 +184,17 @@ class Grafica:
 
     @return:        True o False si se agrego la atista a la grafica.
     """
-    def agregarArista(self, clave, inicio, destino, peso= 0, dirigida=False):
+    def agregarArista(self, clave, inicio, destino, peso= 0):
         if (inicio in self.lista_vertices) and (destino in self.lista_vertices):        #Primero revisa que el vertice inicio y destino existan en la grafica
             nueva_arista= Arista(clave, inicio, destino, peso)                          #Si existe, entonces crea la arista, la agrega al diccionario de aristas
             self.numero_aristas= self.numero_aristas+ 1                                 #y suma uno al total de aristas
             self.lista_aristas[clave]= nueva_arista
 
             if inicio == destino:                                                       #Si es un lazo, entonces agrega el identificador del vertice
-                self.lista_vertices[inicio].conectar(destino)                           #a la lista_conectados del vertice y suma un uno extra al grado del vertice
+                self.lista_vertices[inicio].conectar(self.lista_vertices[destino], False)                           #a la lista_entrantess del vertice y suma un uno extra al grado del vertice
                 self.lista_vertices[inicio].grado= self.lista_vertices[inicio].grado+ 1
             else:                                                                       #Si no es un lazo, entonces agrega el identificador del vertice destino a la
-                self.lista_vertices[inicio].conectar(destino)                           #lista_conectado del vetice inicio y viceversa
-                if not dirigida: self.lista_vertices[destino].conectar(inicio)
-
+                self.lista_vertices[inicio].conectar(self.lista_vertices[destino], self.dirigida)                           #lista_entrantes del vetice inicio y viceversa
             return True
         else:                                                                           #En caso de que no existe vertice inicio o destino, regresa False
             return False
@@ -178,6 +207,7 @@ class Grafica:
     @return:      El vertice buscado o None.
     """
     def buscarVertice(self, clave):
+        self.restablecerVertices()
         if clave in self.lista_vertices:        #Si encuentra el vertice, regresa el vertice
             return self.lista_vertices[clave]
         else:                                   #En el caso de de que no encontro el vertice, regresa None
@@ -191,13 +221,13 @@ class Grafica:
 
     @return:        La arista buscada o None.
     """
-    def buscarArista(self, inicio, destino, dirigida=False):
+    def buscarArista(self, inicio, destino):
         if (inicio in self.lista_vertices) and (destino in self.lista_vertices):    #Revisa si existen los vertices inicio y destino.Como las aristas aun no tienen
             for arista in self.lista_aristas:                                       #dirección, busca en ambas dirreciones. Si el inicio es destino o origen y viceversa.
                 if (self.lista_aristas[arista].origen == inicio) and (self.lista_aristas[arista].destino == destino):
                     return self.lista_aristas[arista]
 
-                if not dirigida:
+                if not self.dirigida:
                     if (self.lista_aristas[arista].origen == destino) and (self.lista_aristas[arista].destino == inicio):
                         return self.lista_aristas[arista]
 
@@ -223,9 +253,7 @@ class Grafica:
     """
     def eliminarVertice(self, clave):
         if clave in self.lista_vertices:                                #Revisa que el vertice exista en la grafica
-            for vertice in self.lista_vertices:
-                if self.lista_vertices[vertice].existeConexion(clave):  #Primero busca en en el resto de los vertices si estan conectados al vertice que se quiere eliminar.
-                    self.eliminarArista(vertice, clave)                 #Si lo esta, elimina ese vertice de su lista_conectado y la aristas.
+            self.vaciarVertice(clave)
             self.numero_vertices= self.numero_vertices- 1               #Se resta uno al número total de vertices, se elimina el vertice y regresa True.
             del self.lista_vertices[clave]
             return True
@@ -240,16 +268,15 @@ class Grafica:
 
     @return:        True o False si se elimina la arista de la grafica o no.
     """
-    def eliminarArista(self, inicio, destino, dirigida=False):
+    def eliminarArista(self, inicio, destino):
         if (inicio in self.lista_vertices) and (destino in self.lista_vertices):            #Revisa si existen el vertice inicio y destino
-            if self.lista_vertices[inicio].existeConexion(destino):                         #Si destino esta en lista_conectados de inicio
-                if inicio == destino:                                                       #Entonces checa si es un lazo, si lo es, lo borra de lista_conectados
-                    self.lista_vertices[inicio].eliminarConexion(destino)                   #y resta menos 1 al grado
+            if self.lista_vertices[inicio].existeConexion(destino, self.dirigida):                         #Si destino esta en lista_entrantess de inicio
+                if inicio == destino:                                                       #Entonces checa si es un lazo, si lo es, lo borra de lista_entrantess
+                    self.lista_vertices[inicio].eliminarConexion(self.lista_vertices[destino], False)                   #y resta menos 1 al grado
                     self.lista_vertices[inicio].grado= self.lista_vertices[inicio].grado- 1
-                else:                                                                       #Si no es un lazo, borra destino de lista_conectados de inicio u¿y viceversa
-                    self.lista_vertices[inicio].eliminarConexion(destino)
-                    if not dirigida: self.lista_vertices[destino].eliminarConexion(inicio)
-                arista= self.buscarArista(inicio, destino, dirigida)                                  #Buscamos la arista en el diccionario de aristas para borrarla
+                else:                                                                       #Si no es un lazo, borra destino de lista_entrantess de inicio u¿y viceversa
+                    self.lista_vertices[inicio].eliminarConexion(self.lista_vertices[destino], self.dirigida)
+                arista= self.buscarArista(inicio, destino)                                  #Buscamos la arista en el diccionario de aristas para borrarla
                 del self.lista_aristas[arista.id]
                 self.numero_aristas= self.numero_aristas - 1                                #Restamos uno al total de aristas en la grafica y regreasmos True
                 return True
@@ -280,8 +307,8 @@ class Grafica:
     """
     def gradoVertice(self, clave):
         if clave in self.lista_vertices:                        #Busca si el vertice existe en la grafica
-            return self.lista_vertices[clave].obtenerGrado()    #Obtiene el grado del vertice y lo regresa
-        else:                                                   #En caso de que el vertice no exista, regresa -1
+            return self.lista_vertices[clave].obtenerGrado(self.dirigida)    #Obtiene el grado del vertice y lo regresa
+        else:                                                 #En caso de que el vertice no exista, regresa -1
             return -1
 
     """
@@ -309,21 +336,17 @@ class Grafica:
     """
     def vaciarVertice(self, clave):
         if clave in self.lista_vertices:                                            #Revisa si el vertice existe en la grafica.
-            existe_arista= True
-            while existe_arista:                                                    #Ciclo para eliminar todas las aristas relacionadas con el vertice
-                for arista in self.lista_aristas:
-                    if (self.lista_aristas[arista].origen == clave) or (self.lista_aristas[arista].destino == clave):#Buscamos la primera arista que este relacionado con el vertic
-                        del self.lista_aristas[arista]                                                               #La eliminamos y restamos uno al total de aristas.
-                    self.numero_aristas= self.numero_aristas- 1
-                    break                                               #Se sale del ciclo for debido al cambio de tamaño del diccionario lista_aristas de la grafica
-                if not self.existeArista(clave):                        #Si siguene existiendo aristas relacionados con el vertice. el ciclo continua
-                    existe_arista= False                                #En caso contrario el ciclo termina
-
-            for vertice in self.lista_vertices:                                 #Buscamos en los vertices de la grafica
-                if self.lista_vertices[vertice].existeConexion(clave):          #Si el vertice a vaciar esta en lista_conectados de algun vertice
-                    while clave in self.lista_vertices[vertice].lista_conectado:#Se elimina las veces que este el vertice
-                        self.lista_vertices[vertice].eliminarConexion(clave)
-
+            vertices= list()
+            for vertice in self.lista_vertices[clave].lista_salientes:                                 #Buscamos en los vertices de la grafica
+                vertices.append(vertice)    
+            for v in vertices:
+                self.eliminarArista(clave, v)
+            
+            vertices.clear()
+            for vertice in self.lista_vertices[clave].lista_entrantes:
+               vertices.append(vertice)    
+            for v in vertices:
+                self.eliminarArista(clave, v)
             self.lista_vertices[clave].vaciar()                          #Se vacia el vertice
             return True                                                  #Regresa True al concluir
         else:                                                            #Regresa False al no existir el vertice en la grafica
@@ -345,7 +368,7 @@ class Grafica:
             self.lista_vertices[vertice].color= -1  #Regresamos a su valor predeterminado la variable color
             self.lista_vertices[vertice].bandera= 0 #Y a la variable bandera
             self.lista_vertices[vertice].padre= None  #Regresamos a su valor predeterminado la variable color
-            self.lista_vertices[vertice].peso_minimo= 0 #Y a la variable bandera
+            self.lista_vertices[vertice].peso_minimo= math.inf 
 
     """
     Función auxiliar que ayuda a determinar si la grafica es bipartita,
@@ -360,10 +383,10 @@ class Grafica:
 
         while cola:
             u= cola.pop()                               #Sacamos el vertice "u" de la cola
-            if self.lista_vertices[u].existeConexion(u):#Si hay un lazo, entonces regresa False
+            if self.lista_vertices[u].existeConexion(u, self.dirigida):#Si hay un lazo, entonces regresa False
                 return False
 
-            for vertice in self.lista_vertices[u].lista_conectado:                        #Buscamos en los vertices a los que esta coenctado "u"
+            for vertice in self.lista_vertices[u].lista_salientes:                        #Buscamos en los vertices a los que esta coenctado "u"
                 if self.lista_vertices[vertice].color== -1:                               #Si el vertice vecino no tiene color
                     self.lista_vertices[vertice].color= 1- self.lista_vertices[u].color   #Entonces le asignamos el color contrario de "u"
                     cola.append(vertice)                                                  #Lo agregamos a cola
@@ -385,20 +408,15 @@ class Grafica:
                 self.lista_vertices[vertice].color= 1           #Se le asigna el color 1
                 if not self.bipartita(vertice):                 #Se llama a nuestra función auxliar que marcar a sus vertices vecinos. Si la funcion auxiliar regresa True el algoritmo prosigue
                     self.restablecerVertices()                  #En caso contrario establecemos las variables color y bandera a su valor original
-                    return (lista_u, lista_u, False)                                #Regresa False y el algorimo concluye
+                    return (lista_u, lista_v, False)                                #Regresa False y el algorimo concluye
             if self.lista_vertices[vertice].color== 1:          #Si el vertice es de color 1 lo agrega a lista_v
                 lista_v.append(self.lista_vertices[vertice].id)
             elif self.lista_vertices[vertice].color== 0:        #Si el vertice es de color 0 lo agrega a lista_ui
                 lista_u.append(self.lista_vertices[vertice].id)
             self.lista_vertices[vertice].bandera= 1             #Asigna bandera a 1 lo que significa que el vertice ya fue visitado
 
-        '''
-        print("\nEs bipartita")                                   #Si el algorimo llego hasta aqui, significa que la grafica es bipartita
-        print("V: %s"%(lista_v))                                #Imprime las listas u y v. Restablece los vertices y regresa True
-        print("U: %s"%(lista_u))
-        '''
         self.restablecerVertices()
-        return (lista_u, lista_u, True)
+        return (lista_u, lista_v, True)
 
     """
     Función que determina si la grafica es conexa.
@@ -413,80 +431,16 @@ class Grafica:
 
         while cola:
             u= cola.pop(0)
-            for vertice in self.lista_vertices[u].lista_conectado:
+            for vertice in self.lista_vertices[u].lista_salientes:
                 if self.lista_vertices[vertice].bandera== 0:
                     cola.append(vertice)
                     self.lista_vertices[vertice].bandera= 1
                     num_banderas+= 1
-
-        if num_banderas == self.numero_vertices:
-            self.restablecerVertices()
+        self.restablecerVertices()
+        if num_banderas == self.numero_vertices:         
             return True
         else:
-            self.restablecerVertices()
             return False
-    """
-    Función que emplea el algoritmo de Fleury
-    """
-    def algoritmoFleury(self):
-        impares = 0
-        inicio = self.lista_vertices[list(self.lista_vertices.keys())[0]]
-        copia = self.copiar()
-        cola = []
-        cola_vertices = []
-
-        for vertice in self.lista_vertices:
-            if (self.lista_vertices[vertice].grado % 2) != 0:
-                impares = impares + 1
-                inicio = self.lista_vertices[vertice]
-
-        if impares != 0 and impares != 2:
-            print("Error: La cantidad de nodos de grado impar no cumple.")
-            return False
-
-        if not self.conexa():
-            print("Error: La grafica no es conexa.")
-            return False
-
-        while copia.numero_aristas != 0:
-            for vecino in copia.lista_vertices[inicio.id].lista_conectado:
-                destino = vecino
-                arista = copia.buscarArista(inicio.id, vecino)
-                cola.append(arista)
-                cola_vertices.append(inicio)
-                aux = copia.copiar()
-                aux.eliminarArista(inicio.id, vecino)
-                if len(copia.lista_vertices[inicio.id].lista_conectado) == 1:
-                    copia.eliminarArista(inicio.id, vecino)
-                    copia.eliminarVertice(inicio.id)
-                    inicio = copia.buscarVertice(destino)
-                    break
-                elif aux.conexa():
-                    copia.eliminarArista(inicio.id, vecino)
-                    inicio = copia.buscarVertice(destino)
-                    break
-                else:
-                    cola.pop(-1)
-                    cola_vertices.pop(-1)
-
-        if impares == 0:
-            print("El paseo de Euler es cerrado.")
-        else:
-            print("El paseo de Euler es abierto.")
-
-        cola_vertices.append(inicio)
-        camino = []
-        while cola_vertices:
-            v = cola_vertices.pop()
-            camino.append(v.id)
-            if cola:
-                a = cola.pop()
-                camino.append(a.id)
-        print(camino)
-        del copia
-        del aux
-        return True
-
     """
     Función que emplea el algoritmo de Fleury.
 
@@ -499,7 +453,7 @@ class Grafica:
         copia= self.copiar()#Copia de la grafica para trabajar con ella.
 
         for vertice in copia.lista_vertices:
-            if (copia.lista_vertices[vertice].grado % 2) != 0:      #Buscamos la cantidad de verices impares.
+            if (copia.lista_vertices[vertice].grado % 2) != 0:      #Buscamos la cantidad de vertices impares.
                 impares= impares + 1
                 if impares== 1:
                     cola.append(copia.lista_vertices[vertice].id)   #Si hay un vertice con grado impar, asignamos nuesto vc(vertice cola) y lo guardamos en la cola
@@ -524,14 +478,14 @@ class Grafica:
             vp= vc
 
         while vc.grado != 0 and vp.grado != 0:
-            for vertice in copia.lista_vertices[vc.id].lista_conectado:
+            for vertice in copia.lista_vertices[vc.id].lista_salientes:
                 if copia.lista_vertices[vertice].grado != 1:
                     cola.append(copia.lista_vertices[vertice].id)
                     copia.eliminarArista(vc.id, vertice)
                     vc= copia.lista_vertices[vertice]
                     break
             if vp.grado == 1:
-                vecino= copia.lista_vertices[vp.id].lista_conectado[0]
+                vecino= copia.lista_vertices[vp.id].lista_salientes[0]
                 copia.eliminarArista(vp.id, vecino)
                 aux= copia.buscarVertice(vecino)
                 pila.append(copia.lista_vertices[aux.id].id)
@@ -542,14 +496,6 @@ class Grafica:
         while pila:
             cola.append(pila[-1])
             pila= pila[:-1]
-        '''
-        if impares == 0:
-            print("\nEl paseo de Euler es cerrado.")
-
-        else:
-            print("\nEl paseo de Euler es abierto.")
-        print(cola)
-        '''
         return (cola, impares, True)
 
 
@@ -580,11 +526,11 @@ class Grafica:
 
             if tipo == 0: #Busqueda a lo profundo (0)
                 cont = 0
-                for vertice in self.lista_vertices[v.id].lista_conectado:
+                for vertice in self.lista_vertices[v.id].lista_salientes:
                     if (self.lista_vertices[vertice].bandera == 0):
                         break
                     cont += 1
-                if cont == len(self.lista_vertices[v.id].lista_conectado):
+                if cont == len(self.lista_vertices[v.id].lista_salientes):
                     v.bandera = 1
                     v = frontera[-1]
                     frontera = frontera[:-1]
@@ -596,7 +542,7 @@ class Grafica:
             v.bandera = 1
             grafiquita.agregarVertice(v.id)
 
-            for vertice in self.lista_vertices[v.id].lista_conectado:
+            for vertice in self.lista_vertices[v.id].lista_salientes:
                 if (self.lista_vertices[vertice] not in frontera) and (self.lista_vertices[vertice].bandera == 0):
                     grafiquita.agregarVertice(vertice)
                     grafiquita.agregarArista('e'+str(i),v.id, vertice)
@@ -610,27 +556,17 @@ class Grafica:
                     elif tipo == 1:
                         frontera.append(self.lista_vertices[vertice])
 
-        '''
-        if bosque:
-            print("\nEl bosque es:")
-        else:
-            print("\nEl árbol de expansión es:")
-
-        for v in grafiquita:
-            print(v)
-        '''
         self.restablecerVertices()
         return (grafiquita, bosque)
     """
     Algoritmo que busca el árbol de minima expansion en una grafica conexa.
     """
     def kruskal(self):
-
         grafiquita = Grafica()                                      #El arbol de minima expansion o bosque
         aristas_ordenadas= []                                       #Lista de aristas ordenada por pesos de menor a mayor
         total_vertices = self.numero_vertices
-        lista_padres = list(range(total_vertices))                  #Lista de padres de los vértices
-        peso_total= 0                                               #Peso total del árbol o bosque
+        lista_padres = list(range(total_vertices))                  #Lista de padres de los vértices        
+        self.peso_grafica= 0                                   #Peso total del árbol o bosque
         bosque = False
 
         for vertice in self.lista_vertices:                     #Copiamos los vertices de la grafica original en lo que sera nuestro
@@ -647,29 +583,15 @@ class Grafica:
             if busqueda(lista_padres, vertices.index(self.lista_vertices[arista.origen])) is not busqueda(lista_padres, vertices.index(self.lista_vertices[arista.destino])): #Si los vertices no tienen la misma raíz
                 grafiquita.agregarArista(arista.id, arista.origen, arista.destino, arista.peso)     #Agregamos la arista
                 lista_padres= union(lista_padres, vertices.index(self.lista_vertices[arista.origen]), vertices.index(self.lista_vertices[arista.destino])) #Reacomodamos las raices
-                peso_total += arista.peso                                                           #Sumamos el peso de la arista al peso total del árbol
+                self.peso_grafica += arista.peso                                                           #Sumamos el peso de la arista al peso total del árbol
             if  grafiquita.numero_aristas == total_vertices - 1:            #Si el número total de aristas es igual al el numero de vertices menos uno, entonces ya tenemos el arbol de expansion
                 break
 
 
         if grafiquita.numero_aristas is not total_vertices - 1:            #Si la cantidad de aristas no cumple con ser #vertices-1, entonces debe ser un bosque.
             bosque = True
-        '''
 
-        if bosque:                                          #Imprimimos el arbol o bosque
-            print("\nEl bosque es: ")
-        else:
-            print("\nEl árbol de mínima expansión es: ")
-        for v in grafiquita:
-            print(v)
-
-        if bosque:                                      #Imprimimos el peso total del arbol o bosque
-            print("\nPeso del bosque: ", peso_total)
-        else:
-            print("\nPeso del árbol: ", peso_total)
-        '''
-
-        return (grafiquita, peso_total, bosque)
+        return (grafiquita, self.peso_grafica, bosque)
 
     def prim(self):
         grafiquita = Grafica()
@@ -678,7 +600,7 @@ class Grafica:
         lista_actuales[0].bandera = 1
         visitados = 1
         bosque = False
-        peso_total = 0
+        self.peso_grafica = 0
 
         for vertice in self.lista_vertices:                     # Copiamos los vertices de la grafica original en lo que sera nuestro
             grafiquita.agregarVertice(vertice)                  # árbol de minima expansion o bosque.
@@ -687,7 +609,7 @@ class Grafica:
             lista_vecinos = []
 
             for vertice in lista_actuales:
-                for vecino in self.lista_vertices[vertice.id].lista_conectado:
+                for vecino in self.lista_vertices[vertice.id].lista_salientes:
 
                     if self.lista_vertices[vecino].bandera == 0:
                         lista_vecinos.append(self.buscarArista(vertice.id, vecino))
@@ -706,48 +628,29 @@ class Grafica:
 
                 continue
 
-            min = pesoMinimo(lista_vecinos)
+            minimo = pesoMinimo(lista_vecinos)
 
-            grafiquita.agregarArista(min.id, min.origen, min.destino, min.peso)
-            peso_total += min.peso
+            grafiquita.agregarArista(minimo.id, minimo.origen, minimo.destino, minimo.peso)
+            self.peso_grafica += minimo.peso
 
             # Solo uno tiene bandera = 0
-            if self.lista_vertices[min.origen].bandera == 0:
-                self.lista_vertices[min.origen].bandera = 1
-                lista_actuales.append(self.lista_vertices[min.origen])
+            if self.lista_vertices[minimo.origen].bandera == 0:
+                self.lista_vertices[minimo.origen].bandera = 1
+                lista_actuales.append(self.lista_vertices[minimo.origen])
 
-            elif self.lista_vertices[min.destino].bandera == 0:
-                self.lista_vertices[min.destino].bandera = 1
-                lista_actuales.append(self.lista_vertices[min.destino])
+            elif self.lista_vertices[minimo.destino].bandera == 0:
+                self.lista_vertices[minimo.destino].bandera = 1
+                lista_actuales.append(self.lista_vertices[minimo.destino])
 
             visitados += 1
 
-        #Imprimimos el árbol o bosque
-        '''
-        if bosque:
-            print("\nEl bosque es: ")
-        else:
-            print("\nEl árbol de mínima expansión es: ")
-
-        for v in grafiquita:
-            print(v)
-
-        # Imprimimos el peso total del arbol o bosque
-        if bosque:
-            print("\nPeso del bosque: ", peso_total)
-        else:
-            print("\nPeso del árbol: ", peso_total)
-
-        del grafiquita
-        '''
-
         self.restablecerVertices()
-        return (grafiquita, peso_total, bosque)
+        return (grafiquita, self.peso_grafica, bosque)
 
 
     def dijkstra(self, inicio):
         assert inicio in self.lista_vertices
-        grafiquita = Grafica()
+        grafiquita = Grafica(self.dirigida)
         cola = []
 
         # Copiamos los vertices de la grafica original
@@ -757,31 +660,27 @@ class Grafica:
         # Primer paso del algoritmo de Dijkstra
         cola.append(inicio)                                   # Guardamos etiquetas de vértices
         grafiquita.lista_vertices[inicio].bandera = 1         # 1 es marca temporal, 2 marca definitiva
-        grafiquita.lista_vertices[inicio].padre = None        # Padre es None
         grafiquita.lista_vertices[inicio].peso_minimo = 0
         while cola:
             actual = cola[0]                                  # Obtenemos el primer elemento de la cola
             cola = cola[1:]                                   # y lo borramos de la cola y le ponemos
             grafiquita.lista_vertices[actual].bandera = 2     # la marca definitiva
 
-            for vertice in self.lista_vertices[actual].lista_conectado:
-                 arista = self.buscarArista(actual, vertice, True)
+            for vertice in self.lista_vertices[actual].lista_salientes:
+                 arista = self.buscarArista(actual, vertice)
                  v = grafiquita.lista_vertices[vertice]
 
                  if v.bandera == 0:
-                     grafiquita.agregarArista(arista.id, actual, vertice, arista.peso, True)
+                     grafiquita.agregarArista(arista.id, actual, vertice, arista.peso)
                      v.bandera = 1
-                     v.padre = actual
                      v.peso_minimo = grafiquita.lista_vertices[actual].peso_minimo + arista.peso
                      cola.append(vertice)
 
                  elif v.bandera == 1:
                      if v.peso_minimo > grafiquita.lista_vertices[actual].peso_minimo + arista.peso:
-
-                         grafiquita.eliminarArista(v.padre, vertice, True)
+                         grafiquita.eliminarArista(v.lista_entrantes[0], vertice)
                          v.peso_minimo = grafiquita.lista_vertices[actual].peso_minimo + arista.peso
-                         v.padre = actual
-                         grafiquita.agregarArista(arista.id, actual, vertice, arista.peso, True)
+                         grafiquita.agregarArista(arista.id, actual, vertice, arista.peso)
 
             cola = sortear(grafiquita.lista_vertices, cola)
 
@@ -790,6 +689,7 @@ class Grafica:
     def dijkstraGeneral(self, inicio):
         aristas = []
         ciclo = []
+        self.restablecerVertices()
         grafiquita = self.dijkstra(inicio)
 
         for arista in self.lista_aristas:
@@ -801,11 +701,12 @@ class Grafica:
             fin = True
             for a in aristas:
                 if grafiquita.lista_vertices[a.origen].peso_minimo + a.peso < grafiquita.lista_vertices[a.destino].peso_minimo:
-                    if grafiquita.lista_vertices[a.destino].padre is None:
-                        grafiquita.lista_vertices[a.origen].padre = None
                     # Identificación de ciclos
                     ciclo.append(a.origen)
-                    ancestro = grafiquita.lista_vertices[a.origen].padre
+                    if not grafiquita.lista_vertices[a.origen].lista_entrantes:
+                        ancestro= None
+                    else:
+                        ancestro = grafiquita.lista_vertices[a.origen].lista_entrantes[0]
                     while True:
                         ciclo.append(ancestro)
                         if ancestro == a.destino:
@@ -824,32 +725,22 @@ class Grafica:
                             ciclo.clear()
                             break
 
-                        ancestro = grafiquita.lista_vertices[ancestro].padre
+                        if not grafiquita.lista_vertices[ancestro].lista_entrantes:
+                            ancestro= None
+                        else:
+                            ancestro = grafiquita.lista_vertices[ancestro].lista_entrantes[0]
+                        #ancestro = grafiquita.lista_vertices[ancestro].lista_entrantes[0]
 
                     fin = False
-
-                    auxrista = self.buscarArista(grafiquita.lista_vertices[a.destino].padre, a.destino, True)
-
-                    grafiquita.eliminarArista(grafiquita.lista_vertices[a.destino].padre, a.destino, True)
-                    grafiquita.agregarArista(a.id, a.origen, a.destino, a.peso, True)
+                    auxrista = grafiquita.buscarArista(grafiquita.lista_vertices[a.destino].lista_entrantes[0], a.destino)
+                    grafiquita.eliminarArista(grafiquita.lista_vertices[a.destino].lista_entrantes[0], a.destino)
+                    grafiquita.agregarArista(a.id, a.origen, a.destino, a.peso)
 
                     delta = grafiquita.lista_vertices[a.destino].peso_minimo - (grafiquita.lista_vertices[a.origen].peso_minimo + a.peso)
-                    grafiquita.lista_vertices[a.destino].peso_minimo = grafiquita.lista_vertices[a.origen].peso_minimo + a.peso
-                    grafiquita.lista_vertices[a.destino].padre = a.origen
 
                     frontera = []
                     frontera.append(grafiquita.lista_vertices[a.destino])
                     aristas.remove(a)
-
-                    v = frontera[0]
-                    frontera = frontera[1:]
-
-                    v.bandera = 1
-
-                    for vertice in grafiquita.lista_vertices[v.id].lista_conectado:
-                        if (grafiquita.lista_vertices[vertice] not in frontera) and (grafiquita.lista_vertices[vertice].bandera == 2):
-
-                            frontera.append(grafiquita.lista_vertices[vertice])
 
                     while frontera:
                         v = frontera[0]
@@ -857,17 +748,21 @@ class Grafica:
                         v.bandera = 1
                         grafiquita.lista_vertices[v.id].peso_minimo -= delta
 
-                        for vertice in grafiquita.lista_vertices[v.id].lista_conectado:
+                        for vertice in grafiquita.lista_vertices[v.id].lista_salientes:
                             if (grafiquita.lista_vertices[vertice] not in frontera) and (grafiquita.lista_vertices[vertice].bandera == 2):
-
                                 frontera.append(grafiquita.lista_vertices[vertice])
 
+                    for v in grafiquita.lista_vertices:
+                        grafiquita.lista_vertices[v].bandera= 2
                     break
             if fin: break
 
             if auxrista is not None:
                 aristas.append(auxrista)
             aristas.sort(key=attrgetter('peso'))
+        
+        for v in grafiquita:
+            print(v)
 
         return (grafiquita, 0, 1)
     
@@ -880,7 +775,7 @@ class Grafica:
         
         for i in range(total_vertices):
             for j in range(total_vertices):
-                arista = self.buscarArista(nombres[i], nombres[j], True)
+                arista = self.buscarArista(nombres[i], nombres[j])
                 if(i == j):
                     distancias[i + i * total_vertices] =  0
                     rutas[i + i * total_vertices] =  nombres[i]
@@ -894,10 +789,11 @@ class Grafica:
         for c in range(total_vertices):
             for i in range(total_vertices):
                 for j in range(total_vertices):
-                    #if(c == i or c == j):
-                        #continue
                     if(distancias[c + i * total_vertices] + distancias[j + c * total_vertices] < distancias[j + i * total_vertices]):
                         distancias[j + i * total_vertices] =  distancias[c + i * total_vertices] + distancias[j + c * total_vertices]
+                        print("i, j: ", i ,", ", j)
+                        print(distancias[j + i * total_vertices])
+                        input()
                         rutas[j + i * total_vertices] =  rutas[j + c * total_vertices]
 
                 if(distancias[i + i * total_vertices] < 0):
@@ -920,24 +816,28 @@ class Grafica:
                 aux = j
                 ruta_aux= list()
                 distancia_aux= 0
+                print("i, j: ", i ,", ", j)
                 if (aux == i):
                     ruta_aux.append(nombres[aux])
-                    distancia_aux += distancias[aux + i*total_vertices]
+                    distancia_aux += distancias[aux + i * total_vertices]
+                    print(distancia_aux)
                 while(aux != i):
                     if(rutas[j + i * total_vertices] is None):
                         break
                     ruta_aux.append(nombres[aux])
-                    distancia_aux += distancias[aux + i*total_vertices]
+                    distancia_aux += distancias[aux + i * total_vertices]
+                    print(distancia_aux)
                     aux = nombres.index(rutas[aux + i * total_vertices])
                     if (aux == i):
                         ruta_aux.append(nombres[aux])
-                        distancia_aux += distancias[aux + i*total_vertices]
+                        distancia_aux += distancias[aux + i * total_vertices]
+                        print(distancia_aux)
+                input()
 
                 ruta_aux.reverse()
                 free4all[j + i * total_vertices] = (ruta_aux, distancia_aux)
                         
         return (free4all, nombres, False)
-        
 
 '''
 Funciones auxiliares para algoritmo de Kruskal

@@ -54,8 +54,38 @@
                                 </div>
                             </div>
                         </li>
-                        <li><button class="button is-fullwidth is-link is-light just">Buscar</button></li>
-                        <li><button class="button is-fullwidth is-link is-light just">Calcular grado</button></li>
+                        <li>
+                            <div class="dropdown db fwidth is-fullwidth">
+                                <div class="dropdown-trigger db-t fwidth is-fullwidth">
+                                    <button class="button just is-fullwidth is-link is-light" aria-haspopup="true" aria-controls="dropdown-menu">
+                                        <span>Buscar</span>
+                                        <span class="icon">
+                                            <ion-icon class="db-i" name="chevron-down-outline"></ion-icon>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu db-m" id="dropdown-menu" role="menu">
+                                    <div class="dropdown-content has-background-link-light pt-1 px-4 pb-4">
+                                        <p class="dropdown-item">
+                                            <form method="POST" action="/buscarVertice">
+                                                <div class="field has-addons">
+                                                    <div class="control">
+                                                        <input class="input is-link" type="text" name="id_vertice_buscar" placeholder="ID vértice">
+                                                    </div>
+                                                    <div class="control">
+                                                        <button type="submit" class="button is-link">Buscar</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>    
+                            <!--!<button class="button is-fullwidth is-link is-light just">Buscar</button> -->
+                        </li>   
+                        <li> 
+                            <!--<button class="button is-fullwidth is-link is-light just">Calcular grado</button> -->
+                        </li>
                     </ul>
                 </div>
                 <div class="menu-div has-background-success-light">
@@ -115,6 +145,27 @@
                     <ul class="menu-list">
                         <li><a class="has-text-link-dark">Número de vertices: {{ num_v }}</a></li>
                         <li><a class="has-text-success-dark">Número de aristas: {{ num_a }}</a></li>
+                        <li>
+                            <div class="dropdown dg fwidth is-fullwidth">
+                                <div class="dropdown-trigger dg-t fwidth is-fullwidth">
+                                    <button class="button just is-fullwidth is-link is-light" aria-haspopup="true" aria-controls="dropdown-menu">
+                                        <span>Grado de los vertices</span>
+                                        <span class="icon">
+                                            <ion-icon class="dg-i" name="chevron-down-outline"></ion-icon>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu dg-m" id="dropdown-menu" role="menu">
+                                    <div class="dropdown-content has-background-link-light pt-1 px-4 pb-4">
+                                        <p class="dropdown-item">
+                                            {% for v in grafica %}
+                                                <p>"{{v.id}}" : {{v.obtenerGrado(False)}}</p>
+                                            {% endfor %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </aside>
@@ -134,7 +185,7 @@
 
                 <div id="navbarBasicExample" class="navbar-menu">
                     <div class="navbar-start">
-                        <a class="navbar-item">Buscar bipartición</a>
+                        <a class="navbar-item" href="/buscar-biparticion">Buscar bipartición</a>
                         <a class="navbar-item">Paseo de Euler (Fleury)</a>
 
                         <div class="navbar-item has-dropdown is-hoverable">
@@ -187,6 +238,26 @@
             dv.classList.toggle('is-active');
             if (dvi.name == "add-outline") dvi.setAttribute("name", "remove-outline")
             else dvi.setAttribute("name", "add-outline")
+        });
+
+        var db = document.querySelector('.db');
+        var dbt = document.querySelector('.db-t');
+        var dbi = document.querySelector('.db-i');
+        dbt.addEventListener('click', function(event) {
+            event.stopPropagation();
+            db.classList.toggle('is-active');
+            if (dbi.name == "chevron-down-outline") dbi.setAttribute("name", "chevron-up-outline")
+            else dbi.setAttribute("name", "chevron-down-outline")
+        });
+
+        var dg = document.querySelector('.dg');
+        var dgt = document.querySelector('.dg-t');
+        var dgi = document.querySelector('.dg-i');
+        dgt.addEventListener('click', function(event) {
+            event.stopPropagation();
+            dg.classList.toggle('is-active');
+            if (dgi.name == "chevron-down-outline") dgi.setAttribute("name", "chevron-up-outline")
+            else dgi.setAttribute("name", "chevron-down-outline")
         });
 
         var da = document.querySelector('.da');
