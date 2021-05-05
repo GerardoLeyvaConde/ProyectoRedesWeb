@@ -68,12 +68,12 @@ class Vertice:
 
     def eliminarEntrantes(self, clave):
         self.lista_entrantes.remove(clave)
-    
+
     def eliminarSalientes(self, clave):
         self.lista_salientes.remove(clave)
 
     """
-    Función para eliminar un vertice de la lista_entrantess.
+    Función para eliminar un vertice de la lista_entrantes.
 
     @param clave: Identificador de vertice que se desea eliminar.
     """
@@ -339,13 +339,13 @@ class Grafica:
         if clave in self.lista_vertices:                                            #Revisa si el vertice existe en la grafica.
             vertices= list()
             for vertice in self.lista_vertices[clave].lista_salientes:                                 #Buscamos en los vertices de la grafica
-                vertices.append(vertice)    
+                vertices.append(vertice)
             for v in vertices:
                 self.eliminarArista(clave, v)
-            
+
             vertices.clear()
             for vertice in self.lista_vertices[clave].lista_entrantes:
-               vertices.append(vertice)    
+               vertices.append(vertice)
             for v in vertices:
                 self.eliminarArista(clave, v)
             self.lista_vertices[clave].vaciar()                          #Se vacia el vertice
@@ -369,11 +369,11 @@ class Grafica:
             self.lista_vertices[vertice].color= -1  #Regresamos a su valor predeterminado la variable color
             self.lista_vertices[vertice].bandera= 0 #Y a la variable bandera
             self.lista_vertices[vertice].padre= None  #Regresamos a su valor predeterminado la variable color
-            self.lista_vertices[vertice].peso_minimo= math.inf 
-    
+            self.lista_vertices[vertice].peso_minimo= math.inf
+
     def restablecerColores(self):
         for v in self.lista_vertices:
-            self.lista_vertices[v].color= -1 
+            self.lista_vertices[v].color= -1
         for a in self.lista_aristas:
             self.lista_aristas[a].color = -1
 
@@ -444,7 +444,7 @@ class Grafica:
                     self.lista_vertices[vertice].bandera= 1
                     num_banderas+= 1
         self.restablecerVertices()
-        if num_banderas == self.numero_vertices:         
+        if num_banderas == self.numero_vertices:
             return True
         else:
             return False
@@ -572,7 +572,7 @@ class Grafica:
         grafiquita = Grafica()                                      #El arbol de minima expansion o bosque
         aristas_ordenadas= []                                       #Lista de aristas ordenada por pesos de menor a mayor
         total_vertices = self.numero_vertices
-        lista_padres = list(range(total_vertices))                  #Lista de padres de los vértices        
+        lista_padres = list(range(total_vertices))                  #Lista de padres de los vértices
         self.peso_grafica= 0                                   #Peso total del árbol o bosque
         bosque = False
 
@@ -767,19 +767,19 @@ class Grafica:
             if auxrista is not None:
                 aristas.append(auxrista)
             aristas.sort(key=attrgetter('peso'))
-        
+
         for v in grafiquita:
             print(v)
 
         return (grafiquita, 0, 1)
-    
+
     def floyd(self):
         total_vertices= self.numero_vertices
         distancias= [None] * total_vertices * total_vertices
         rutas= [None] * total_vertices * total_vertices
         nombres= [v for v in self.lista_vertices]
         free4all = [None] * total_vertices * total_vertices
-        
+
         for i in range(total_vertices):
             for j in range(total_vertices):
                 arista = self.buscarArista(nombres[i], nombres[j])
@@ -816,7 +816,7 @@ class Grafica:
                             ruta_aux.append(nombres[aux])
 
                     ruta_aux.reverse()
-                    return (ruta_aux, distancia_aux, True)                       
+                    return (ruta_aux, distancia_aux, True)
 
         for i in range(total_vertices):
             for j in range(total_vertices):
@@ -843,7 +843,7 @@ class Grafica:
 
                 ruta_aux.reverse()
                 free4all[j + i * total_vertices] = (ruta_aux, distancia_aux)
-                        
+
         return (free4all, nombres, False)
 
 '''

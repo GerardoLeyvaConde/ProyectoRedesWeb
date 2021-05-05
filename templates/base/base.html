@@ -80,11 +80,36 @@
                                         </p>
                                     </div>
                                 </div>
-                            </div>    
+                            </div>
                             <!--!<button class="button is-fullwidth is-link is-light just">Buscar</button> -->
-                        </li>   
-                        <li> 
-                            <!--<button class="button is-fullwidth is-link is-light just">Calcular grado</button> -->
+                        </li>
+                        <li>
+                            <div class="dropdown dev fwidth is-fullwidth">
+                                <div class="dropdown-trigger dev-t fwidth is-fullwidth">
+                                    <button class="button just is-fullwidth is-link is-light" aria-haspopup="true" aria-controls="dropdown-menu">
+                                        <span>Eliminar</span>
+                                        <span class="icon">
+                                            <ion-icon class="dev-i" name="close"></ion-icon>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu dev-m" id="dropdown-menu" role="menu">
+                                    <div class="dropdown-content has-background-link-light pt-1 px-4 pb-4">
+                                        <p class="dropdown-item">
+                                            <form method="POST" action="/eliminarVertice">
+                                                <div class="field has-addons">
+                                                    <div class="control">
+                                                        <input class="input is-link" type="text" name="id_vertice" placeholder="ID vértice">
+                                                    </div>
+                                                    <div class="control">
+                                                        <button type="submit" class="button is-link">Eliminar</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -126,7 +151,7 @@
                             <div class="dropdown dab fwidth is-fullwidth">
                                 <div class="dropdown-trigger dab-t fwidth is-fullwidth">
                                     <button class="button just is-fullwidth is-success is-light" aria-haspopup="true" aria-controls="dropdown-menu">
-                                        <span>Buscar Arista</span>
+                                        <span>Buscar</span>
                                         <span class="icon">
                                             <ion-icon class="dab-i" name="chevron-down-outline"></ion-icon>
                                         </span>
@@ -146,6 +171,37 @@
                                                 </div>
                                                     <div class="control">
                                                         <button type="submit" class="button is-success is-fullwidth">Buscar</button>
+                                                    </div>
+                                            </form>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="dropdown dae fwidth is-fullwidth">
+                                <div class="dropdown-trigger dae-t fwidth is-fullwidth">
+                                    <button class="button just is-fullwidth is-success is-light" aria-haspopup="true" aria-controls="dropdown-menu">
+                                        <span>Eliminar</span>
+                                        <span class="icon">
+                                            <ion-icon class="dae-i" name="close"></ion-icon>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu dae-m" id="dropdown-menu" role="menu">
+                                    <div class="dropdown-content has-background-success-light pt-1 px-4 pb-4">
+                                        <p class="dropdown-item">
+                                            <form method="POST" action="/eliminarArista">
+                                                <div class="field is-horizontal">
+                                                    <div class="control is-expanded pr-2">
+                                                        <input class="input is-success" type="text" name="id_a1" placeholder="ID origen">
+                                                    </div>
+                                                    <div class="control is-expanded">
+                                                        <input class="input is-success" type="text" name="id_a2" placeholder="ID destino">
+                                                    </div>
+                                                </div>
+                                                    <div class="control">
+                                                        <button type="submit" class="button is-success is-fullwidth">Eliminar</button>
                                                     </div>
                                             </form>
                                         </p>
@@ -280,6 +336,16 @@
             else dbi.setAttribute("name", "chevron-down-outline")
         });
 
+        var dev = document.querySelector('.dev');
+        var devt = document.querySelector('.dev-t');
+        var devi = document.querySelector('.dev-i');
+        devt.addEventListener('click', function(event) {
+            event.stopPropagation();
+            dev.classList.toggle('is-active');
+            if (devi.name == "close") devi.setAttribute("name", "remove-outline")
+            else devi.setAttribute("name", "close")
+        });
+
         var dg = document.querySelector('.dg');
         var dgt = document.querySelector('.dg-t');
         var dgi = document.querySelector('.dg-i');
@@ -308,6 +374,16 @@
             dab.classList.toggle('is-active');
             if (dabi.name == "chevron-down-outline") dabi.setAttribute("name", "chevron-up-outline")
             else dabi.setAttribute("name", "add-outline")
+        });
+
+        var dae = document.querySelector('.dae');
+        var daet = document.querySelector('.dae-t');
+        var daei = document.querySelector('.dae-i');
+        daet.addEventListener('click', function(event) {
+            event.stopPropagation();
+            dae.classList.toggle('is-active');
+            if (daei.name == "close") daei.setAttribute("name", "remove-outline")
+            else daei.setAttribute("name", "close")
         });
     </script>
 </body>

@@ -61,6 +61,23 @@ def buscarArista():
         a.color= 1
     return redirect(url_for('index'))
 
+@app.route('/eliminarVertice', methods= ['POST'])
+def eliminarVertice():
+    if(request.method == 'POST'):
+        vertice = request.form.get('id_vertice')
+        g.eliminarVertice(vertice)
+        print("Borrado:", vertice)
+    return redirect(url_for('index'))
+
+@app.route('/eliminarArista', methods= ['POST'])
+def eliminarArista():
+    if(request.method == 'POST'):
+        a1 = request.form.get('id_a1')
+        a2 = request.form.get('id_a2')
+        #Cambiar clave
+        g.eliminarArista(a1, a2)
+    return redirect(url_for('index'))
+
 @app.route('/obtenerGrado', methods= ['POST'])
 def obtenerGrado():
     if(request.method == 'POST'):
