@@ -250,13 +250,18 @@ class Grafica:
 
     @return: La copia de la grafica.
     """
-    def copiar(self, grafica=None):
+    def copiar(self, grafica=None, copiar_grafica = False):
         if grafica:
             self.vaciarGrafica()
-            for v in grafica.lista_vertices:
-                self.agregarVertice(v)
-            for a in grafica.lista_aristas:
-                self.agregarArista(grafica.lista_aristas[a].id, grafica.lista_aristas[a].origen, grafica.lista_aristas[a].destino, grafica.lista_aristas[a].peso, grafica.lista_aristas[a].peso_min, grafica.lista_aristas[a].costo)
+            self.lista_vertices = copy.deepcopy(grafica.lista_vertices)
+            self.lista_aristas = copy.deepcopy(grafica.lista_aristas)
+            self.dirigida = copy.deepcopy(grafica.dirigida)
+            self.costo = copy.deepcopy(grafica.costo)
+            self.numero_aristas= copy.deepcopy(grafica.numero_aristas)
+            self.numero_vertices= copy.deepcopy(grafica.numero_vertices)
+            self.peso_grafica= copy.deepcopy(grafica.peso_grafica)
+            for v in self.lista_vertices:
+                print(self.lista_vertices[v])
             return
         else:
             return copy.deepcopy(self)
@@ -545,7 +550,7 @@ class Grafica:
                         frontera.append(self.lista_vertices[vertice])
                         num_explorados += 1
                         break
-
+            print(v)
             if tipo == 0: #Busqueda a lo profundo (0)
                 cont = 0
                 for vertice in self.lista_vertices[v.id].lista_salientes:

@@ -26,10 +26,12 @@
 
         var edges = [];
         {% for a in grafica.lista_aristas %}
+            var text = "[" + '{{grafica.lista_aristas[a].peso_min}}' + ", " + "{{grafica.lista_aristas[a].costo}}" + ", " + '{{grafica.lista_aristas[a].peso}}' + "]"
+            console.log(text) 
             {% if grafica.lista_aristas[a].color == 1 %}
                 edges.push({from: '{{grafica.lista_aristas[a].origen}}', to: '{{grafica.lista_aristas[a].destino}}' , color: 'red'})
             {% else %}
-                edges.push({from: '{{grafica.lista_aristas[a].origen}}', to: '{{grafica.lista_aristas[a].destino}}'})
+                edges.push({from: '{{grafica.lista_aristas[a].origen}}', to: '{{grafica.lista_aristas[a].destino}}', label: text})
             {% endif %}
         {% endfor %}
         var edges = new vis.DataSet(edges);
