@@ -17,6 +17,8 @@ class Vertice:
         self.bandera= 0             # Indica si el nodo fue visitado o no
         self.padre = None           # Vértice anterior a este
         self.peso_minimo = math.inf # Distancia del padre a este
+        self.peso_max = 0
+        self.peso_actual = math.inf
 
     """
     Destructor de la clase Vertice
@@ -46,9 +48,9 @@ class Vertice:
         self.conectarSalientes(destino.id)
         destino.conectarEntrantes(self.id)
         if not dirigida:
+            destino.grado += 1
             destino.conectarSalientes(self.id)
             self.conectarEntrantes(destino.id)
-            destino.grado += 1
 
     """
     Función para revisar si un vertice esta conectado a otro.
@@ -73,7 +75,7 @@ class Vertice:
         self.lista_salientes.remove(clave)
 
     """
-    Función para eliminar un vertice de la lista_entrantes.
+    Función para eliminar un vertice de la lista_entrantess.
 
     @param clave: Identificador de vertice que se desea eliminar.
     """
@@ -84,6 +86,7 @@ class Vertice:
         if not dirigida:
             clave.eliminarSalientes(self.id)
             self.eliminarEntrantes(clave.id)
+            clave.grado -= 1
 
     """
     Función para revisar el grado de un vertice.
@@ -114,18 +117,21 @@ class Arista:
     @param destino: Identificador del vertice donde termina la arista.
     @param peso:    Int o Float del peso que tiene la arista.
     """
-    def __init__(self, clave, origen, destino, peso= 0):
+    def __init__(self, clave, origen, destino, peso= 0, peso_min = 0, costo = 0):
         self.id = clave          #Identificador de la arista
         self.origen = origen     #Identificador del vertice donde empieza la arista
         self.destino = destino   #Identificador del vertice donde termina la arista
         self.peso = peso         #Peso de la arista
+        self.peso_actual = 0
+        self.peso_min = peso_min
+        self.costo = costo
         self.color = -1
 
     """
     Sobrecargo de operador para imprimir la arista de la forma deseada.
     """
     def __str__(self):
-        return str(self.id) + ' Origen: ' + str(self.origen) + ' Destino: ' + str(self.destino)
+        return str(self.id) + ' Origen: ' + str(self.origen) + ' Destino: ' + str(self.destino) + ' Flujo[' + str(self.peso_min) + ', ' + str(self.peso_actual) + ', ' + str(self.peso)  + ']'
 
     """
     Destructor de la clase Arista.
@@ -142,8 +148,9 @@ class Grafica:
         self.lista_aristas= {}      #Diccionario donde estan todas las aristas de la grafica
         self.numero_aristas= 0      #Int que representa el número total de vertices en la grafica
         self.numero_vertices= 0     #Int que representa el número total de aristas en la grafica
-        self.dirigida= dirigida
+        self.dirigida = dirigida
         self.peso_grafica= 0
+        self.costo = 0
 
     def __contains__(self, n):
         return n in self.lista_vertices
@@ -166,11 +173,13 @@ class Grafica:
 
     @return:      True o False si se agrego o no el vertice.
     """
-    def agregarVertice(self, clave):
+    def agregarVertice(self, clave, tipo= None):
         if clave not in self.lista_vertices:                #Revisa si existe el vertice en la grafica
             self.numero_vertices= self.numero_vertices+ 1   #Sumamos uno al numereot total de vertices
             nuevo_vertice= Vertice(clave)                   #Creamos el vertice
             self.lista_vertices[clave]= nuevo_vertice       #Agrega el vertice al diccionario de vertices
+            if tipo:
+                self.lista_vertices[clave].color= tipo
             return True                                     #Se agrego el vertice correctamente, regresa True
         else:                                               #Si el vertice existe, regresa False
             return False
@@ -185,14 +194,14 @@ class Grafica:
 
     @return:        True o False si se agrego la atista a la grafica.
     """
-    def agregarArista(self, clave, inicio, destino, peso= 0):
+    def agregarArista(self, clave, inicio, destino, peso= 0, peso_min= 0, costo = 0):
         if (inicio in self.lista_vertices) and (destino in self.lista_vertices):        #Primero revisa que el vertice inicio y destino existan en la grafica
-            nueva_arista= Arista(clave, inicio, destino, peso)                          #Si existe, entonces crea la arista, la agrega al diccionario de aristas
+            nueva_arista= Arista(clave, inicio, destino, peso, peso_min, costo)                          #Si existe, entonces crea la arista, la agrega al diccionario de aristas
             self.numero_aristas= self.numero_aristas+ 1                                 #y suma uno al total de aristas
             self.lista_aristas[clave]= nueva_arista
 
             if inicio == destino:                                                       #Si es un lazo, entonces agrega el identificador del vertice
-                self.lista_vertices[inicio].conectar(self.lista_vertices[destino], False)                           #a la lista_entrantess del vertice y suma un uno extra al grado del vertice
+                self.lista_vertices[inicio].conectar(self.lista_vertices[destino], True)                           #a la lista_entrantess del vertice y suma un uno extra al grado del vertice
                 self.lista_vertices[inicio].grado= self.lista_vertices[inicio].grado+ 1
             else:                                                                       #Si no es un lazo, entonces agrega el identificador del vertice destino a la
                 self.lista_vertices[inicio].conectar(self.lista_vertices[destino], self.dirigida)                           #lista_entrantes del vetice inicio y viceversa
@@ -208,7 +217,6 @@ class Grafica:
     @return:      El vertice buscado o None.
     """
     def buscarVertice(self, clave):
-        self.restablecerVertices()
         if clave in self.lista_vertices:        #Si encuentra el vertice, regresa el vertice
             return self.lista_vertices[clave]
         else:                                   #En el caso de de que no encontro el vertice, regresa None
@@ -242,8 +250,16 @@ class Grafica:
 
     @return: La copia de la grafica.
     """
-    def copiar(self):
-        return copy.deepcopy(self)
+    def copiar(self, grafica=None):
+        if grafica:
+            self.vaciarGrafica()
+            for v in grafica.lista_vertices:
+                self.agregarVertice(v)
+            for a in grafica.lista_aristas:
+                self.agregarArista(grafica.lista_aristas[a].id, grafica.lista_aristas[a].origen, grafica.lista_aristas[a].destino, grafica.lista_aristas[a].peso, grafica.lista_aristas[a].peso_min, grafica.lista_aristas[a].costo)
+            return
+        else:
+            return copy.deepcopy(self)
 
     """
     Función para eliminar un vertice de la grafica.
@@ -273,7 +289,7 @@ class Grafica:
         if (inicio in self.lista_vertices) and (destino in self.lista_vertices):            #Revisa si existen el vertice inicio y destino
             if self.lista_vertices[inicio].existeConexion(destino, self.dirigida):                         #Si destino esta en lista_entrantess de inicio
                 if inicio == destino:                                                       #Entonces checa si es un lazo, si lo es, lo borra de lista_entrantess
-                    self.lista_vertices[inicio].eliminarConexion(self.lista_vertices[destino], False)                   #y resta menos 1 al grado
+                    self.lista_vertices[inicio].eliminarConexion(self.lista_vertices[destino], True)                   #y resta menos 1 al grado
                     self.lista_vertices[inicio].grado= self.lista_vertices[inicio].grado- 1
                 else:                                                                       #Si no es un lazo, borra destino de lista_entrantess de inicio u¿y viceversa
                     self.lista_vertices[inicio].eliminarConexion(self.lista_vertices[destino], self.dirigida)
@@ -347,7 +363,7 @@ class Grafica:
             for vertice in self.lista_vertices[clave].lista_entrantes:
                vertices.append(vertice)
             for v in vertices:
-                self.eliminarArista(clave, v)
+                self.eliminarArista(v, clave)
             self.lista_vertices[clave].vaciar()                          #Se vacia el vertice
             return True                                                  #Regresa True al concluir
         else:                                                            #Regresa False al no existir el vertice en la grafica
@@ -372,11 +388,10 @@ class Grafica:
             self.lista_vertices[vertice].peso_minimo= math.inf
 
     def restablecerColores(self):
-        for v in self.lista_vertices:
-            self.lista_vertices[v].color= -1
-        for a in self.lista_aristas:
-            self.lista_aristas[a].color = -1
-
+        for vertice in self.lista_vertices:
+            self.lista_vertices[vertice].color = -1
+        for arista in self.lista_aristas:
+            self.lista_aristas[arista].color = -1
     """
     Función auxiliar que ayuda a determinar si la grafica es bipartita,
 
@@ -417,9 +432,9 @@ class Grafica:
                     self.restablecerVertices()                  #En caso contrario establecemos las variables color y bandera a su valor original
                     return (lista_u, lista_v, False)                                #Regresa False y el algorimo concluye
             if self.lista_vertices[vertice].color== 1:          #Si el vertice es de color 1 lo agrega a lista_v
-                lista_v.append(self.lista_vertices[vertice].id)
+                lista_v.append(self.lista_vertices[vertice])
             elif self.lista_vertices[vertice].color== 0:        #Si el vertice es de color 0 lo agrega a lista_ui
-                lista_u.append(self.lista_vertices[vertice].id)
+                lista_u.append(self.lista_vertices[vertice])
             self.lista_vertices[vertice].bandera= 1             #Asigna bandera a 1 lo que significa que el vertice ya fue visitado
 
         self.restablecerVertices()
@@ -798,9 +813,6 @@ class Grafica:
                 for j in range(total_vertices):
                     if(distancias[c + i * total_vertices] + distancias[j + c * total_vertices] < distancias[j + i * total_vertices]):
                         distancias[j + i * total_vertices] =  distancias[c + i * total_vertices] + distancias[j + c * total_vertices]
-                        print("i, j: ", i ,", ", j)
-                        print(distancias[j + i * total_vertices])
-                        input()
                         rutas[j + i * total_vertices] =  rutas[j + c * total_vertices]
 
                 if(distancias[i + i * total_vertices] < 0):
@@ -822,29 +834,423 @@ class Grafica:
             for j in range(total_vertices):
                 aux = j
                 ruta_aux= list()
-                distancia_aux= 0
-                print("i, j: ", i ,", ", j)
+
                 if (aux == i):
                     ruta_aux.append(nombres[aux])
-                    distancia_aux += distancias[aux + i * total_vertices]
-                    print(distancia_aux)
+
                 while(aux != i):
                     if(rutas[j + i * total_vertices] is None):
                         break
+
                     ruta_aux.append(nombres[aux])
-                    distancia_aux += distancias[aux + i * total_vertices]
-                    print(distancia_aux)
                     aux = nombres.index(rutas[aux + i * total_vertices])
+
                     if (aux == i):
                         ruta_aux.append(nombres[aux])
-                        distancia_aux += distancias[aux + i * total_vertices]
-                        print(distancia_aux)
-                input()
+
 
                 ruta_aux.reverse()
-                free4all[j + i * total_vertices] = (ruta_aux, distancia_aux)
+                free4all[j + i * total_vertices] = (ruta_aux, distancias[j + i * total_vertices])
 
         return (free4all, nombres, False)
+
+    def AlgoritmoFordFulkerson(self, maximo = math.inf):
+        grafiquita = self.copiar()
+        aristas_peso_min = list()
+        vertices_min = list()
+        nombres_aristas = list()
+        multiples_cosas = False
+        i = 0
+
+        for v in grafiquita:
+            if v.peso_minimo != math.inf and v.peso_min != 0:
+                vertices_min.append(v)
+            if v.color == '+' or v.color == '-':
+                i += 1
+            if i > 2:
+                multiples_cosas = True
+                break
+
+        if multiples_cosas:
+            grafiquita = agregarFuentesYsumideros(grafiquita)
+
+        if vertices_min:
+            for v in vertices_min:
+                f = 0
+                grafiquita.agregarVertice(v.id + "aux")
+                for b in v.lista_salientes:
+                    auxrista = grafiquita.buscarArista(v.id, b)
+                    nombres_aristas.append(auxrista.id)
+                    grafiquita.agregarArista(auxrista.id + "aux", v.id + "aux", b , auxrista.peso, auxrista.peso_min)
+                    grafiquita.eliminarArista(auxrista.origen, auxrista.destino)
+
+                grafiquita.agregarArista("auxrista" + str(i),v.id, v.id + "aux", v.peso_max, v.peso_minimo)
+                f += 1
+
+        for a in grafiquita.lista_aristas:
+            if grafiquita.lista_aristas[a].peso_min != 0:
+                aristas_peso_min.append(grafiquita.lista_aristas[a])
+
+
+        if aristas_peso_min:
+            for v in grafiquita.lista_vertices:
+                if grafiquita.lista_vertices[v].color == '+':
+                    fuente_viejo = grafiquita.lista_vertices[v]
+                    fuente_viejo.color = 'c'
+                elif grafiquita.lista_vertices[v].color == '-':
+                    sumidero_viejo = grafiquita.lista_vertices[v]
+                    fuente_viejo.color = 'd'
+
+            grafiquita.agregarArista("auxS" , fuente_viejo.id, sumidero_viejo.id, math.inf)
+            grafiquita.agregarArista("auxE" , sumidero_viejo.id, fuente_viejo.id, math.inf)
+
+            grafiquita.agregarVertice("FN", "+")
+            grafiquita.agregarVertice("SN", "-")
+            e = 0
+
+            for a in aristas_peso_min:
+                arista = grafiquita.buscarArista(a.origen, "SN")
+                if arista:
+                    arista.peso += a.peso_min
+                else:
+                    grafiquita.agregarArista("auxiliar" + str(e), a.origen, "SN", a.peso_min)
+
+                arista2 = grafiquita.buscarArista("FN", a.destino)
+                if arista2:
+                    arista2.peso += a.peso_min
+                else:
+                    grafiquita.agregarArista("auxiliar2" + str(e), "FN", a.destino, a.peso_min)
+
+                a.peso_actual += a.peso_min
+                e += 1
+
+            grafiquita = fordFulkerson(grafiquita)
+
+            aux = grafiquita.buscarArista(sumidero_viejo.id, fuente_viejo.id)
+            grafiquita.peso_grafica = aux.peso_actual
+
+            grafiquita.eliminarVertice("SN")
+            grafiquita.eliminarVertice("FN")
+
+            grafiquita.eliminarArista(fuente_viejo.id, sumidero_viejo.id)
+            grafiquita.eliminarArista(sumidero_viejo.id, fuente_viejo.id)
+
+            fuente_viejo.color = '+'
+            sumidero_viejo.color = '-'
+
+        grafiquita = fordFulkerson(grafiquita, maximo)
+
+
+        if vertices_min:
+            for v in vertices_min:
+                vertaux = grafiquita.buscarVertice(v.id+"aux")
+                for b in vertaux.lista_salientes:
+                    auxrista = grafiquita.buscarArista(vertaux.id, b)
+                    grafiquita.agregarArista(nombres_aristas[0], v.id, b , auxrista.peso, auxrista.peso_min)
+                    nombres_aristas = nombres_aristas[1:]
+
+                grafiquita.eliminarVertice(vertaux.id)
+
+        if multiples_cosas:
+            grafiquita = eliminarFuentesYsumideros(grafiquita)
+
+        return grafiquita
+
+    def flujoCosteMinimoPrimal(self):
+        grafiquita = self.copiar()
+        copia = Grafica()
+        grafiquita = grafiquita.AlgoritmoFordFulkerson(15)
+        marginal = grafiquita.copiar()
+        inicio = None
+        cola = list()
+
+        for v in grafiquita:
+            if v.color == '+':
+                inicio = v
+                break
+
+        for a in grafiquita.lista_aristas:
+            marginal.agregarArista(grafiquita.lista_aristas[a].id + "aux", grafiquita.lista_aristas[a].destino, grafiquita.lista_aristas[a].origen, grafiquita.lista_aristas[a].peso_actual, 0, grafiquita.lista_aristas[a].costo * -1)
+            marginal.lista_aristas[a].peso -= grafiquita.lista_aristas[a].peso_actual
+
+        copia, ciclo, d = dijkstraGeneralPeso(marginal,inicio.id)
+
+        for a in grafiquita.lista_aristas:
+            grafiquita.costo += (grafiquita.lista_aristas[a].costo * grafiquita.lista_aristas[a].peso_actual)
+
+        while d < 0:
+            cola = []
+            minimo = math.inf
+            for i in range(len(ciclo)):
+                if i+1 < len(ciclo):
+                    o = ciclo[i]
+                    f = ciclo[i+1]
+                    auxrista = marginal.buscarArista(o, f)
+                    if auxrista.peso < minimo:
+                        minimo = auxrista.peso
+                    cola.append(auxrista)
+
+            for c in cola:
+                c.peso -= minimo
+                arista = marginal.buscarArista(c.destino, c.origen)
+                arista.peso += minimo
+
+                if 'aux' in c.id:
+                    arista = grafiquita.buscarArista(c.destino, c.origen)
+                    arista.peso_actual -= minimo
+                else:
+                    arista = grafiquita.buscarArista(c.origen, c.destino)
+                    arista.peso_actual += minimo
+
+            grafiquita.costo += minimo * d
+
+
+            copia, ciclo, d = dijkstraGeneralPeso(marginal, inicio.id)
+
+        return grafiquita
+
+def dijkstraPeso(grafica, inicio):
+    assert inicio in grafica.lista_vertices
+    grafiquita = Grafica(grafica.dirigida)
+    cola = []
+
+    # Copiamos los vertices de la grafica original
+    for vertice in grafica.lista_vertices:
+        grafiquita.agregarVertice(vertice)
+
+    # Primer paso del algoritmo de Dijkstra
+    cola.append(inicio)                                   # Guardamos etiquetas de vértices
+    grafiquita.lista_vertices[inicio].bandera = 1         # 1 es marca temporal, 2 marca definitiva
+    grafiquita.lista_vertices[inicio].peso_minimo = 0
+    while cola:
+        actual = cola[0]                                  # Obtenemos el primer elemento de la cola
+        cola = cola[1:]                                   # y lo borramos de la cola y le ponemos
+        grafiquita.lista_vertices[actual].bandera = 2     # la marca definitiva
+
+        for vertice in grafica.lista_vertices[actual].lista_salientes:
+                arista = grafica.buscarArista(actual, vertice)
+                v = grafiquita.lista_vertices[vertice]
+
+                if v.bandera == 0:
+                    if arista.peso > 0:
+                        grafiquita.agregarArista(arista.id, actual, vertice, arista.peso, arista.peso_min, arista.costo)
+                        v.bandera = 1
+                        v.peso_minimo = grafiquita.lista_vertices[actual].peso_minimo + arista.costo
+                        cola.append(vertice)
+
+                elif v.bandera == 1:
+                    if v.peso_minimo > grafiquita.lista_vertices[actual].peso_minimo + arista.costo:
+                        if arista.peso > 0:
+                            grafiquita.eliminarArista(v.lista_entrantes[0], vertice)
+                            v.peso_minimo = grafiquita.lista_vertices[actual].peso_minimo + arista.costo
+                            grafiquita.agregarArista(arista.id, actual, vertice, arista.peso, arista.peso_min, arista.costo)
+
+        cola = sortear(grafiquita.lista_vertices, cola)
+
+    return grafiquita
+
+def dijkstraGeneralPeso(grafica, inicio):
+    aristas = []
+    ciclo = []
+    grafica.restablecerVertices()
+    grafiquita = dijkstraPeso(grafica, inicio)
+
+    for arista in grafica.lista_aristas:
+        if arista not in grafiquita.lista_aristas and grafica.lista_aristas[arista].peso > 0:
+            aristas.append(grafica.lista_aristas[arista])
+
+    aristas.sort(key=attrgetter('costo'))
+    while True:
+        fin = True
+        for a in aristas:
+            if grafiquita.lista_vertices[a.origen].peso_minimo + a.costo < grafiquita.lista_vertices[a.destino].peso_minimo:
+                # Identificación de ciclos
+                ciclo.append(a.origen)
+                if not grafiquita.lista_vertices[a.origen].lista_entrantes:
+                    ancestro= None
+                else:
+                    ancestro = grafiquita.lista_vertices[a.origen].lista_entrantes[0]
+                while True:
+                    ciclo.append(ancestro)
+                    if ancestro == a.destino:
+                        # Ciclo positivo
+                        if grafiquita.lista_vertices[a.origen].peso_minimo - grafiquita.lista_vertices[ancestro].peso_minimo + a.costo >= 0:
+                            ciclo.clear()
+                            break
+
+                        # Ciclo negativo
+                        else:
+                            ciclo.reverse()
+                            ciclo.append(ancestro)
+                            return (grafica, ciclo, grafiquita.lista_vertices[a.origen].peso_minimo - grafiquita.lista_vertices[ancestro].peso_minimo + a.costo )
+
+                    elif ancestro == None:
+                        ciclo.clear()
+                        break
+
+                    if not grafiquita.lista_vertices[ancestro].lista_entrantes:
+                        ancestro= None
+                    else:
+                        ancestro = grafiquita.lista_vertices[ancestro].lista_entrantes[0]
+                    #ancestro = grafiquita.lista_vertices[ancestro].lista_entrantes[0]
+
+                fin = False
+                auxrista = grafiquita.buscarArista(grafiquita.lista_vertices[a.destino].lista_entrantes[0], a.destino)
+                grafiquita.eliminarArista(grafiquita.lista_vertices[a.destino].lista_entrantes[0], a.destino)
+                grafiquita.agregarArista(a.id, a.origen, a.destino, a.peso, a.peso_min, a.costo)
+
+                delta = grafiquita.lista_vertices[a.destino].peso_minimo - (grafiquita.lista_vertices[a.origen].peso_minimo + a.costo)
+
+                frontera = []
+                frontera.append(grafiquita.lista_vertices[a.destino])
+                aristas.remove(a)
+
+                while frontera:
+                    v = frontera[0]
+                    frontera = frontera[1:]
+                    v.bandera = 1
+                    grafiquita.lista_vertices[v.id].peso_minimo -= delta
+
+                    for vertice in grafiquita.lista_vertices[v.id].lista_salientes:
+                        if (grafiquita.lista_vertices[vertice] not in frontera) and (grafiquita.lista_vertices[vertice].bandera == 2):
+                            frontera.append(grafiquita.lista_vertices[vertice])
+
+                for v in grafiquita.lista_vertices:
+                    grafiquita.lista_vertices[v].bandera= 2
+                break
+        if fin: break
+
+        if auxrista is not None:
+            aristas.append(auxrista)
+        aristas.sort(key=attrgetter('costo'))
+
+    for v in grafiquita:
+        print(v)
+
+    return (grafiquita, 0, 1)
+def fordFulkerson(grafiquita, maximo):
+    cola = list()
+    fuente = None
+    sumidero = None
+
+    for v in grafiquita.lista_vertices:
+        if grafiquita.lista_vertices[v].color == '+':
+            fuente = grafiquita.lista_vertices[v]
+        elif grafiquita.lista_vertices[v].color == '-':
+            sumidero = grafiquita.lista_vertices[v]
+
+    while(True):
+        if grafiquita.peso_grafica >= maximo:
+            break
+        cola = []
+        fuente.bandera = 1
+        cola.append(fuente)
+
+        while cola:
+            c = cola[0]
+            cola = cola[1:]
+
+            if c.bandera == 1:
+                c.bandera = 3
+            elif c.bandera == 2:
+                c.bandera = 4
+
+            for v in c.lista_salientes:
+                if grafiquita.lista_vertices[v].bandera != 0:
+                    continue
+                a = grafiquita.buscarArista(c.id, v)
+                chorrito = min(a.peso - a.peso_actual, c.peso_actual)
+                chorrito = min(chorrito, maximo - grafiquita.peso_grafica)
+
+                if chorrito == 0:
+                    continue
+
+                grafiquita.lista_vertices[v].bandera = 1
+                grafiquita.lista_vertices[v].padre = c
+                grafiquita.lista_vertices[v].peso_actual = chorrito
+                cola.append(grafiquita.lista_vertices[v])
+
+            for v in c.lista_entrantes:
+                if grafiquita.lista_vertices[v].bandera != 0:
+                    continue
+                a = grafiquita.buscarArista(v, c.id)
+                chorrito = min(a.peso_actual, c.peso_actual)
+                chorrito = min(chorrito, maximo - grafiquita.peso_grafica)
+
+                if chorrito == 0:
+                    continue
+
+                grafiquita.lista_vertices[v].bandera = 2
+                grafiquita.lista_vertices[v].padre = c
+                grafiquita.lista_vertices[v].peso_actual = chorrito
+                cola.append(grafiquita.lista_vertices[v])
+
+            if sumidero in cola:
+                grafiquita.peso_grafica += sumidero.peso_actual
+                break
+
+        if not cola:
+            break
+
+        actual= sumidero
+        chorrito = sumidero.peso_actual
+
+        while(actual != fuente):
+            if actual.bandera == 1 or actual.bandera == 3:
+                a = grafiquita.buscarArista(actual.padre.id, actual.id)
+                a.peso_actual += chorrito
+
+            if actual.bandera == 2 or actual.bandera == 4:
+                a = grafiquita.buscarArista(actual.id, actual.padre.id)
+                a.peso_actual -= chorrito
+            if actual.padre == fuente:
+                break
+
+            actual = actual.padre
+
+        for v in grafiquita:
+            v.bandera = 0
+            v.peso_actual = math.inf
+            v.padre = None
+
+        if grafiquita.peso_grafica >= maximo:
+            break
+
+    return grafiquita
+
+def agregarFuentesYsumideros(grafica):
+    grafica.agregarVertice("inicio")
+    grafica.agregarVertice("fin")
+    i = 0
+
+    for v in grafica:
+        if v.color == '+':
+            v.color = 'a'
+            grafica.agregarArista("aux" + str(i),"inicio", v.id, math.inf)
+            i += 1
+        if v.color == '-':
+            v.color = 'b'
+            grafica.agregarArista("fin" + str(i),v.id, "fin", math.inf)
+            i += 1
+    v = grafica.buscarVertice("inicio")
+    v.color = '+'
+
+    v = grafica.buscarVertice("fin")
+    v.color = '-'
+
+    return grafica
+
+def eliminarFuentesYsumideros(grafica):
+    grafica.eliminarVertice("inicio")
+    grafica.eliminarVertice("fin")
+
+    for v in grafica:
+        if v.color == 'a':
+            v.color = '+'
+
+        if v.color == 'b':
+            v.color = '-'
+    return grafica
 
 '''
 Funciones auxiliares para algoritmo de Kruskal

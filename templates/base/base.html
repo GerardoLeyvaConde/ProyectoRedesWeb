@@ -138,9 +138,28 @@
                                                         <input class="input is-success" type="text" name="id_a2" placeholder="ID destino">
                                                     </div>
                                                 </div>
-                                                    <div class="control">
-                                                        <button type="submit" class="button is-success is-fullwidth">Agregar</button>
+                                                <div class="field is-horizontal">
+                                                    <div class="control is-expanded">
+                                                        <input class="input is-success" type="number" name="peso" placeholder="Peso">
                                                     </div>
+                                                    <div class="control is-expanded">
+                                                        <input class="input is-success" type="number" name="flujomin" placeholder="Flujo mínimo">
+                                                    </div>
+                                                    <div class="control is-expanded">
+                                                        <input class="input is-success" type="number" name="flujomax" placeholder="Flujo máximo">
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div class="control">
+                                                    <button type="submit" class="button is-success is-fullwidth">Agregar</button>
+                                                </div>
+                                                <br>
+                                                <div class="dirigida">
+                                                    <label class="checkbox">
+                                                        <input type="checkbox" name="dirigida">
+                                                        Gráfica dirigida
+                                                    </label>
+                                                </div>
                                             </form>
                                         </p>
                                     </div>
@@ -214,15 +233,63 @@
                 <div class="menu-div has-background-primary-light">
                     <p class="menu-label">Vaciar</p>
                     <ul class="menu-list">
-                        <li><button class="button is-fullwidth is-primary is-light just">Vaciar vértice</button></li>
-                        <li><button class="button is-fullwidth is-primary is-light just">Vaciar gráfica</button></li>
+                        <li>
+                            <div class="dropdown dvv fwidth is-fullwidth">
+                                <div class="dropdown-trigger dvv-t fwidth is-fullwidth">
+                                    <button class="button just is-fullwidth is-primary is-light" aria-haspopup="true" aria-controls="dropdown-menu">
+                                        <span>Vaciar vértice</span>
+                                        <span class="icon">
+                                            <ion-icon class="dvv-i" name="trash-outline"></ion-icon>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu dvv-m" id="dropdown-menu" role="menu">
+                                    <div class="dropdown-content has-background-link-light pt-1 px-4 pb-4">
+                                        <p class="dropdown-item">
+                                            <form method="POST" action="/vaciarVertice">
+                                                <div class="field has-addons">
+                                                    <div class="control">
+                                                        <input class="input is-link" type="text" name="id_vertice_vaciar" placeholder="ID vértice">
+                                                    </div>
+                                                    <div class="control">
+                                                        <button type="submit" class="button is-link" onclick="vaciarV()">Vaciar</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <button class="button is-fullwidth is-primary is-light just" onclick="vaciarG()">
+                                <span>Vaciar gráfica</span>
+                                <span class="icon">
+                                    <ion-icon name="trash-bin-outline"></ion-icon>
+                                </span>
+                            </button>
+                        </li>
                     </ul>
                 </div>
                 <div class="menu-div has-background-info-light">
                     <p class="menu-label">Copias</p>
                     <ul class="menu-list">
-                        <li><button class="button is-fullwidth is-info is-light just">Copiar gráfica</button></li>
-                        <li><button class="button is-fullwidth is-info is-light just">Cargar copia</button></li>
+                        <li>
+                            <button class="button is-fullwidth is-info is-light just" onclick="copiarG()">
+                                <span>Copiar gráfica</span>
+                                <span class="icon">
+                                    <ion-icon name="copy-outline"></ion-icon>
+                                </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="button is-fullwidth is-info is-light just" onclick="cargarG()">
+                                <span>Cargar copia</span>
+                                <span class="icon">
+                                    <ion-icon name="push-outline"></ion-icon>
+                                </span>
+                            </button>
+                        </li>
                     </ul>
                 </div>
                 <br>
@@ -271,8 +338,8 @@
 
                 <div id="navbarBasicExample" class="navbar-menu">
                     <div class="navbar-start">
-                        <a class="navbar-item" href="/buscar-biparticion">Buscar bipartición</a>
-                        <a class="navbar-item">Paseo de Euler (Fleury)</a>
+                        <a class="navbar-item" href="/bipartita">Buscar bipartición</a>
+                        <a class="navbar-item" href="/fleury">Paseo de Euler (Fleury)</a>
 
                         <div class="navbar-item has-dropdown is-hoverable">
                             <a class="navbar-link">Árbol de expansión</a>
@@ -294,6 +361,39 @@
                     </div>
                 </div>
                 <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="dropdown gra fwidth is-fullwidth">
+                            <div class="dropdown-trigger gra-t fwidth is-fullwidth">
+                                <button class="button just is-fullwidth is-light" aria-haspopup="true" aria-controls="dropdown-menu">
+                                    <span>Dirección Gráfica</span>
+                                    <span class="icon">
+                                        <ion-icon class="gra-i" name="settings-outline"></ion-icon>
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="dropdown-menu gra-m" id="dropdown-menu" role="menu">
+                                <div class="dropdown-content pt-1 px-4 pb-4">
+                                    <p class="dropdown-item">
+                                            <div class="field is-horizontal">
+                                                <div class="control is-expanded pr-2">
+                                                    <label class="radio">
+                                                        <input type="radio" id="no_dirigida" name="dir" value="no"> No dirigida
+                                                    </label>
+                                                    <br>
+                                                    <label class="radio">
+                                                        <input type="radio" id="si_dirigida" name="dir" value="si"> Dirigida
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="control">
+                                                <button class="button is-fullwidth" onclick="actualizarDireccion()">Actualizar</button>
+                                            </div>
+                                        </form>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="navbar-item">
                         <button onclick="network.fit()" class="button is-dark is-outlined">Centrar gráfica</button>
                     </div>
@@ -385,6 +485,87 @@
             if (daei.name == "close") daei.setAttribute("name", "remove-outline")
             else daei.setAttribute("name", "close")
         });
+
+        var gra = document.querySelector('.gra');
+        var grat = document.querySelector('.gra-t');
+        var grai = document.querySelector('.gra-i');
+        grat.addEventListener('click', function(event) {
+            event.stopPropagation();
+            gra.classList.toggle('is-active');
+            if (grai.name == "settings-outline") grai.setAttribute("name", "settings")
+            else grai.setAttribute("name", "settings-outline")
+        });
+
+        var dvv = document.querySelector('.dvv');
+        var dvvt = document.querySelector('.dvv-t');
+        var dvvi = document.querySelector('.dvv-i');
+        dvvt.addEventListener('click', function(event) {
+            event.stopPropagation();
+            dvv.classList.toggle('is-active');
+            if (dvvi.name == "trash-outline") dvvi.setAttribute("name", "trash")
+            else dvvi.setAttribute("name", "trash-outline")
+        });
+
+        function vaciarG() {
+            var confirmacion = confirm("Está seguro de que quiere vaciar la gráfica?");
+            if(confirmacion == true){
+                location.replace("/vaciarGrafica")
+            }
+        }
+        function vaciarV() {
+            var confirmacion = confirm("Esta seguro de vaciar el vertice?");
+            if(confirmacion == true){
+                location.replace("/vaciarVertice")
+            }
+        }
+
+        function copiarG(){
+            var confirmacion = confirm("Esta seguro de hacer una copia de la grafica?");
+            if(confirmacion == true){
+                location.replace("/copiarGrafica")
+            }
+        }
+
+        function cargarG(){
+            var confirmacion = confirm("Esta seguro que quiere cargar la copia de la grafica?");
+            if(confirmacion == true){
+                location.replace("/cargarCopia")
+            }
+        }
+
+        var dir = "{{ grafica.dirigida }}"
+
+        function actualizarDireccion(){
+            var eleccion = document.getElementById("no_dirigida");
+
+            if (eleccion.checked == true){
+                var confirmacion = confirm("Está seguro que quiere cambiar la gráfica a NO DIRIGIDA? (Se borrará todo lo que lleva)");
+                if(confirmacion == true){
+                    if(dir == "True"){
+                        location.replace("/direccion");
+                    } else {
+                        alert("Ya se encuentra en modo NO DIRIGIDA")
+                    }
+                }
+            } else {
+                var confirmacion = confirm("Está seguro que quiere cambiar la gráfica a DIRIGIDA? (Se borrará todo lo que lleva)");
+                if(confirmacion == true){
+                    if(dir == "False"){
+                        location.replace("/direccion");
+                    } else {
+                        alert("Ya se encuentra en modo DIRIGIDA")
+                    }
+                }
+            }
+        }
+
+        if(dir == "False"){
+            document.getElementById("no_dirigida").checked = true;
+            document.getElementById("si_dirigida").checked = false;
+        } else {
+            document.getElementById("no_dirigida").checked = false;
+            document.getElementById("si_dirigida").checked = true;
+        }
     </script>
 </body>
 </html>

@@ -5,7 +5,8 @@ from grafica import Grafica
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 g= Grafica()
-dirigida= Grafica(True)
+c= Grafica()
+#dirigida= Grafica(True)
 
 @app.route('/')
 def index():
@@ -23,6 +24,17 @@ def index():
 
     return render_template('index.html', num_v = num_v, num_a = num_a, title=title, grafica=g, vertices=vertices, aristas=aristas)
 
+@app.route('/direccion')
+def direccionGrafica():
+    g.vaciarGrafica()
+
+    if g.dirigida:
+        g.dirigida = False
+    else:
+        g.dirigida = True
+
+    return redirect(url_for('index'))
+
 @app.route('/vertices', methods= ['POST'])
 def agregarVertice():
     if(request.method == 'POST'):
@@ -36,10 +48,14 @@ def agregarArista():
     if(request.method == 'POST'):
         a1 = request.form.get('id_a1')
         a2 = request.form.get('id_a2')
+        peso = request.form.get('peso')
+        fMin = request.form.get('flujomin')
+        fMax = request.form.get('flujomax')
+        dir = request.form.get('dirigida')
+
         #Cambiar clave
         i = g.numero_aristas
-        g.agregarArista("e"+str(i+1), a1, a2)
-        i+=1
+        g.agregarArista("e"+str(i+1), a1, a2, peso, fMin, fMax)
     return redirect(url_for('index'))
 
 @app.route('/buscarVertice', methods= ['POST'])
@@ -76,6 +92,55 @@ def eliminarArista():
         a2 = request.form.get('id_a2')
         #Cambiar clave
         g.eliminarArista(a1, a2)
+    return redirect(url_for('index'))
+
+@app.route('/vaciarVertice', methods= ['POST'])
+def vaciarVertice():
+    if(request.method == 'POST'):
+        vertice = request.form.get('id_vertice_vaciar')
+        g.vaciarVertice(vertice)
+    return redirect(url_for('index'))
+
+@app.route('/vaciarGrafica')
+def vaciarGrafica():
+    g.vaciarGrafica()
+    return redirect(url_for('index'))
+
+@app.route('/copiarGrafica')
+def copiarGrafica():
+    c.copiar(g)
+    return redirect(url_for('index'))
+
+@app.route('/cargarCopia')
+def cargarCopia():
+    g.copiar(c)
+    return redirect(url_for('index'))
+
+@app.route('/bipartita')
+def esBipartita():
+    g.restablecerColores()
+    (u, v, t) = g.esBipartita()
+
+    if t:
+        for vertice in u:
+            vertice.color = 1
+        for vertice in v:
+            vertice.color = 0
+    return redirect(url_for('index'))
+
+@app.route('/fleury')
+def fleury():
+    g.restablecerColores()
+
+    (ruta, cerrado, paseo) = g.Fleury()
+    print(ruta)
+    if paseo:
+        for i in range(len(ruta) - 1):
+            origen = ruta[0]
+            destino = ruta[1]
+            ruta = ruta[1:]
+            arista = g.buscarArista(origen, destino)
+            arista.color = 1
     return redirect(url_for('index'))
 
 @app.route('/obtenerGrado', methods= ['POST'])

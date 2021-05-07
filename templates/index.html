@@ -12,9 +12,10 @@
     <div id="mynetwork"></div>
     <script>
         var nodes = [];
+        var direccion = "{{grafica.dirigida}}";
         {% for v in grafica %}
             //console.log('{{v}}')
-            console.log('{{v.color}}')
+            //console.log('{{v.color}}')
             {% if v.color == 1 %}
                 nodes.push({id: '{{v.id}}', label: '{{v.id}}', color: 'red'})
             {% else %}
@@ -39,13 +40,28 @@
         // provide the data in the vis format
         var data = { nodes: nodes, edges: edges };
 
-        var options = {
-            edges: {
-                color: {
-                    inherit: false
+        {% if grafica.dirigida == true %}
+            var options = {
+                edges: {
+                    color: {
+                        inherit: false
+                    },
+                    arrows: {
+                        to:{
+                            enabled: true, type: "arrow"
+                        }
+                    }
                 }
-            }
-        };
+            };
+        {% else %}
+            var options = {
+                edges: {
+                    color: {
+                        inherit: false
+                    }
+                }
+            };
+        {% endif %}
 
         // initialize your network!
         var network = new vis.Network(container, data, options);
