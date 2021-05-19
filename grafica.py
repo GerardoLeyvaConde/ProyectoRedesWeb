@@ -151,6 +151,7 @@ class Grafica:
         self.dirigida = dirigida
         self.peso_grafica= 0
         self.costo = 0
+        self.mensaje = ""
 
     def __contains__(self, n):
         return n in self.lista_vertices
@@ -250,7 +251,7 @@ class Grafica:
 
     @return: La copia de la grafica.
     """
-    def copiar(self, grafica=None, copiar_grafica = False):
+    def copiar(self, grafica=None):
         if grafica:
             self.vaciarGrafica()
             self.lista_vertices = copy.deepcopy(grafica.lista_vertices)
@@ -491,11 +492,13 @@ class Grafica:
 
         if impares != 0 and impares != 2:   #Si en la grafica no hay 0 o 2 vertices con grado impar, entonces no se cumple el algoritmo.
             print("\nError: La cantidad de nodos de grado impar no cumple.")
-            return (cola, impares, False)
+            txt = "Error: La cantidad de nodos de grado impar no cumple."
+            return (cola, impares, txt)
 
         if not copia.conexa():              #Si la grafica no es conexa, no se cumple el algoritmo
             print("\nError: La grafica no es conexa.")
-            return (cola, impares, False)
+            txt = "Error: La grafica no es conexa."
+            return (cola, impares, txt)
 
 
         if impares== 0:                                                                 #Si no hay ningun vertice de grado impar, vc y vp se asignan a cualquier vertice
@@ -788,9 +791,6 @@ class Grafica:
                 aristas.append(auxrista)
             aristas.sort(key=attrgetter('peso'))
 
-        for v in grafiquita:
-            print(v)
-
         return (grafiquita, 0, 1)
 
     def floyd(self):
@@ -1011,6 +1011,214 @@ class Grafica:
 
 
             copia, ciclo, d = dijkstraGeneralPeso(marginal, inicio.id)
+
+        return grafiquita
+    def flujoConsumoMinimoDual(self, flujo_elegido):
+        copia = Grafica()
+        grafiquita = self.copiar()
+        marginal = self.copiar()
+        aristas_peso_min = list()
+        vertices_min = list()
+        nombres_aristas = list()
+        multiples_cosas = False
+        inicio = None
+        final = None
+        cola = list()
+        i = 0
+
+        for v in grafiquita:
+            if v.peso_minimo != math.inf and v.peso_min != 0:
+                vertices_min.append(v)
+            if v.color == '+' or v.color == '-':
+                i += 1
+            if i > 2:
+                multiples_cosas = True
+                break
+
+        if multiples_cosas:
+            grafiquita = agregarFuentesYsumideros(grafiquita)
+
+        if vertices_min:
+            for v in vertices_min:
+                f = 0
+                grafiquita.agregarVertice(v.id + "aux")
+                for b in v.lista_salientes:
+                    auxrista = grafiquita.buscarArista(v.id, b)
+                    nombres_aristas.append(auxrista.id)
+                    grafiquita.agregarArista(auxrista.id + "aux", v.id + "aux", b , auxrista.peso, auxrista.peso_min)
+                    grafiquita.eliminarArista(auxrista.origen, auxrista.destino)
+
+                grafiquita.agregarArista("auxrista" + str(i),v.id, v.id + "aux", v.peso_max, v.peso_minimo)
+                f += 1
+
+        for a in grafiquita.lista_aristas:
+            if grafiquita.lista_aristas[a].peso_min != 0:
+                aristas_peso_min.append(grafiquita.lista_aristas[a])
+                
+
+        if aristas_peso_min:
+            for v in grafiquita.lista_vertices:
+                if grafiquita.lista_vertices[v].color == '+':
+                    fuente_viejo = grafiquita.lista_vertices[v]
+                    fuente_viejo.color = 'c'
+                elif grafiquita.lista_vertices[v].color == '-':
+                    sumidero_viejo = grafiquita.lista_vertices[v]
+                    fuente_viejo.color = 'd'
+
+            grafiquita.agregarArista("auxS" , fuente_viejo.id, sumidero_viejo.id, math.inf)
+            grafiquita.agregarArista("auxE" , sumidero_viejo.id, fuente_viejo.id, math.inf)
+
+            grafiquita.agregarVertice("FN", "+")
+            grafiquita.agregarVertice("SN", "-")
+            e = 0
+
+            for a in aristas_peso_min:
+                arista = grafiquita.buscarArista(a.origen, "SN")
+                if arista:
+                    arista.peso += a.peso_min
+                else:
+                    grafiquita.agregarArista("auxiliar" + str(e), a.origen, "SN", a.peso_min)
+
+                arista2 = grafiquita.buscarArista("FN", a.destino)
+                if arista2:
+                    arista2.peso += a.peso_min
+                else:
+                    grafiquita.agregarArista("auxiliar2" + str(e), "FN", a.destino, a.peso_min)
+                
+                a.peso_actual += a.peso_min
+                e += 1
+
+            grafiquita = fordFulkerson(grafiquita)
+
+            aux = grafiquita.buscarArista(sumidero_viejo.id, fuente_viejo.id)
+            grafiquita.peso_grafica = aux.peso_actual
+
+            grafiquita.eliminarVertice("SN")
+            grafiquita.eliminarVertice("FN")
+
+            grafiquita.eliminarArista(fuente_viejo.id, sumidero_viejo.id)
+            grafiquita.eliminarArista(sumidero_viejo.id, fuente_viejo.id)
+
+            fuente_viejo.color = '+'
+            sumidero_viejo.color = '-'
+
+            for a in aristas_peso_min:
+                a.peso -= a.peso_min
+                grafiquita.costo += a.peso_min * a.costo
+
+        
+        #
+        if grafiquita.peso_grafica > flujo_elegido:
+            return False
+
+        for a in grafiquita.lista_aristas:
+            grafiquita.costo += grafiquita.lista_aristas[a].peso_actual * grafiquita.lista_aristas[a].costo
+
+        ya = 0
+        for v in grafiquita:
+            if v.color == '+':
+                inicio = v
+                ya += 1
+            if v.color == '-':
+                final = v
+                ya += 1
+            if ya == 2:
+                break
+
+        for a in grafiquita.lista_aristas:
+            marginal.agregarArista(grafiquita.lista_aristas[a].id + "aux", grafiquita.lista_aristas[a].destino, grafiquita.lista_aristas[a].origen, grafiquita.lista_aristas[a].peso_actual, 0, grafiquita.lista_aristas[a].costo * -1)
+            marginal.lista_aristas[a].peso -= grafiquita.lista_aristas[a].peso_actual
+
+        copia, ciclo, d = dijkstraGeneralPeso(marginal,inicio.id)
+
+        while d < 0:
+            cola = []
+            minimo = math.inf
+            for i in range(len(ciclo)):
+                if i+1 < len(ciclo):
+                    o = ciclo[i]
+                    f = ciclo[i+1]
+                    auxrista = marginal.buscarArista(o, f)
+                    if auxrista.peso < minimo:
+                        minimo = auxrista.peso
+                    cola.append(auxrista)
+
+            for c in cola:
+                c.peso -= minimo
+                arista = marginal.buscarArista(c.destino, c.origen)
+                arista.peso += minimo
+
+                if 'aux' in c.id:
+                    arista = grafiquita.buscarArista(c.destino, c.origen)
+                    arista.peso_actual -= minimo
+                else:
+                    arista = grafiquita.buscarArista(c.origen, c.destino)
+                    arista.peso_actual += minimo
+
+            grafiquita.costo += minimo * d
+                
+            copia, ciclo, d = dijkstraGeneralPeso(marginal, inicio.id)
+
+
+        if grafiquita.peso_grafica == flujo_elegido:
+            return grafiquita
+            
+        else:
+            while grafiquita.peso_grafica < flujo_elegido:
+                cola = []
+                actual = copia.lista_vertices[final.id]
+                flujo_minimo = math.inf
+                costo_camino = copia.lista_vertices[actual.id].peso_minimo
+
+                while True:
+                    if actual.id == inicio.id:
+                        break
+                    arista = copia.buscarArista(actual.lista_entrantes[0], actual.id)
+                    if arista:
+                        if arista.peso < flujo_minimo:
+                            flujo_minimo = arista.peso
+                    cola.append(arista)
+                    actual = copia.buscarVertice(actual.lista_entrantes[0])
+                    
+                if grafiquita.peso_grafica + flujo_minimo >= flujo_elegido:
+                    flujo_minimo = flujo_elegido - grafiquita.peso_grafica
+
+                grafiquita.costo += flujo_minimo * costo_camino
+                grafiquita.peso_grafica += flujo_minimo
+
+                for c in cola:
+                    arista = marginal.buscarArista(c.origen, c.destino)
+                    arista.peso -= flujo_minimo
+
+                    arista = marginal.buscarArista(c.destino, c.origen)
+                    arista.peso += flujo_minimo
+
+                    if 'aux' in arista.id:
+                        auxrista = grafiquita.buscarArista(arista.destino, arista.origen)
+                        auxrista.peso_actual += flujo_minimo
+                    else:
+                        auxrista = grafiquita.buscarArista(arista.origen, arista.destino)
+                        auxrista.peso_actual -= flujo_minimo
+                    
+                copia, ciclo, d = dijkstraGeneralPeso(marginal, inicio.id)             
+        #
+
+        for a in aristas_peso_min:
+            a.peso += a.peso_min
+            a.peso_actual += a.peso_min
+
+        if vertices_min:
+            for v in vertices_min:
+                vertaux = grafiquita.buscarVertice(v.id+"aux")
+                for b in vertaux.lista_salientes:
+                    auxrista = grafiquita.buscarArista(vertaux.id, b)
+                    grafiquita.agregarArista(nombres_aristas[0], v.id, b , auxrista.peso, auxrista.peso_min)
+                    nombres_aristas = nombres_aristas[1:]
+                    
+                grafiquita.eliminarVertice(vertaux.id)
+
+        if multiples_cosas:
+            grafiquita = eliminarFuentesYsumideros(grafiquita)
 
         return grafiquita
 
