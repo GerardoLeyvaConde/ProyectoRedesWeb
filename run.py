@@ -11,43 +11,113 @@ g.mensaje.append(mensaje)
 #dirigida= Grafica(True)
 
 g.agregarVertice("a")
+g.lista_vertices['a'].flujo = 5
 g.agregarVertice("b")
+g.lista_vertices['b'].flujo = 0
 g.agregarVertice("c")
+g.lista_vertices['c'].flujo = 3
 g.agregarVertice("d")
-g.agregarVertice("e")
-g.agregarVertice("f")
-g.agregarVertice("g")
+g.lista_vertices['d'].flujo = -8
+#g.agregarVertice("e")
+#g.agregarVertice("f")
+#g.agregarVertice("g" ,'-')
 #g.agregarVertice("h")
 #g.agregarVertice("i")
 #g.agregarVertice("j")
-#g.agregarVertice("k")
+#g.agregarVertice("k", '-')
 #g.agregarVertice("l")
-#g.agregarVertice("m")
-#g.agregarVertice("n")
+#g.agregarVertice("m", '-')
+#g.agregarVertice("n", '-')
 #g.agregarVertice("o")
 #g.agregarVertice("p")
 #g.agregarVertice("q")
 #g.agregarVertice("r")
 #g.agregarVertice("s")
-g.agregarArista("e1","a","b", 3)
-g.agregarArista("e2","a","c", 1)
-g.agregarArista("e3","a","d", 2)
-g.agregarArista("e4","b","e", 4)
-g.agregarArista("e5","c","a", -1)
-g.agregarArista("e6","c","d", 3)
-g.agregarArista("e7","c","e", -1)
-g.agregarArista("e8","c","f", 5)
-g.agregarArista("e9","d","a", -2)
-g.agregarArista("e10","e","c", 1)
-g.agregarArista("e11","e","g", 3)
-g.agregarArista("e12","f","d", -3)
-g.agregarArista("e13","f","e", -1)
-g.agregarArista("e14","f","g", 2)
-g.agregarArista("e15","g","e", -3)
-g.agregarArista("e16","g","f", -2)
-
+#g.lista_vertices['h'].peso_minimo = 7
+#g.lista_vertices['h'].peso_max = 20
+#g.lista_vertices['i'].peso_minimo = 9
+#g.lista_vertices['i'].peso_minimo = 21
+g.agregarArista("e1","a","b", 6)
+g.lista_aristas['e1'].costo = 1
+g.agregarArista("e2","a","c", 3)
+g.lista_aristas['e2'].costo = 4
+g.agregarArista("e3","b","d", 4)
+g.lista_aristas['e3'].costo = 2
+g.agregarArista("e4","c","b", 8)
+g.lista_aristas['e4'].peso_min = 1
+g.lista_aristas['e4'].costo = -1
+g.agregarArista("e5","c","d", 5)
+g.lista_aristas['e5'].peso_min = 1
+g.lista_aristas['e5'].costo = 6
 """
-g.agregarArista("e1","a","b", -8)##################33333
+g.agregarArista("e1","a","b", 33, 0, 15)
+#g.lista_aristas['e1'].peso_actual = 10
+g.agregarArista("e2","a","c", 72, 0, 9)
+#g.lista_aristas['e2'].peso_actual = 5
+g.agregarArista("e3","a","d", 41, 0, 7)
+#g.lista_aristas['e3'].peso_actual = 0
+g.agregarArista("e4","b","e", 10, 0, 7)
+#g.lista_aristas['e4'].peso_actual = 10
+g.agregarArista("e5","c","b", 19, 0, 3)
+#g.lista_aristas['e5'].peso_actual = 0
+g.agregarArista("e6","c","d", 10, 0, 8)
+#g.lista_aristas['e6'].peso_actual = 0
+g.agregarArista("e7","c","f", 25, 0, 20)
+#g.lista_aristas['e7'].peso_actual = 5
+g.agregarArista("e8","d","f", 12, 0, 3)
+#g.lista_aristas['e8'].peso_actual = 0
+g.agregarArista("e9","e","c", 18, 0, 2)
+#g.lista_aristas['e9'].peso_actual = 0
+g.agregarArista("e10","e","g", 23, 0, 20)
+#g.lista_aristas['e10'].peso_actual = 10
+g.agregarArista("e11","f","e", 20, 0, 7)
+#g.lista_aristas['e11'].peso_actual = 0
+g.agregarArista("e13","f","g", 40, 0, 13)
+#g.lista_aristas['e12'].peso_actual = 5
+#g.peso_grafica = 15
+#############################################
+
+g.agregarArista("e1","a","b", 75)
+g.lista_aristas['e1'].peso_min = 2
+g.agregarArista("e2","a","d", 30)
+g.agregarArista("e3","a","e", 33)
+g.lista_aristas['e3'].peso_min = 1
+g.agregarArista("e4","b","c", 46)
+g.agregarArista("e5","b","e", 42)
+g.agregarArista("e6","c","e", 29)
+g.agregarArista("e7","c","f", 21)
+g.lista_aristas['e7'].peso_min = 3
+g.agregarArista("e8","d","e", 25)
+g.agregarArista("e9","d","h", 9)
+g.agregarArista("e10","d","j", 15)
+g.agregarArista("e11","e","h", 12)
+g.agregarArista("e12","f","e", 18)
+g.agregarArista("e13","f","g", 8)
+g.agregarArista("e14","f","i", 12)
+g.agregarArista("e15","g","c", 40)
+g.lista_aristas['e15'].peso_min = 1
+g.agregarArista("e16","g","i", 40)
+g.agregarArista("e17","h","f", 17)
+g.agregarArista("e18","h","i", 10)
+g.agregarArista("e19","h","k", 14)
+g.lista_aristas['e19'].peso_min = 2
+g.agregarArista("e20","i","k", 19)
+g.agregarArista("e21","i","l", 25)
+g.agregarArista("e22","j","h", 6)
+g.agregarArista("e23","j","m", 45)
+g.agregarArista("e24","k","j", 19)
+g.lista_aristas['e24'].peso_min = 1
+g.agregarArista("e25","k","l", 18)
+g.agregarArista("e26","k","n", 50)
+g.lista_aristas['e26'].peso_min = 3
+g.agregarArista("e27","l","g", 70)
+g.lista_aristas['e27'].peso_min = 3
+g.agregarArista("e28","l","n", 62)
+g.agregarArista("e29","m","k", 29)
+g.agregarArista("e30","n","m", 54)
+
+####################################################
+g.agregarArista("e1","a","b", -8)
 g.agregarArista("e2","a","e", 10)
 g.agregarArista("e3","b","c", 14)
 #g.agregarArista("e4","a","f", 1)
@@ -144,25 +214,33 @@ def index():
 @app.route('/direccion')
 def direccionGrafica():
     g.vaciarGrafica()
+    g.mensaje = []
+    mensaje = "La grafica se camio a"
 
     if g.dirigida:
         g.dirigida = False
+        mensaje += " no dirigida"
     else:
         g.dirigida = True
+        mensaje += " dirigida"
+    g.mensaje.append(mensaje)
 
     return redirect(url_for('index'))
 
 @app.route('/vertices', methods= ['POST'])
 def agregarVertice():
+    g.mensaje = []
     if(request.method == 'POST'):
         vertice = request.form.get('id_vertice')
         g.agregarVertice(vertice)
-        g.mensaje = "Se agrego el vertice exitosamente!"
+        mensaje = "Se agrego el vertice exitosamente!"
+        g.mensaje.append(mensaje)
         print(vertice)
     return redirect(url_for('index'))
 
 @app.route('/aristas', methods= ['POST'])
 def agregarArista():
+    g.mensaje = []
     if(request.method == 'POST'):
         a1 = request.form.get('id_a1')
         a2 = request.form.get('id_a2')
@@ -173,29 +251,34 @@ def agregarArista():
 
         #Cambiar clave
         i = g.numero_aristas
+        mensaje = ""
         if(g.agregarArista("e"+str(i+1), a1, a2, peso, fMin, fMax)):
-            g.mensaje = "Se agrego la arista exitosamente!"
+            mensaje += "Se agrego la arista exitosamente!"
         else:
-            g.mensaje = "Error al agregar arista"
-
+            mensaje += "Error al agregar arista"
+        g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/buscarVertice', methods= ['POST'])
 def buscarVertice():
     g.restablecerColores()
+    g.mensaje = []
     if(request.method == 'POST'):
         vertice = request.form.get('id_vertice_buscar')
         v = g.buscarVertice(vertice)
+        mensaje = ""
         if v:
-            g.mensaje = "Se encontro el vertice exitosamente!"
+            mensaje += "Se encontro el vertice exitosamente!"
             v.color= 1
         else:
-            g.mensaje = "No se encontro el vertice"
+            mensaje += "No se encontro el vertice"
+        g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/buscarArista', methods= ['POST'])
 def buscarArista():
     g.restablecerColores()
+    g.mensaje = []
     if(request.method == 'POST'):
         a1 = request.form.get('id_a1_b')
         a2 = request.form.get('id_a2_b')
@@ -205,6 +288,7 @@ def buscarArista():
 
 @app.route('/eliminarVertice', methods= ['POST'])
 def eliminarVertice():
+    g.mensaje = []
     if(request.method == 'POST'):
         vertice = request.form.get('id_vertice')
         g.eliminarVertice(vertice)
@@ -213,6 +297,7 @@ def eliminarVertice():
 
 @app.route('/eliminarArista', methods= ['POST'])
 def eliminarArista():
+    g.mensaje = []
     if(request.method == 'POST'):
         a1 = request.form.get('id_a1')
         a2 = request.form.get('id_a2')
@@ -222,6 +307,7 @@ def eliminarArista():
 
 @app.route('/vaciarVertice', methods= ['POST'])
 def vaciarVertice():
+    g.mensaje = []
     if(request.method == 'POST'):
         vertice = request.form.get('id_vertice_vaciar')
         g.vaciarVertice(vertice)
@@ -229,118 +315,140 @@ def vaciarVertice():
 
 @app.route('/vaciarGrafica')
 def vaciarGrafica():
+    g.mensaje = []
     g.vaciarGrafica()
     return redirect(url_for('index'))
 
 @app.route('/copiarGrafica')
 def copiarGrafica():
     c.copiar(g)
-    g.mensaje = "Se copio la grafica exitosamente"
+    g.mensaje = []
+    mensaje = "Se copio la grafica exitosamente"
+    g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/cargarCopia')
 def cargarCopia():
     g.copiar(c, True)
-    g.mensaje = "Se cargo la copia de la grafica exitosamente!"
+    g.mensaje = []
+    mensaje = "Se cargo la copia de la grafica exitosamente!"
+    g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/bipartita')
 def esBipartita():
     g.restablecerColores()
     (u, v, t) = g.esBipartita()
+    g.mensaje = []
+    mensaje = ""
 
     if t:
         for vertice in u:
             vertice.color = 1
         for vertice in v:
             vertice.color = 0
-        g.mensaje = "La grafica es bipartita"
+        mensaje += "La grafica es bipartita"
     else:
-        g.mensaje = "La grafica no es bipartita"
+        mensaje += "La grafica no es bipartita"
+    g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/fleury')
 def fleury():
     g.restablecerColores()
+    g.mensaje = []
+    mensaje = ""
 
     (ruta, cerrado, paseo) = g.Fleury()
     print(ruta)
 
     if paseo == True:
-        g.mensaje = "El paseo de Euler es "
+        mensaje += "El paseo de Euler es "
         if cerrado == 0:
-            g.mensaje += "cerrado"
+            mensaje += "cerrado"
         else:
-            g.mensaje += "abierto"
-        g.mensaje += " y la ruta es: ["
+            mensaje += "abierto"
+        mensaje += " y la ruta es: ["
         for i in range(len(ruta) - 1):
             origen = ruta[0]
             destino = ruta[1]
             ruta = ruta[1:]
             arista = g.buscarArista(origen, destino)
             arista.color = 1
-            g.mensaje += str(origen) + ", "
-        g.mensaje += str(destino) + "]"
+            mensaje += str(origen) + ", "
+        mensaje += str(destino) + "]"
     else:
-        g.mensaje = paseo
+        mensaje = paseo
+    g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/busquedaAncho')
 def busquedaAncho():
     (grafica_ancho, bosque) = g.busquedas(1)
+    g.mensaje = []
 
     g.copiar(grafica_ancho)
-    g.mensaje = "Se realizo la busqueda a lo ancho exitosamente!"
+    mensaje = "Se realizo la busqueda a lo ancho exitosamente!"
+    g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/busquedaProfundo')
 def busquedaProfundo():
     (grafica_profundo, bosque) = g.busquedas(0)
-
+    g.mensaje = []
     g.copiar(grafica_profundo)
-    g.mensaje = "Se realizo la busqueda a lo profundo exitosamente!"
+    mensaje = "Se realizo la busqueda a lo profundo exitosamente!"
+    g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/kruskal')
 def kruskal():
     (grafica_kruskal, peso_grafica_kruskal, bosque_kruskal) = g.kruskal()
+    g.mensaje = []
+    mensaje = ""
     print(peso_grafica)
     if bosque_kruskal:
-        g.mensaje = "El peso del bosque es: " + str(peso_grafica_kruskal)
+        mensaje = "El peso del bosque es: " + str(peso_grafica_kruskal)
     else:
-        g.mensaje = "El peso de la grafica es: " + str(peso_grafica_kruskal)
+        mensaje = "El peso de la grafica es: " + str(peso_grafica_kruskal)
     g.copiar(grafica_kruskal)
+    g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/prim')
 def prim():
     (grafica_prim, peso_grafica_prim, bosque_prim) = g.prim()
+    g.mensaje = []
+    mensaje = ""
     if bosque_prim:
-        g.mensaje = "El peso del bosque es: " + str(peso_grafica_prim)
+        mensaje = "El peso del bosque es: " + str(peso_grafica_prim)
     else:
-        g.mensaje = "El peso de la grafica es: " + str(peso_grafica_prim)
+        mensaje = "El peso de la grafica es: " + str(peso_grafica_prim)
     g.copiar(grafica_prim)
+    g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/dijkstra')
 def dijkstra():
     g.restablecerColores()
     (grafica_dijkstra, ciclo_negativo_dijkstra, peso_ciclo_dijkstra) = g.dijkstraGeneral("a")
-
+    g.mensaje = []
+    mensaje = ""
     if peso_ciclo_dijkstra < 0:
         print(ciclo_negativo_dijkstra)
-        g.mensaje = "Se encontro un ciclo negativo con ruta: ["
+        mensaje += "Se encontro un ciclo negativo con ruta: ["
         for i in range(len(ciclo_negativo_dijkstra) - 1):
                 origen = ciclo_negativo_dijkstra[0]
                 destino = ciclo_negativo_dijkstra[1]
                 ciclo_negativo_dijkstra = ciclo_negativo_dijkstra[1:]
                 arista = g.buscarArista(origen, destino)
                 arista.color = 1
-                g.mensaje += str(origen) + ", "
-        g.mensaje += str(destino) + "]"
+                mensaje += str(origen) + ", "
+        mensaje += str(destino) + "]"
     else:
         g.copiar(grafica_dijkstra)
-        g.mensaje = "Se realizo el algortimo de Dijkstra exitosamente!"
+        mensaje += "Se realizo el algortimo de Dijkstra exitosamente!"
+    g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/floyd', methods= ['POST'])
@@ -392,16 +500,72 @@ def obtenerGrado():
 
 @app.route('/fordFulkerson')
 def fordFulkerson():
+    g.restablecerColores()
+    grafica_fulkerson = g.AlgoritmoFordFulkerson()
+    g.mensaje = []
+    mensaje = "Se realizo Ford Fulkerson exitosamente"
+    g.copiar(grafica_fulkerson)
+    g.mensaje.append(mensaje)
+    for a in g.lista_aristas:
+        if g.lista_aristas[a].peso_actual > 0:
+            g.lista_aristas[a].color = 1
+        print(g.lista_aristas[a])
+    mensaje = "El flujo de la grafica es: " + str(g.peso_grafica)
+    g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/flujoCosteMinimoPrimal')
 def flujoCosteMinimoPrimal():
+    g.restablecerColores()
+    grafica_primal = g.flujoCosteMinimoPrimal(15)
+    g.mensaje = []
+    mensaje = "Se realizo correctamente el calculo de la cantidad de flujo primal"
+    g.copiar(grafica_primal)
+    g.mensaje.append(mensaje)
+    for a in g.lista_aristas:
+        if g.lista_aristas[a].peso_actual > 0:
+            g.lista_aristas[a].color = 1
+        print(g.lista_aristas[a])
+    mensaje = "El costo de la grafica es: " + str(g.costo)
+    g.mensaje.append(mensaje)
+
     return redirect(url_for('index'))
 
 @app.route('/flujoConsumoMinimoDual')
 def flujoConsumoMinimoDual():
+    g.restablecerColores()
+    g.mensaje = []
+    grafica_dual = g.flujoConsumoMinimoDual(15)
+    if grafica_dual == False:
+        mensaje = "No se cumplio el flujo"
+        g.mensaje.append(mensaje)
+    else:
+        mensaje = "Se realizo correctamente el calculo de la cantidad de flujo dual"
+        g.copiar(grafica_dual)
+        g.mensaje.append(mensaje)
+        for a in g.lista_aristas:
+            if g.lista_aristas[a].peso_actual > 0:
+                g.lista_aristas[a].color = 1
+            print(g.lista_aristas[a])
+        mensaje = "El costo de la grafica es: " + str(g.costo)
+        g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
+@app.route('/simplex')
+def simplex():
+    g.restablecerColores()
+    g.mensaje = []
 
+    grafica_simplex = g.simplex()
+    mensaje = "Se realizo correctamente el calculo de la cantidad de flujo simplex"
+    g.copiar(grafica_simplex)
+    g.mensaje.append(mensaje)
+
+    for a in g.lista_aristas:
+        if g.lista_aristas[a].peso_actual > 0:
+            g.lista_aristas[a].color = 1
+    mensaje = "El costo de la grafica es: " + str(g.costo)
+    g.mensaje.append(mensaje)
+    return redirect(url_for('index'))
 if __name__ == '__main__':
     app.run()

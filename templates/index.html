@@ -6,9 +6,9 @@
 
     <!--{% from "_macro.html" import imprimir_grafica %}
     {{ imprimir_grafica( grafica ) }}-->
-    {% for v in grafica %}
+   <!-- {% for v in grafica %}
         <p>{{v}}</p>
-    {% endfor %}
+    {% endfor %}-->
     {% for m in grafica.mensaje %}
         <p>{{ m }}</p>
     {% endfor %}
@@ -17,10 +17,12 @@
         var nodes = [];
         var direccion = "{{grafica.dirigida}}";
         {% for v in grafica %}
-            //console.log('{{v}}')
-            //console.log('{{v.color}}')
             {% if v.color == 1 %}
                 nodes.push({id: '{{v.id}}', label: '{{v.id}}', color: 'red'})
+            {% elif v.color == '+' %}
+                nodes.push({id: '{{v.id}}', label: '{{v.id}}', color: 'green'})
+            {% elif v.color == '-' %}
+                nodes.push({id: '{{v.id}}', label: '{{v.id}}', color: 'orange'})
             {% else %}
                 nodes.push({id: '{{v.id}}', label: '{{v.id}}'})
             {% endif %}
@@ -29,10 +31,13 @@
 
         var edges = [];
         {% for a in grafica.lista_aristas %}
-            var text = "[" + '{{grafica.lista_aristas[a].peso_min}}' + ", " + "{{grafica.lista_aristas[a].costo}}" + ", " + '{{grafica.lista_aristas[a].peso}}' + "]"
-            console.log(text)
+            {% if grafica.lista_aristas[a].costo > 0 %}
+                var text = "[" + '{{grafica.lista_aristas[a].peso_min}}' + ", " + "{{grafica.lista_aristas[a].peso_actual}}" + ", " + '{{grafica.lista_aristas[a].peso}}' + "]" + '{{grafica.lista_aristas[a].costo}}' + "$"
+            {% else %}
+                var text = "[" + '{{grafica.lista_aristas[a].peso_min}}' + ", " + "{{grafica.lista_aristas[a].peso_actual}}" + ", " + '{{grafica.lista_aristas[a].peso}}' + "]" 
+            {% endif %}
             {% if grafica.lista_aristas[a].color == 1 %}
-                edges.push({from: '{{grafica.lista_aristas[a].origen}}', to: '{{grafica.lista_aristas[a].destino}}' , color: 'red'})
+                edges.push({from: '{{grafica.lista_aristas[a].origen}}', to: '{{grafica.lista_aristas[a].destino}}' , color: 'red', label: text})
             {% else %}
                 edges.push({from: '{{grafica.lista_aristas[a].origen}}', to: '{{grafica.lista_aristas[a].destino}}', label: text})
             {% endif %}
