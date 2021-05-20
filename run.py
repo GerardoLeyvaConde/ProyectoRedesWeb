@@ -233,7 +233,23 @@ def agregarVertice():
     g.mensaje = []
     if(request.method == 'POST'):
         vertice = request.form.get('id_vertice')
-        g.agregarVertice(vertice)
+        if(g.dirigida == True):
+            dir = request.form.get('fuentesumid')
+            flux = request.form.get('flujo')
+            if(dir == 'None'):
+                if(flux):
+                    g.agregarVertice(vertice, flujo=int(flux))
+                else:
+                    g.agregarVertice(vertice)
+            else:
+                if(flux):
+                    g.agregarVertice(vertice, dir, int(flux))
+                else:
+                    g.agregarVertice(vertice, dir)
+        else:
+            g.agregarVertice(vertice)
+
+
         mensaje = "Se agrego el vertice exitosamente!"
         g.mensaje.append(mensaje)
         print(vertice)
@@ -247,13 +263,12 @@ def agregarArista():
         a2 = request.form.get('id_a2')
         peso = request.form.get('peso')
         fMin = request.form.get('flujomin')
-        fMax = request.form.get('flujomax')
-        dir = request.form.get('dirigida')
+        cost = request.form.get('costo')
 
         #Cambiar clave
         i = g.numero_aristas
         mensaje = ""
-        if(g.agregarArista("e"+str(i+1), a1, a2, peso, fMin, fMax)):
+        if(g.agregarArista("e"+str(i+1), a1, a2, int(peso), int(fMin), int(cost))):
             mensaje += "Se agrego la arista exitosamente!"
         else:
             mensaje += "Error al agregar arista"

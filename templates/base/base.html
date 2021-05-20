@@ -45,10 +45,36 @@
                                                     <div class="control">
                                                         <input class="input is-link" type="text" name="id_vertice" placeholder="ID vértice">
                                                     </div>
+                                                    {% if grafica.dirigida == False %}
+                                                        <div class="control">
+                                                            <button type="submit" class="button is-link">Agregar</button>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                {% if grafica.dirigida == True %}
+                                                    <div class="control">
+                                                        <input class="input is-link" type="number" name="flujo" placeholder="Flujo (opcional)" default="0">
+                                                    </div>
+                                                    <br>
+                                                    <div class="control">
+                                                        <label class="radio">
+                                                            <input type="radio" name="fuentesumid" value="None" checked>
+                                                            Ninguno
+                                                        </label>
+                                                        <label class="radio">
+                                                            <input type="radio" name="fuentesumid" value="+">
+                                                            Fuente
+                                                        </label>
+                                                        <label class="radio">
+                                                            <input type="radio" name="fuentesumid" value="-">
+                                                            Sumidero
+                                                        </label>
+                                                    </div>
+                                                    <br>
                                                     <div class="control">
                                                         <button type="submit" class="button is-link">Agregar</button>
                                                     </div>
-                                                </div>
+                                                {% endif %}
                                             </form>
                                         </p>
                                     </div>
@@ -147,19 +173,12 @@
                                                         <input class="input is-success" type="number" name="flujomin" placeholder="Flujo mínimo">
                                                     </div>
                                                     <div class="control is-expanded">
-                                                        <input class="input is-success" type="number" name="flujomax" placeholder="Flujo máximo">
+                                                        <input class="input is-success" type="number" name="costo" placeholder="Costo">
                                                     </div>
                                                 </div>
                                                 <br>
                                                 <div class="control">
                                                     <button type="submit" class="button is-success is-fullwidth">Agregar</button>
-                                                </div>
-                                                <br>
-                                                <div class="dirigida">
-                                                    <label class="checkbox">
-                                                        <input type="checkbox" name="dirigida">
-                                                        Gráfica dirigida
-                                                    </label>
                                                 </div>
                                             </form>
                                         </p>
@@ -690,6 +709,23 @@
                 document.getElementById("nav_algo4").classList.remove('disabled-link')
                 document.getElementById("nav_algo5").classList.remove('disabled-link')
             }
+        }
+
+        var f = 0
+        var s = 0
+
+        document.getElementById("nav_algo5").classList.add('disabled-link')
+
+        {% for v in grafica%}
+            {% if v.color == '+' %}
+                f++
+            {% elif v.color == '-' %}
+                s++
+            {% endif %}
+        {% endfor %}
+
+        if (f > 0 && s > 0){
+            document.getElementById("nav_algo5").classList.remove('disabled-link')
         }
 
         // PELIGRO PELIGRO PELIGRO
