@@ -165,20 +165,22 @@
                                                         <input class="input is-success" type="text" name="id_a2" placeholder="ID destino">
                                                     </div>
                                                 </div>
-                                                <div class="field is-horizontal">
-                                                    <div class="control is-expanded">
-                                                        <input class="input is-success" type="number" name="peso" placeholder="Peso">
+                                                {% if grafica.dirigida == True %}
+                                                    <div class="field is-horizontal">
+                                                        <div class="control is-expanded">
+                                                            <input class="input is-success" type="number" name="peso" placeholder="Peso">
+                                                        </div>
+                                                        <div class="control is-expanded">
+                                                            <input class="input is-success" type="number" name="flujomin" placeholder="Flujo mínimo">
+                                                        </div>
+                                                        <div class="control is-expanded">
+                                                            <input class="input is-success" type="number" name="costo" placeholder="Costo">
+                                                        </div>
                                                     </div>
-                                                    <div class="control is-expanded">
-                                                        <input class="input is-success" type="number" name="flujomin" placeholder="Flujo mínimo">
-                                                    </div>
-                                                    <div class="control is-expanded">
-                                                        <input class="input is-success" type="number" name="costo" placeholder="Costo">
-                                                    </div>
-                                                </div>
+                                                {% endif %}
                                                 <br>
                                                 <div class="control">
-                                                    <button type="submit" class="button is-success is-fullwidth">Agregar</button>
+                                                    <button type="submit" class="button is-success is-fullwidth has-background-success-dark">Agregar</button>
                                                 </div>
                                             </form>
                                         </p>
@@ -209,7 +211,7 @@
                                                     </div>
                                                 </div>
                                                     <div class="control">
-                                                        <button type="submit" class="button is-success is-fullwidth">Buscar</button>
+                                                        <button type="submit" class="button is-success is-fullwidth has-background-success-dark">Buscar</button>
                                                     </div>
                                             </form>
                                         </p>
@@ -240,7 +242,7 @@
                                                     </div>
                                                 </div>
                                                     <div class="control">
-                                                        <button type="submit" class="button is-success is-fullwidth">Eliminar</button>
+                                                        <button type="submit" class="button is-success is-fullwidth has-background-success-dark">Eliminar</button>
                                                     </div>
                                             </form>
                                         </p>
@@ -264,15 +266,15 @@
                                     </button>
                                 </div>
                                 <div class="dropdown-menu dvv-m" id="dropdown-menu" role="menu">
-                                    <div class="dropdown-content has-background-link-light pt-1 px-4 pb-4">
+                                    <div class="dropdown-content has-background-primary-light pt-1 px-4 pb-4">
                                         <p class="dropdown-item">
                                             <form method="POST" action="/vaciarVertice">
                                                 <div class="field has-addons">
                                                     <div class="control">
-                                                        <input class="input is-link" type="text" name="id_vertice_vaciar" placeholder="ID vértice">
+                                                        <input class="input is-primary" type="text" name="id_vertice_vaciar" placeholder="ID vértice">
                                                     </div>
                                                     <div class="control">
-                                                        <button type="submit" class="button is-link" onclick="vaciarV()">Vaciar</button>
+                                                        <button type="submit" class="button is-primary has-background-primary-dark" onclick="vaciarV()">Vaciar</button>
                                                     </div>
                                                 </div>
                                             </form>
@@ -318,27 +320,29 @@
                     <ul class="menu-list">
                         <li><a class="has-text-link-dark">Número de vertices: {{ num_v }}</a></li>
                         <li><a class="has-text-success-dark">Número de aristas: {{ num_a }}</a></li>
-                        <li>
-                            <div class="dropdown dg fwidth is-fullwidth">
-                                <div class="dropdown-trigger dg-t fwidth is-fullwidth">
-                                    <button class="button just is-fullwidth is-link is-light" aria-haspopup="true" aria-controls="dropdown-menu">
-                                        <span>Grado de los vertices</span>
-                                        <span class="icon">
-                                            <ion-icon class="dg-i" name="chevron-down-outline"></ion-icon>
-                                        </span>
-                                    </button>
-                                </div>
-                                <div class="dropdown-menu dg-m" id="dropdown-menu" role="menu">
-                                    <div class="dropdown-content has-background-link-light pt-1 px-4 pb-4">
-                                        <p class="dropdown-item">
-                                            {% for v in grafica %}
-                                                <p>"{{v.id}}" : {{v.obtenerGrado(False)}}</p>
-                                            {% endfor %}
-                                        </p>
+                        {% if num_v > 0%}
+                            <li>
+                                <div class="dropdown dg fwidth is-fullwidth">
+                                    <div class="dropdown-trigger dg-t fwidth is-fullwidth">
+                                        <button class="button just is-fullwidth is-link is-light" aria-haspopup="true" aria-controls="dropdown-menu">
+                                            <span>Grado de los vertices</span>
+                                            <span class="icon">
+                                                <ion-icon class="dg-i" name="chevron-down-outline"></ion-icon>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class="dropdown-menu dg-m" id="dropdown-menu" role="menu">
+                                        <div class="dropdown-content has-background-link-light pt-1 px-4 pb-4">
+                                            <p class="dropdown-item">
+                                                {% for v in grafica %}
+                                                    <p>"{{v.id}}" : {{v.obtenerGrado(False)}}</p>
+                                                {% endfor %}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </aside>
@@ -391,7 +395,9 @@
                                                                     <input class="input" type="text" name="id_vertice_dijkstra" placeholder="ID Vértice">
                                                                 </div>
                                                                 <div class="control">
-                                                                    <button type="submit" class="button is-dark">Ejecutar</button>
+                                                                    <button type="submit" class="button is-dark">
+                                                                        <ion-icon class="icon is-large" name="play-outline"></ion-icon>
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                         </form>
@@ -416,7 +422,9 @@
                                                                     <input class="input" type="text" name="id_vertice_floyd" placeholder="ID Vértice">
                                                                 </div>
                                                                 <div class="control">
-                                                                    <button type="submit" class="button is-dark">Ejecutar</button>
+                                                                    <button type="submit" class="button is-dark">
+                                                                        <ion-icon class="icon is-large" name="play-outline"></ion-icon>
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                         </form>
@@ -447,7 +455,9 @@
                                                                     <input class="input" type="text" name="flujo_primal" placeholder="Flujo deseado">
                                                                 </div>
                                                                 <div class="control">
-                                                                    <button type="submit" class="button is-dark">Ejecutar</button>
+                                                                    <button type="submit" class="button is-dark">
+                                                                        <ion-icon class="icon is-large" name="play-outline"></ion-icon>
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                         </form>
@@ -472,7 +482,9 @@
                                                                     <input class="input" type="text" name="flujo_dual" placeholder="Flujo deseado">
                                                                 </div>
                                                                 <div class="control">
-                                                                    <button type="submit" class="button is-dark">Ejecutar</button>
+                                                                    <button type="submit" class="button is-dark">
+                                                                        <ion-icon class="icon is-large" name="play-outline"></ion-icon>
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                         </form>
@@ -542,32 +554,39 @@
     </footer>-->
     <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
     <script>
-        //vertices
+        var lista = document.getElementsByClassName("dropdown")
+
+        // Agregar vertice
         var dv = document.querySelector('.dv');
         var dvt = document.querySelector('.dv-t');
         var dvi = document.querySelector('.dv-i');
         dvt.addEventListener('click', function(event) {
             event.stopPropagation();
+            for (l of lista) if(l != dv) l.classList.remove('is-active')
             dv.classList.toggle('is-active');
             if (dvi.name == "add-outline") dvi.setAttribute("name", "remove-outline")
             else dvi.setAttribute("name", "add-outline")
         });
 
+        // Buscar vertice
         var db = document.querySelector('.db');
         var dbt = document.querySelector('.db-t');
         var dbi = document.querySelector('.db-i');
         dbt.addEventListener('click', function(event) {
             event.stopPropagation();
+            for (l of lista) if(l != db) l.classList.remove('is-active')
             db.classList.toggle('is-active');
             if (dbi.name == "chevron-down-outline") dbi.setAttribute("name", "chevron-up-outline")
             else dbi.setAttribute("name", "chevron-down-outline")
         });
 
+        // Eliminar vertice
         var dev = document.querySelector('.dev');
         var devt = document.querySelector('.dev-t');
         var devi = document.querySelector('.dev-i');
         devt.addEventListener('click', function(event) {
             event.stopPropagation();
+            for (l of lista) if(l != dev) l.classList.remove('is-active')
             dev.classList.toggle('is-active');
             if (devi.name == "close") devi.setAttribute("name", "remove-outline")
             else devi.setAttribute("name", "close")
@@ -578,41 +597,49 @@
         var dgi = document.querySelector('.dg-i');
         dgt.addEventListener('click', function(event) {
             event.stopPropagation();
+            for (l of lista) if(l != dg) l.classList.remove('is-active')
             dg.classList.toggle('is-active');
             if (dgi.name == "chevron-down-outline") dgi.setAttribute("name", "chevron-up-outline")
             else dgi.setAttribute("name", "chevron-down-outline")
         });
 
+        // Agregar arista
         var da = document.querySelector('.da');
         var dat = document.querySelector('.da-t');
         var dai = document.querySelector('.da-i');
         dat.addEventListener('click', function(event) {
             event.stopPropagation();
+            for (l of lista) if(l != da) l.classList.remove('is-active')
             da.classList.toggle('is-active');
             if (dai.name == "add-outline") dai.setAttribute("name", "remove-outline")
             else dai.setAttribute("name", "add-outline")
         });
 
+        // Buscar arista
         var dab = document.querySelector('.dab');
         var dabt = document.querySelector('.dab-t');
         var dabi = document.querySelector('.dab-i');
         dabt.addEventListener('click', function(event) {
             event.stopPropagation();
+            for (l of lista) if(l != dab) l.classList.remove('is-active')
             dab.classList.toggle('is-active');
             if (dabi.name == "chevron-down-outline") dabi.setAttribute("name", "chevron-up-outline")
-            else dabi.setAttribute("name", "add-outline")
+            else dabi.setAttribute("name", "chevron-down-outline")
         });
 
+        // Eliminar arista
         var dae = document.querySelector('.dae');
         var daet = document.querySelector('.dae-t');
         var daei = document.querySelector('.dae-i');
         daet.addEventListener('click', function(event) {
             event.stopPropagation();
+            for (l of lista) if(l != dae) l.classList.remove('is-active')
             dae.classList.toggle('is-active');
             if (daei.name == "close") daei.setAttribute("name", "remove-outline")
             else daei.setAttribute("name", "close")
         });
 
+        // Cambiar tipo de gráfica
         var gra = document.querySelector('.gra');
         var grat = document.querySelector('.gra-t');
         var grai = document.querySelector('.gra-i');
@@ -623,11 +650,13 @@
             else grai.setAttribute("name", "settings-outline")
         });
 
+        // Vaciar vertice
         var dvv = document.querySelector('.dvv');
         var dvvt = document.querySelector('.dvv-t');
         var dvvi = document.querySelector('.dvv-i');
         dvvt.addEventListener('click', function(event) {
             event.stopPropagation();
+            for (l of lista) if(l != dvv) l.classList.remove('is-active')
             dvv.classList.toggle('is-active');
             if (dvvi.name == "trash-outline") dvvi.setAttribute("name", "trash")
             else dvvi.setAttribute("name", "trash-outline")
@@ -735,6 +764,7 @@
         var dfft = document.querySelector('.dff-t');
         dfft.addEventListener('click', function(event) {
             event.stopPropagation();
+            for (l of lista) if(l != dff) l.classList.remove('is-active')
             dff.classList.toggle('is-active');
         });
 
@@ -742,6 +772,7 @@
         var dddt = document.querySelector('.ddd-t');
         dddt.addEventListener('click', function(event) {
             event.stopPropagation();
+            for (l of lista) if(l != ddd) l.classList.remove('is-active')
             ddd.classList.toggle('is-active');
         });
 
@@ -749,6 +780,7 @@
         var dcpt = document.querySelector('.dcp-t');
         dcpt.addEventListener('click', function(event) {
             event.stopPropagation();
+            for (l of lista) if(l != dcp) l.classList.remove('is-active')
             dcp.classList.toggle('is-active');
         });
 
@@ -756,6 +788,7 @@
         var dcdt = document.querySelector('.dcd-t');
         dcdt.addEventListener('click', function(event) {
             event.stopPropagation();
+            for (l of lista) if(l != dcd) l.classList.remove('is-active')
             dcd.classList.toggle('is-active');
         });
     </script>
