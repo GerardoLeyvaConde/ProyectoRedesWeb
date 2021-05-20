@@ -151,7 +151,7 @@ class Grafica:
         self.dirigida = dirigida
         self.peso_grafica= 0
         self.costo = 0
-        self.mensaje = ""
+        self.mensaje = []
 
     def __contains__(self, n):
         return n in self.lista_vertices
@@ -1054,7 +1054,7 @@ class Grafica:
         for a in grafiquita.lista_aristas:
             if grafiquita.lista_aristas[a].peso_min != 0:
                 aristas_peso_min.append(grafiquita.lista_aristas[a])
-                
+
 
         if aristas_peso_min:
             for v in grafiquita.lista_vertices:
@@ -1084,7 +1084,7 @@ class Grafica:
                     arista2.peso += a.peso_min
                 else:
                     grafiquita.agregarArista("auxiliar2" + str(e), "FN", a.destino, a.peso_min)
-                
+
                 a.peso_actual += a.peso_min
                 e += 1
 
@@ -1106,7 +1106,7 @@ class Grafica:
                 a.peso -= a.peso_min
                 grafiquita.costo += a.peso_min * a.costo
 
-        
+
         #
         if grafiquita.peso_grafica > flujo_elegido:
             return False
@@ -1156,13 +1156,13 @@ class Grafica:
                     arista.peso_actual += minimo
 
             grafiquita.costo += minimo * d
-                
+
             copia, ciclo, d = dijkstraGeneralPeso(marginal, inicio.id)
 
 
         if grafiquita.peso_grafica == flujo_elegido:
             return grafiquita
-            
+
         else:
             while grafiquita.peso_grafica < flujo_elegido:
                 cola = []
@@ -1179,7 +1179,7 @@ class Grafica:
                             flujo_minimo = arista.peso
                     cola.append(arista)
                     actual = copia.buscarVertice(actual.lista_entrantes[0])
-                    
+
                 if grafiquita.peso_grafica + flujo_minimo >= flujo_elegido:
                     flujo_minimo = flujo_elegido - grafiquita.peso_grafica
 
@@ -1199,8 +1199,8 @@ class Grafica:
                     else:
                         auxrista = grafiquita.buscarArista(arista.origen, arista.destino)
                         auxrista.peso_actual -= flujo_minimo
-                    
-                copia, ciclo, d = dijkstraGeneralPeso(marginal, inicio.id)             
+
+                copia, ciclo, d = dijkstraGeneralPeso(marginal, inicio.id)
         #
 
         for a in aristas_peso_min:
@@ -1214,7 +1214,7 @@ class Grafica:
                     auxrista = grafiquita.buscarArista(vertaux.id, b)
                     grafiquita.agregarArista(nombres_aristas[0], v.id, b , auxrista.peso, auxrista.peso_min)
                     nombres_aristas = nombres_aristas[1:]
-                    
+
                 grafiquita.eliminarVertice(vertaux.id)
 
         if multiples_cosas:

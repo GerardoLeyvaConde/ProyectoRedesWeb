@@ -6,7 +6,8 @@ app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 g= Grafica(True)
 c= Grafica()
-g.mensaje = "Aqui se muestran los mensajes"
+mensaje = "Aqui se muestran los mensajes"
+g.mensaje.append(mensaje)
 #dirigida= Grafica(True)
 
 g.agregarVertice("a")
@@ -143,7 +144,7 @@ def index():
 @app.route('/direccion')
 def direccionGrafica():
     g.vaciarGrafica()
-    
+
     if g.dirigida:
         g.dirigida = False
     else:
@@ -325,7 +326,7 @@ def prim():
 def dijkstra():
     g.restablecerColores()
     (grafica_dijkstra, ciclo_negativo_dijkstra, peso_ciclo_dijkstra) = g.dijkstraGeneral("a")
-    
+
     if peso_ciclo_dijkstra < 0:
         print(ciclo_negativo_dijkstra)
         g.mensaje = "Se encontro un ciclo negativo con ruta: ["
@@ -342,26 +343,44 @@ def dijkstra():
         g.mensaje = "Se realizo el algortimo de Dijkstra exitosamente!"
     return redirect(url_for('index'))
 
-@app.route('/floyd')
+@app.route('/floyd', methods= ['POST'])
 def floyd():
     g.restablecerColores()
-    (grafica_floyd, ciclo_negativo_floyd, booleano) = g.floyd()
+    g.mensaje = []
+    mensaje = ""
+    if request.method == 'POST':
+        (grafica_floyd, nombres, booleano) = g.floyd()
 
-    if ciclo_negativo_floyd <  0:
-        print(grafica_floyd)
-        g.mensaje = "Se encontro un ciclo negativo con ruta: ["
-        for i in range(len(grafica_floyd) - 1):
+        if booleano == True:
+            print(grafica_floyd)
+            mensaje = "Se encontro un ciclo negativo con ruta: ["
+            for i in range(len(grafica_floyd) - 1):
                 origen = grafica_floyd[0]
                 destino = grafica_floyd[1]
                 grafica_floyd = grafica_floyd[1:]
                 arista = g.buscarArista(origen, destino)
                 arista.color = 1
                 g.mensaje += str(origen) + ", "
-        g.mensaje += str(destino) + "]"
-        
-    else:
-        print("si se puede, pero no sé que hacer")
-    return redirect(url_for('index'))
+            mensaje += str(destino) + "]"
+            g.mensaje.append(mensaje)
+        else:
+            vertice = request.form.get('id_vertice_floyd')
+            index_vertice = nombres.index(vertice)
+            for i in range(len(nombres)):
+                if i == index_vertice:
+                    continue
+                mensaje = "Ruta de " + vertice + " -> " + nombres[i] + " es ["
+                ruta = grafica_floyd[i + index_vertice * len(nombres)][0]
+                for j in range(len(ruta) - 1):
+                    origen2 = ruta[0]
+                    destino2 = ruta[1]
+                    ruta = ruta[1:]
+                    arista = g.buscarArista(origen2, destino2)
+                    arista.color = 1
+                    mensaje += str(origen2) + ", "
+                mensaje += str(destino2) + "] con peso: " + str(grafica_floyd[i + index_vertice * len(nombres)][1])
+                g.mensaje.append(mensaje)
+        return redirect(url_for('index'))
 
 @app.route('/obtenerGrado', methods= ['POST'])
 def obtenerGrado():
@@ -374,7 +393,7 @@ def obtenerGrado():
 @app.route('/fordFulkerson')
 def fordFulkerson():
     return redirect(url_for('index'))
-    
+
 @app.route('/flujoCosteMinimoPrimal')
 def flujoCosteMinimoPrimal():
     return redirect(url_for('index'))

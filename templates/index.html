@@ -9,9 +9,9 @@
     {% for v in grafica %}
         <p>{{v}}</p>
     {% endfor %}
-    <p> 
-        {{ grafica.mensaje }}
-    </p>
+    {% for m in grafica.mensaje %}
+        <p>{{ m }}</p>
+    {% endfor %}
     <div id="mynetwork"></div>
     <script>
         var nodes = [];
@@ -30,7 +30,7 @@
         var edges = [];
         {% for a in grafica.lista_aristas %}
             var text = "[" + '{{grafica.lista_aristas[a].peso_min}}' + ", " + "{{grafica.lista_aristas[a].costo}}" + ", " + '{{grafica.lista_aristas[a].peso}}' + "]"
-            console.log(text) 
+            console.log(text)
             {% if grafica.lista_aristas[a].color == 1 %}
                 edges.push({from: '{{grafica.lista_aristas[a].origen}}', to: '{{grafica.lista_aristas[a].destino}}' , color: 'red'})
             {% else %}

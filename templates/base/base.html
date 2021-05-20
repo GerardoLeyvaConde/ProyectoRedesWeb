@@ -10,6 +10,7 @@
         .fwidth { display: flex !important; width: 100% !important; }
         .da-m { border: rgba(72,199,116,.25) solid; }
         .dv-m { border: rgba(50,115,220,.25) solid; }
+        .disabled-link{ pointer-events: none; }
     </style>
     <title>{% block title %}{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Jura:wght@700&display=swap" rel="stylesheet">
@@ -338,34 +339,60 @@
 
                 <div id="navbarBasicExample" class="navbar-menu">
                     <div class="navbar-start">
-                        <a class="navbar-item" href="/bipartita">Buscar bipartición</a>
-                        <a class="navbar-item" href="/fleury">Paseo de Euler (Fleury)</a>
+                        {% if grafica.dirigida == False %}
+                            <a class="navbar-item" href="/bipartita" id="nav_algo1">Buscar bipartición</a>
+                            <a class="navbar-item" href="/fleury" id="nav_algo2">Paseo de Euler (Fleury)</a>
 
-                        <div class="navbar-item has-dropdown is-hoverable">
-                            <a class="navbar-link">Árbol de expansión</a>
-                            <div class="navbar-dropdown">
-                                <a class="navbar-item" href="/busquedaAncho">Búsqueda a lo ancho</a>
-                                <a class="navbar-item" href="/busquedaProfundo">Búsqueda a lo profundo</a>
-                                <a class="navbar-item" href="/kruskal">Kruskal</a>
-                                <a class="navbar-item" href="/prim">Prim</a>
+                            <div class="navbar-item has-dropdown is-hoverable" id="nav_algo3">
+                                <a class="navbar-link">Árbol de expansión</a>
+                                <div class="navbar-dropdown">
+                                    <a class="navbar-item" href="/busquedaAncho">Búsqueda a lo ancho</a>
+                                    <a class="navbar-item" href="/busquedaProfundo">Búsqueda a lo profundo</a>
+                                    <a class="navbar-item" href="/kruskal">Kruskal</a>
+                                    <a class="navbar-item" href="/prim">Prim</a>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="navbar-item has-dropdown is-hoverable">
-                            <a class="navbar-link">Arborescencia</a>
-                            <div class="navbar-dropdown">
-                                <a class="navbar-item" href="/dijkstra">Dijkstra</a>
-                                <a class="navbar-item" href="/floyd">Floyd</a>
+                        {% else %}
+                            <div class="navbar-item has-dropdown is-hoverable" id="nav_algo4">
+                                <a class="navbar-link">Arborescencia</a>
+                                <div class="navbar-dropdown">
+                                    <a class="navbar-item" href="/dijkstra">Dijkstra</a>
+                                    <a class="menu-list">
+                                        <div class="dropdown dff fwidth is-fullwidth">
+                                            <div class="dropdown-trigger dff-t fwidth is-fullwidth">
+                                                <button class="button just is-fullwidth" aria-haspopup="true" aria-controls="dropdown-menu">
+                                                    <span>Floyd</span>
+                                                </button>
+                                            </div>
+                                            <div class="dropdown-menu dff-m" id="dropdown-menu" role="menu">
+                                                <div class="dropdown-content has-background-link-light pt-1 px-4 pb4">
+                                                    <p class="dropdown-item">
+                                                        <form method="POST" action="/floyd">
+                                                            <div class="field has-addons">
+                                                                <div class="control">
+                                                                    <input class="input is-link" type="text" name="id_vertice_floyd" placeholder="ID Vértice">
+                                                                </div>
+                                                                <div class="control">
+                                                                    <button type="submit" class="button is-link">Ejecutar</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="navbar-item has-dropdown is-hoverable">
-                            <a class="navbar-link">Resto de cosas</a>
-                            <div >
-                                <a class="navbar-item" href="/fordFulkerson">Ford Fulkerson</a>
-                                <a class="navbar-item" href="/flujoCosteMinimoPrimal">Flujo Coste Minimo Primal</a>
-                                <a class="navbar-item" href="/flujoConsumoMinimoDual">Flujo Consumo Minimo Dual</a>
+                            <div class="navbar-item has-dropdown is-hoverable" id="nav_algo5">
+                                <a class="navbar-link">Resto de cosas</a>
+                                <div class="navbar-dropdown">
+                                    <a class="navbar-item" href="/fordFulkerson">Ford Fulkerson</a>
+                                    <a class="navbar-item" href="/flujoCosteMinimoPrimal">Flujo Coste Minimo Primal</a>
+                                    <a class="navbar-item" href="/flujoConsumoMinimoDual">Flujo Consumo Minimo Dual</a>
+                                </div>
                             </div>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="navbar-end">
@@ -566,14 +593,41 @@
                 }
             }
         }
+        var nVert = "{{ num_v }}"
 
         if(dir == "False"){
             document.getElementById("no_dirigida").checked = true;
             document.getElementById("si_dirigida").checked = false;
+            if(nVert == 0){
+                document.getElementById("nav_algo1").classList.add('disabled-link')
+                document.getElementById("nav_algo2").classList.add('disabled-link')
+                document.getElementById("nav_algo3").classList.add('disabled-link')
+            } else {
+                document.getElementById("nav_algo1").classList.remove('disabled-link')
+                document.getElementById("nav_algo2").classList.remove('disabled-link')
+                document.getElementById("nav_algo3").classList.remove('disabled-link')
+            }
         } else {
             document.getElementById("no_dirigida").checked = false;
             document.getElementById("si_dirigida").checked = true;
+            if(nVert == 0){
+                document.getElementById("nav_algo4").classList.add('disabled-link')
+                document.getElementById("nav_algo5").classList.add('disabled-link')
+            } else {
+                document.getElementById("nav_algo4").classList.remove('disabled-link')
+                document.getElementById("nav_algo5").classList.remove('disabled-link')
+            }
         }
+
+        // PELIGRO PELIGRO PELIGRO
+        // MANTENERSE ATRÁS DE ESTA LINEA
+        // VVV CUARENTENA VVV
+        var dff = document.querySelector('.dff');
+        var dfft = document.querySelector('.dff-t');
+        dfft.addEventListener('click', function(event) {
+            event.stopPropagation();
+            dff.classList.toggle('is-active');
+        });
     </script>
 </body>
 </html>
