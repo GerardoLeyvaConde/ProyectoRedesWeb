@@ -10,17 +10,17 @@ mensaje = "Aqui se muestran los mensajes"
 g.mensaje.append(mensaje)
 #dirigida= Grafica(True)
 
-g.agregarVertice("a")
-g.lista_vertices['a'].flujo = 5
+g.agregarVertice("a", '+')
+#g.lista_vertices['a'].flujo = 5
 g.agregarVertice("b")
-g.lista_vertices['b'].flujo = 0
+#g.lista_vertices['b'].flujo = 0
 g.agregarVertice("c")
-g.lista_vertices['c'].flujo = 3
+#g.lista_vertices['c'].flujo = 3
 g.agregarVertice("d")
-g.lista_vertices['d'].flujo = -8
-#g.agregarVertice("e")
-#g.agregarVertice("f")
-#g.agregarVertice("g" ,'-')
+#g.lista_vertices['d'].flujo = -8
+g.agregarVertice("e")
+g.agregarVertice("f")
+g.agregarVertice("g", '-')
 #g.agregarVertice("h")
 #g.agregarVertice("i")
 #g.agregarVertice("j")
@@ -37,6 +37,7 @@ g.lista_vertices['d'].flujo = -8
 #g.lista_vertices['h'].peso_max = 20
 #g.lista_vertices['i'].peso_minimo = 9
 #g.lista_vertices['i'].peso_minimo = 21
+"""
 g.agregarArista("e1","a","b", 6)
 g.lista_aristas['e1'].costo = 1
 g.agregarArista("e2","a","c", 3)
@@ -72,11 +73,11 @@ g.agregarArista("e10","e","g", 23, 0, 20)
 #g.lista_aristas['e10'].peso_actual = 10
 g.agregarArista("e11","f","e", 20, 0, 7)
 #g.lista_aristas['e11'].peso_actual = 0
-g.agregarArista("e13","f","g", 40, 0, 13)
+g.agregarArista("e14","f","g", 40, 0, 13)
 #g.lista_aristas['e12'].peso_actual = 5
 #g.peso_grafica = 15
 #############################################
-
+"""
 g.agregarArista("e1","a","b", 75)
 g.lista_aristas['e1'].peso_min = 2
 g.agregarArista("e2","a","d", 30)
@@ -428,27 +429,29 @@ def prim():
     g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
-@app.route('/dijkstra')
+@app.route('/dijkstra', methods= ['POST'])
 def dijkstra():
     g.restablecerColores()
-    (grafica_dijkstra, ciclo_negativo_dijkstra, peso_ciclo_dijkstra) = g.dijkstraGeneral("a")
-    g.mensaje = []
-    mensaje = ""
-    if peso_ciclo_dijkstra < 0:
-        print(ciclo_negativo_dijkstra)
-        mensaje += "Se encontro un ciclo negativo con ruta: ["
-        for i in range(len(ciclo_negativo_dijkstra) - 1):
-                origen = ciclo_negativo_dijkstra[0]
-                destino = ciclo_negativo_dijkstra[1]
-                ciclo_negativo_dijkstra = ciclo_negativo_dijkstra[1:]
-                arista = g.buscarArista(origen, destino)
-                arista.color = 1
-                mensaje += str(origen) + ", "
-        mensaje += str(destino) + "]"
-    else:
-        g.copiar(grafica_dijkstra)
-        mensaje += "Se realizo el algortimo de Dijkstra exitosamente!"
-    g.mensaje.append(mensaje)
+    if request.method == 'POST':
+        vertice = request.form.get('id_vertice_dijkstra')
+        (grafica_dijkstra, ciclo_negativo_dijkstra, peso_ciclo_dijkstra) = g.dijkstraGeneral(vertice)
+        g.mensaje = []
+        mensaje = ""
+        if peso_ciclo_dijkstra < 0:
+            print(ciclo_negativo_dijkstra)
+            mensaje += "Se encontro un ciclo negativo con ruta: ["
+            for i in range(len(ciclo_negativo_dijkstra) - 1):
+                    origen = ciclo_negativo_dijkstra[0]
+                    destino = ciclo_negativo_dijkstra[1]
+                    ciclo_negativo_dijkstra = ciclo_negativo_dijkstra[1:]
+                    arista = g.buscarArista(origen, destino)
+                    arista.color = 1
+                    mensaje += str(origen) + ", "
+            mensaje += str(destino) + "]"
+        else:
+            g.copiar(grafica_dijkstra)
+            mensaje += "Se realizo el algortimo de Dijkstra exitosamente!"
+        g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/floyd', methods= ['POST'])
@@ -514,34 +517,16 @@ def fordFulkerson():
     g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
-@app.route('/flujoCosteMinimoPrimal')
+@app.route('/flujoCosteMinimoPrimal', methods= ['POST'])
 def flujoCosteMinimoPrimal():
     g.restablecerColores()
-    grafica_primal = g.flujoCosteMinimoPrimal(15)
-    g.mensaje = []
-    mensaje = "Se realizo correctamente el calculo de la cantidad de flujo primal"
-    g.copiar(grafica_primal)
-    g.mensaje.append(mensaje)
-    for a in g.lista_aristas:
-        if g.lista_aristas[a].peso_actual > 0:
-            g.lista_aristas[a].color = 1
-        print(g.lista_aristas[a])
-    mensaje = "El costo de la grafica es: " + str(g.costo)
-    g.mensaje.append(mensaje)
-
-    return redirect(url_for('index'))
-
-@app.route('/flujoConsumoMinimoDual')
-def flujoConsumoMinimoDual():
-    g.restablecerColores()
-    g.mensaje = []
-    grafica_dual = g.flujoConsumoMinimoDual(15)
-    if grafica_dual == False:
-        mensaje = "No se cumplio el flujo"
-        g.mensaje.append(mensaje)
-    else:
-        mensaje = "Se realizo correctamente el calculo de la cantidad de flujo dual"
-        g.copiar(grafica_dual)
+    if(request.method == 'POST'):
+        flujo = request.form.get('flujo_primal')
+        flujo = int(flujo)
+        grafica_primal = g.flujoCosteMinimoPrimal(flujo)
+        g.mensaje = []
+        mensaje = "Se realizo correctamente el calculo de la cantidad de flujo primal"
+        g.copiar(grafica_primal)
         g.mensaje.append(mensaje)
         for a in g.lista_aristas:
             if g.lista_aristas[a].peso_actual > 0:
@@ -549,6 +534,30 @@ def flujoConsumoMinimoDual():
             print(g.lista_aristas[a])
         mensaje = "El costo de la grafica es: " + str(g.costo)
         g.mensaje.append(mensaje)
+
+    return redirect(url_for('index'))
+
+@app.route('/flujoConsumoMinimoDual', methods= ['POST'])
+def flujoConsumoMinimoDual():
+    g.restablecerColores()
+    g.mensaje = []
+    if(request.method == 'POST'):
+        flujo = request.form.get('flujo_dual')
+        flujo = int(flujo)
+        grafica_dual = g.flujoConsumoMinimoDual(flujo)
+        if grafica_dual == False:
+            mensaje = "No se cumplio el flujo"
+            g.mensaje.append(mensaje)
+        else:
+            mensaje = "Se realizo correctamente el calculo de la cantidad de flujo dual"
+            g.copiar(grafica_dual)
+            g.mensaje.append(mensaje)
+            for a in g.lista_aristas:
+                if g.lista_aristas[a].peso_actual > 0:
+                    g.lista_aristas[a].color = 1
+                print(g.lista_aristas[a])
+            mensaje = "El costo de la grafica es: " + str(g.costo)
+            g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/simplex')
