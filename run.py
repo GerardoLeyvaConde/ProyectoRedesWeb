@@ -11,32 +11,38 @@ g.mensaje.append(mensaje)
 #dirigida= Grafica(True)
 
 g.agregarVertice("a", '+')
-#g.lista_vertices['a'].flujo = 5
-g.agregarVertice("b")
+#g.lista_vertices['a'].flujo = 1
+g.agregarVertice("b", '+')
 #g.lista_vertices['b'].flujo = 0
-g.agregarVertice("c")
-#g.lista_vertices['c'].flujo = 3
+g.agregarVertice("c", '+')
+#g.lista_vertices['c'].flujo = 2
 g.agregarVertice("d")
-#g.lista_vertices['d'].flujo = -8
+#g.lista_vertices['d'].flujo = -3
 g.agregarVertice("e")
 g.agregarVertice("f")
-g.agregarVertice("g", '-')
-#g.agregarVertice("h")
-#g.agregarVertice("i")
-#g.agregarVertice("j")
-#g.agregarVertice("k", '-')
-#g.agregarVertice("l")
-#g.agregarVertice("m", '-')
-#g.agregarVertice("n", '-')
+g.agregarVertice("g")
+g.agregarVertice("h")
+g.agregarVertice("i")
+g.agregarVertice("j")
+g.agregarVertice("k", '-')
+g.agregarVertice("l")
+g.agregarVertice("m", '-')
+g.agregarVertice("n", '-')
 #g.agregarVertice("o")
 #g.agregarVertice("p")
 #g.agregarVertice("q")
 #g.agregarVertice("r")
 #g.agregarVertice("s")
-#g.lista_vertices['h'].peso_minimo = 7
-#g.lista_vertices['h'].peso_max = 20
-#g.lista_vertices['i'].peso_minimo = 9
-#g.lista_vertices['i'].peso_minimo = 21
+g.lista_vertices['h'].peso_minimo = 7
+g.lista_vertices['h'].peso_max = 20
+g.lista_vertices['i'].peso_minimo = 9
+g.lista_vertices['i'].peso_minimo = 21
+#g.agregarArista("e1", "a", "b", 5, 2, 1)
+#g.agregarArista("e2", "a", "d", 3, 1, -2)
+#g.agregarArista("e3", "b", "d", 2, 0, -1)
+#g.agregarArista("e4", "c", "a", 5, 0, 5)
+#g.agregarArista("e5", "c", "b", 2, 0, 1)
+#g.agregarArista("e6", "d", "c", 5, 0, 3)
 """
 g.agregarArista("e1","a","b", 6)
 g.lista_aristas['e1'].costo = 1
@@ -50,7 +56,7 @@ g.lista_aristas['e4'].costo = -1
 g.agregarArista("e5","c","d", 5)
 g.lista_aristas['e5'].peso_min = 1
 g.lista_aristas['e5'].costo = 6
-"""
+
 g.agregarArista("e1","a","b", 33, 0, 15)
 #g.lista_aristas['e1'].peso_actual = 10
 g.agregarArista("e2","a","c", 72, 0, 9)
@@ -116,7 +122,7 @@ g.lista_aristas['e27'].peso_min = 3
 g.agregarArista("e28","l","n", 62)
 g.agregarArista("e29","m","k", 29)
 g.agregarArista("e30","n","m", 54)
-
+"""
 ####################################################
 g.agregarArista("e1","a","b", -8)
 g.agregarArista("e2","a","e", 10)
@@ -208,8 +214,6 @@ def index():
     num_v = g.numero_vertices
     num_a = g.numero_aristas
 
-    mensaje = request.args.get('mensaje' , 'Aqui se muestran los mensajes"')
-
     return render_template('index.html', num_v = num_v, num_a = num_a, title=title, grafica=g, vertices=vertices, aristas=aristas)
 
 @app.route('/direccion')
@@ -237,11 +241,15 @@ def agregarVertice():
             dir = request.form.get('fuentesumid')
             flux = request.form.get('flujo')
             if(dir == 'None'):
+                if not flux:
+                    flux = 0
                 if(flux):
                     g.agregarVertice(vertice, flujo=int(flux))
                 else:
                     g.agregarVertice(vertice)
             else:
+                if not flux:
+                    flux = 0
                 if(flux):
                     g.agregarVertice(vertice, dir, int(flux))
                 else:
@@ -264,18 +272,25 @@ def agregarArista():
         peso = request.form.get('peso')
         fMin = request.form.get('flujomin')
         cost = request.form.get('costo')
-
         #Cambiar clave
         i = g.numero_aristas
         mensaje = ""
         
         if (g.dirigida == True):
+            if not peso:
+                peso = 0
+            if not fMin:
+                fMin = 0
+            if not cost:
+                cost = 0
             if(g.agregarArista("e"+str(i+1), a1, a2, int(peso), int(fMin), int(cost))):
                 mensaje += "Se agrego la arista exitosamente!"
             else:
                 mensaje += "Error al agregar arista"
         else:
-            if(g.agregarArista("e"+str(i+1), a1, a2)):
+            if not peso:
+                peso = 0
+            if(g.agregarArista("e"+str(i+1), a1, a2, int(peso))):
                 mensaje += "Se agrego la arista exitosamente!"
             else:
                 mensaje += "Error al agregar arista"
@@ -292,8 +307,13 @@ def buscarVertice():
         v = g.buscarVertice(vertice)
         mensaje = ""
         if v:
-            mensaje += "Se encontro el vertice exitosamente!"
-            v.color= 1
+            mensaje += "Se encontro el vertice: " + v.id +"!"
+            if v.color == '+':
+                v.color = 10
+            elif v.color == '-':
+                v.color = 20
+            else:
+                v.color = 1
         else:
             mensaje += "No se encontro el vertice"
         g.mensaje.append(mensaje)
@@ -303,11 +323,20 @@ def buscarVertice():
 def buscarArista():
     g.restablecerColores()
     g.mensaje = []
+    mensaje= ""
     if(request.method == 'POST'):
         a1 = request.form.get('id_a1_b')
         a2 = request.form.get('id_a2_b')
         a = g.buscarArista(a1, a2)
-        a.color= 1
+        if a:
+            a.color= 1
+            mensaje = "La arista esta marcado con rojo"
+        else:
+            if g.dirigida:
+                mensaje = "No se encontro la arista de " + a1 + " -> " + a2
+            else:
+                mensaje = "No se encontro la arista de " + a1 + " <-> " + a2
+    g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/eliminarVertice', methods= ['POST'])
@@ -353,7 +382,7 @@ def copiarGrafica():
 
 @app.route('/cargarCopia')
 def cargarCopia():
-    g.copiar(c, True)
+    g.copiar(c)
     g.mensaje = []
     mensaje = "Se cargo la copia de la grafica exitosamente!"
     g.mensaje.append(mensaje)
@@ -408,6 +437,7 @@ def fleury():
 
 @app.route('/busquedaAncho')
 def busquedaAncho():
+    g.restablecerColores()
     (grafica_ancho, bosque) = g.busquedas(1)
     g.mensaje = []
 
@@ -418,6 +448,7 @@ def busquedaAncho():
 
 @app.route('/busquedaProfundo')
 def busquedaProfundo():
+    g.restablecerColores()
     (grafica_profundo, bosque) = g.busquedas(0)
     g.mensaje = []
     g.copiar(grafica_profundo)
@@ -427,10 +458,10 @@ def busquedaProfundo():
 
 @app.route('/kruskal')
 def kruskal():
+    g.restablecerColores()
     (grafica_kruskal, peso_grafica_kruskal, bosque_kruskal) = g.kruskal()
     g.mensaje = []
     mensaje = ""
-    print(peso_grafica)
     if bosque_kruskal:
         mensaje = "El peso del bosque es: " + str(peso_grafica_kruskal)
     else:
@@ -441,6 +472,7 @@ def kruskal():
 
 @app.route('/prim')
 def prim():
+    g.restablecerColores()
     (grafica_prim, peso_grafica_prim, bosque_prim) = g.prim()
     g.mensaje = []
     mensaje = ""

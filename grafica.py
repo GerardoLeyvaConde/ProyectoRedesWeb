@@ -407,11 +407,20 @@ class Grafica:
             self.lista_vertices[vertice].peso_minimo= math.inf
 
     def restablecerColores(self):
+        self.peso_grafica = 0
+        self.costo = 0
         for vertice in self.lista_vertices:
+            self.lista_vertices[vertice].peso_actual = math.inf
             if self.lista_vertices[vertice].color == '+' or self.lista_vertices[vertice].color == '-':
                 continue
-            self.lista_vertices[vertice].color = -1
+            if self.lista_vertices[vertice].color == 10:
+                self.lista_vertices[vertice].color = '+'
+            elif self.lista_vertices[vertice].color == 20:
+                self.lista_vertices[vertice].color = '-'
+            else:
+                self.lista_vertices[vertice].color = -1
         for arista in self.lista_aristas:
+            self.lista_aristas[arista].peso_actual = 0
             self.lista_aristas[arista].color = -1
     """
     Función auxiliar que ayuda a determinar si la grafica es bipartita,
@@ -1326,6 +1335,40 @@ class Grafica:
             copia.costo -= (flujo * coste)
             (copia, flujo, coste) = metodoSimplex(copia)
 
+        for ver in copia.lista_vertices:
+            delta = copia.lista_vertices[ver].flujo
+            for a in aristas_peso_minimo:
+                if ver == a.origen:
+                    delta += a.peso_actual
+                elif ver == a.destino:
+                    delta -= a.peso_actual
+
+        vertgroup = list()
+        flujos_flojos = list()
+        for verx in copia.lista_vertices:
+            f = 0
+            for aris in copia.lista_aristas:
+                if copia.lista_aristas[aris].origen == verx:
+                    f -= copia.lista_aristas[aris].peso_actual
+                elif copia.lista_aristas[aris].destino == verx:
+                    f += copia.lista_aristas[aris].peso_actual
+            
+            if f != 0:
+                vertgroup.append(verx)
+                flujos_flojos.append(f)
+
+
+        for arista in copia.lista_aristas:
+            if (copia.lista_aristas[arista].origen in vertgroup) and (copia.lista_aristas[arista].destino in vertgroup):
+                indiceO = vertgroup.index(copia.lista_aristas[arista].origen)
+                indiceD = vertgroup.index(copia.lista_aristas[arista].destino)
+                flujo_disponible = copia.lista_aristas[arista].peso_actual - copia.lista_aristas[arista].peso_min
+
+                if flujos_flojos[indiceO] < 0 and flujos_flojos[indiceD] > 0:
+                    flujo_disponible = min(flujo_disponible, flujos_flojos[indiceO] * -1)
+                    flujo_disponible = min(flujo_disponible, flujos_flojos[indiceD])
+                    copia.lista_aristas[arista].peso_actual -= flujo_disponible
+                    copia.costo -= flujo_disponible * copia.lista_aristas[arista].costo
         return copia
         
 def metodoSimplex(grafica):

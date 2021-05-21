@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}"> 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style type="text/css">
@@ -165,19 +166,21 @@
                                                         <input class="input is-success" type="text" name="id_a2" placeholder="ID destino">
                                                     </div>
                                                 </div>
-                                                {% if grafica.dirigida == True %}
                                                     <div class="field is-horizontal">
+                                                        {% if grafica.dirigida == True %}
+                                                            <div class="control is-expanded">
+                                                                <input class="input is-success" type="number" name="flujomin" placeholder="Flujo mínimo">
+                                                            </div>
+                                                        {% endif %}
                                                         <div class="control is-expanded">
                                                             <input class="input is-success" type="number" name="peso" placeholder="Peso">
                                                         </div>
-                                                        <div class="control is-expanded">
-                                                            <input class="input is-success" type="number" name="flujomin" placeholder="Flujo mínimo">
-                                                        </div>
-                                                        <div class="control is-expanded">
-                                                            <input class="input is-success" type="number" name="costo" placeholder="Costo">
-                                                        </div>
+                                                        {% if grafica.dirigida == True %}
+                                                            <div class="control is-expanded">
+                                                                <input class="input is-success" type="number" name="costo" placeholder="Costo">
+                                                            </div>
+                                                        {% endif %}
                                                     </div>
-                                                {% endif %}
                                                 <div class="control">
                                                     <button type="submit" class="button is-success is-fullwidth has-background-success-dark">Agregar</button>
                                                 </div>
@@ -319,29 +322,33 @@
                     <ul class="menu-list">
                         <li><a class="has-text-link-dark">Número de vertices: {{ num_v }}</a></li>
                         <li><a class="has-text-success-dark">Número de aristas: {{ num_a }}</a></li>
-                        {% if num_v > 0%}
-                            <li>
-                                <div class="dropdown dg fwidth is-fullwidth">
-                                    <div class="dropdown-trigger dg-t fwidth is-fullwidth">
-                                        <button class="button just is-fullwidth is-link is-light" aria-haspopup="true" aria-controls="dropdown-menu">
-                                            <span>Grado de los vertices</span>
-                                            <span class="icon">
-                                                <ion-icon class="dg-i" name="chevron-down-outline"></ion-icon>
-                                            </span>
-                                        </button>
-                                    </div>
-                                    <div class="dropdown-menu dg-m" id="dropdown-menu" role="menu">
-                                        <div class="dropdown-content has-background-link-light pt-1 px-4 pb-4">
-                                            <p class="dropdown-item">
+                    
+                        <li>
+                            <div class="dropdown dg fwidth is-fullwidth">
+                                <div class="dropdown-trigger dg-t fwidth is-fullwidth">
+                                    <button class="button just is-fullwidth is-link is-light" aria-haspopup="true" aria-controls="dropdown-menu">
+                                        <span>Grado de los vertices</span>
+                                        <span class="icon">
+                                            <ion-icon class="dg-i" name="chevron-down-outline"></ion-icon>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu dg-m" id="dropdown-menu" role="menu">
+                                    <div class="dropdown-content has-background-link-light pt-1 px-4 pb-4">
+                                        <p class="dropdown-item">
+                                            {% if num_v > 0 %}
                                                 {% for v in grafica %}
                                                     <p>"{{v.id}}" : {{v.obtenerGrado(False)}}</p>
                                                 {% endfor %}
-                                            </p>
-                                        </div>
+                                            {% else %}
+                                                <p> No hay vértices aún</p>
+                                            {% endif %}
+                                        </p>
                                     </div>
                                 </div>
-                            </li>
-                        {% endif %}
+                            </div>
+                        </li>
+                        
                     </ul>
                 </div>
             </aside>
@@ -434,15 +441,17 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="navbar-item has-dropdown is-hoverable" id="nav_algo5">
+                            <div class="navbar-item has-dropdown is-hoverable">
                                 <a class="navbar-link">Flujos</a>
                                 <div class="navbar-dropdown">
-                                    <a class="navbar-item" href="/fordFulkerson">Ford Fulkerson</a>
+                                    <div class="menu-list" id="nav_algo5">
+                                        <button class="button just is-fullwidth" onclick="window.location.href='/fordFulkerson'">Ford Fulkerson</button>
+                                    </div>
                                     <a class="menu-list">
-                                        <div class="dropdown dcp fwidth is-fullwidth">
+                                        <div class="dropdown dcp fwidth is-fullwidth" id="nav_algo6">
                                             <div class="dropdown-trigger dcp-t fwidth is-fullwidth">
                                                 <button class="button just is-fullwidth" aria-haspopup="true" aria-controls="dropdown-menu">
-                                                    <span>Flujo Donsumo Minimo Primal</span>
+                                                    <span>Flujo Consumo Minimo Primal</span>
                                                 </button>
                                             </div>
                                             <div class="dropdown-menu dcp-m" id="dropdown-menu" role="menu">
@@ -466,7 +475,7 @@
                                         </div>
                                     </a>
                                     <a class="menu-list">
-                                        <div class="dropdown dcd fwidth is-fullwidth">
+                                        <div class="dropdown dcd fwidth is-fullwidth" id="nav_algo7">
                                             <div class="dropdown-trigger dcd-t fwidth is-fullwidth">
                                                 <button class="button just is-fullwidth" aria-haspopup="true" aria-controls="dropdown-menu">
                                                     <span>Flujo Consumo Minimo Dual</span>
@@ -492,13 +501,20 @@
                                             </div>
                                         </div>
                                     </a>
-                                    <a class="navbar-item" href="/simplex">Simplex</a>
+                                    <div class="menu-list" id="nav_algo8">
+                                        <button class="button just is-fullwidth" onclick="window.location.href='/simplex'">Simplex</button>
+                                    </div>
                                 </div>
                             </div>
                         {% endif %}
                     </div>
                 </div>
                 <div class="navbar-end">
+                    <div class="navbar-item">
+                        <button class="button just is-fullwidth is-info is-light has-background-light" onclick="informacion()">
+                            <ion-icon class="icon is-big is-light" name="information-circle-outline"></ion-icon>
+                        </button>
+                    </div>
                     <div class="navbar-item">
                         <div class="dropdown gra fwidth is-fullwidth">
                             <div class="dropdown-trigger gra-t fwidth is-fullwidth">
@@ -688,6 +704,28 @@
             }
         }
 
+        function informacion(){
+            alert("INFORMACIÓN DEL PROGRAMA:\nEn la parte izquierda se tienen los botones que te ayudan a construir tu gráfica"+'\n'+
+            "En la parte superior derecha puedes seleccionar el tipo de gráfica que quieres y centrar la gráfica si la pierdes"+'\n'+
+            "En la parte superior centro tienes los algoritmos que puedes probar con la gráfica que creaste(Es necesario tener al menos un vértice para ejecutar los algoritmos)"+'\n\n'+
+            "INFORMACIÓN DE LOS ALGORITMOS:"+'\n'+
+            "-Algoritmos de gráficas no dirigidas:"+'\n\t'+
+                "->Buscar bipartición: Te indica si tu gráfica es bipartita"+'\n\t'+
+                "->Paseo de Euler: Te indica las aristas por las cuales puedes formar un paseo de Euler en tu gráfica"+'\n\t'+
+                "->Busqueda a lo ancho: Encuentra un árbol de expansión a lo ancho en tu gráfica"+'\n\t'+
+                "->Busqueda a lo profundo: Encuentra un árbol de expansión a lo profundo en tu gráfica"+'\n\t'+
+                "->Kruskal: Encuentra un árbol de expansión con el método Kruskal en tu gráfica (requiere aristas con pesos)"+'\n\t'+
+                "->Prim: Encuentra un árbol de expansión con el método Prim en tu gráfica (requiere aristas con pesos)"+'\n'+
+            "-Algoritmos de gráficas dirigidas:"+'\n\t'+
+                "->Dijkstra: Encuentra la ruta más corta de un vértice dado al resto de los vértices de la gráfica formando una arborescencia."+'\n\t'+
+                "->Floyd: Encuentra la ruta más corta entre cada par de vértices formando una arborescencia por cada vértice (Muestra la arborecencia de un vértice deseado)." +'\n\t'+
+                "->Ford Fulkerson: Encuentra el flujo máximo de una red de transporte (Requiere al menos una fuente y un sumidero)." +'\n\t' +
+                "->Primal (eliminación de ciclos negativos): Encuentra un flujo objetivo con un coste mínimo en una red de transporte (Requiere al menos una fuente y un sumidero)." +'\n\t'+
+                "->Dual (rutas más cortas): Encuentra un flujo objetivo con un coste mínimo en una red de transporte (Requiere al menos una fuente y un sumidero)." +'\n\t'+
+                "->Simplex: Encuentra un flujo de coste mínimo que satisface la oferta y demanda de los vértices en una red de transporte con restriciones."
+            );
+        }
+
         var dir = "{{ grafica.dirigida }}"
 
         function actualizarDireccion(){
@@ -733,63 +771,70 @@
             if(nVert == 0){
                 document.getElementById("nav_algo4").classList.add('disabled-link')
                 document.getElementById("nav_algo5").classList.add('disabled-link')
+                document.getElementById("nav_algo8").classList.add('disabled-link')
             } else {
                 document.getElementById("nav_algo4").classList.remove('disabled-link')
                 document.getElementById("nav_algo5").classList.remove('disabled-link')
+                document.getElementById("nav_algo8").classList.remove('disabled-link')
             }
-        }
+        
 
         var f = 0
         var s = 0
 
         document.getElementById("nav_algo5").classList.add('disabled-link')
+        document.getElementById("nav_algo6").classList.add('disabled-link')
+        document.getElementById("nav_algo7").classList.add('disabled-link')
 
-        {% for v in grafica%}
+        {% for v in grafica %}
             {% if v.color == '+' %}
                 f++
             {% elif v.color == '-' %}
                 s++
             {% endif %}
-        {% endfor %}
+       {% endfor %}
 
         if (f > 0 && s > 0){
             document.getElementById("nav_algo5").classList.remove('disabled-link')
+            document.getElementById("nav_algo6").classList.remove('disabled-link')
+            document.getElementById("nav_algo7").classList.remove('disabled-link')
         }
 
         // PELIGRO PELIGRO PELIGRO
         // MANTENERSE ATRÁS DE ESTA LINEA
         // VVV CUARENTENA VVV
-        var dff = document.querySelector('.dff');
-        var dfft = document.querySelector('.dff-t');
-        dfft.addEventListener('click', function(event) {
-            event.stopPropagation();
-            for (l of lista) if(l != dff) l.classList.remove('is-active')
-            dff.classList.toggle('is-active');
-        });
+            var dff = document.querySelector('.dff');
+            var dfft = document.querySelector('.dff-t');
+            dfft.addEventListener('click', function(event) {
+                event.stopPropagation();
+                for (l of lista) if(l != dff) l.classList.remove('is-active')
+                dff.classList.toggle('is-active');
+            });
 
-        var ddd = document.querySelector('.ddd');
-        var dddt = document.querySelector('.ddd-t');
-        dddt.addEventListener('click', function(event) {
-            event.stopPropagation();
-            for (l of lista) if(l != ddd) l.classList.remove('is-active')
-            ddd.classList.toggle('is-active');
-        });
+            var ddd = document.querySelector('.ddd');
+            var dddt = document.querySelector('.ddd-t');
+            dddt.addEventListener('click', function(event) {
+                event.stopPropagation();
+                for (l of lista) if(l != ddd) l.classList.remove('is-active')
+                ddd.classList.toggle('is-active');
+            });
 
-        var dcp = document.querySelector('.dcp');
-        var dcpt = document.querySelector('.dcp-t');
-        dcpt.addEventListener('click', function(event) {
-            event.stopPropagation();
-            for (l of lista) if(l != dcp) l.classList.remove('is-active')
-            dcp.classList.toggle('is-active');
-        });
+            var dcp = document.querySelector('.dcp');
+            var dcpt = document.querySelector('.dcp-t');
+            dcpt.addEventListener('click', function(event) {
+                event.stopPropagation();
+                for (l of lista) if(l != dcp) l.classList.remove('is-active')
+                dcp.classList.toggle('is-active');
+            });
 
-        var dcd = document.querySelector('.dcd');
-        var dcdt = document.querySelector('.dcd-t');
-        dcdt.addEventListener('click', function(event) {
-            event.stopPropagation();
-            for (l of lista) if(l != dcd) l.classList.remove('is-active')
-            dcd.classList.toggle('is-active');
-        });
+            var dcd = document.querySelector('.dcd');
+            var dcdt = document.querySelector('.dcd-t');
+            dcdt.addEventListener('click', function(event) {
+                event.stopPropagation();
+                for (l of lista) if(l != dcd) l.classList.remove('is-active')
+                dcd.classList.toggle('is-active');
+            });
+        }
     </script>
 </body>
 </html>
