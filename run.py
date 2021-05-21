@@ -268,11 +268,19 @@ def agregarArista():
         #Cambiar clave
         i = g.numero_aristas
         mensaje = ""
-        if(g.agregarArista("e"+str(i+1), a1, a2, int(peso), int(fMin), int(cost))):
-            mensaje += "Se agrego la arista exitosamente!"
+        
+        if (g.dirigida == True):
+            if(g.agregarArista("e"+str(i+1), a1, a2, int(peso), int(fMin), int(cost))):
+                mensaje += "Se agrego la arista exitosamente!"
+            else:
+                mensaje += "Error al agregar arista"
         else:
-            mensaje += "Error al agregar arista"
+            if(g.agregarArista("e"+str(i+1), a1, a2)):
+                mensaje += "Se agrego la arista exitosamente!"
+            else:
+                mensaje += "Error al agregar arista"
         g.mensaje.append(mensaje)
+
     return redirect(url_for('index'))
 
 @app.route('/buscarVertice', methods= ['POST'])
