@@ -9,7 +9,6 @@ c= Grafica()
 mensaje = "Aqui se muestran los mensajes"
 g.mensaje.append(mensaje)
 #dirigida= Grafica(True)
-
 g.agregarVertice("a", '+')
 #g.lista_vertices['a'].flujo = 1
 g.agregarVertice("b", '+')
@@ -37,13 +36,60 @@ g.lista_vertices['h'].peso_minimo = 7
 g.lista_vertices['h'].peso_max = 20
 g.lista_vertices['i'].peso_minimo = 9
 g.lista_vertices['i'].peso_minimo = 21
-#g.agregarArista("e1", "a", "b", 5, 2, 1)
-#g.agregarArista("e2", "a", "d", 3, 1, -2)
-#g.agregarArista("e3", "b", "d", 2, 0, -1)
-#g.agregarArista("e4", "c", "a", 5, 0, 5)
-#g.agregarArista("e5", "c", "b", 2, 0, 1)
-#g.agregarArista("e6", "d", "c", 5, 0, 3)
+#g.agregarVertice("1")
+#g.lista_vertices['1'].flujo = 1
+#g.agregarVertice("2")
+#g.lista_vertices['2'].flujo = 0
+#g.agregarVertice("3")
+#g.lista_vertices['3'].flujo = 2
+#g.agregarVertice("4")
+#g.lista_vertices['4'].flujo = -3
+#g.agregarVertice("e")
+#g.agregarVertice("f")
+#g.agregarVertice("g", '-')
+#g.agregarVertice("h")
+#g.agregarVertice("i")
+#g.agregarVertice("j", '-')
+#g.agregarVertice("k")
+#g.agregarVertice("l")
+#g.agregarVertice("m", '-')
+#g.agregarVertice("n", '-')
+#g.agregarVertice("o")
+#g.agregarVertice("p")
+#g.agregarVertice("q")
+#g.agregarVertice("r")
+#g.agregarVertice("s")
+#g.lista_vertices['f'].peso_minimo = 3
+#g.lista_vertices['f'].peso_max = 25
+#g.lista_vertices['i'].peso_minimo = 9
+#g.lista_vertices['i'].peso_minimo = 21
+#g.agregarArista("e1", "1", "2", 5, 2, 1)
+#g.agregarArista("e2", "1", "4", 3, 1, -2)
+#g.agregarArista("e3", "2", "4", 2, 0, -1)
+#g.agregarArista("e4", "3", "1", 5, 0, 5)
+#g.agregarArista("e5", "3", "2", 2, 0, 1)
+#g.agregarArista("e6", "4", "3", 5, 0, 3)
 """
+g.agregarArista("e1","a","b", 12, 0, 7)
+g.agregarArista("e2","a","c", 26, 0, 1)
+g.agregarArista("e3","a","d", 13, 0, 10)
+g.agregarArista("e4","b","e", 26, 0, 3)
+g.agregarArista("e5","c","b", 4, 0 ,5)
+g.agregarArista("e6","c","d", 40, 0, 2)
+g.agregarArista("e7","c", "e", 13, 0 ,7)
+g.agregarArista("e8","c","f", 19,0,6)
+g.agregarArista("e9","d","b", 10,0,2)
+g.agregarArista("e10","d","f", 26,0,3)
+g.agregarArista("e11","e","f", 30,0,10)
+g.agregarArista("e12","e","g", 50,0,3)
+g.agregarArista("e13","f","g", 41,0,2)
+#g.agregarArista("e14","h","f", 10,0,-1)
+#g.agregarArista("e15","h","g", 14,0,5)
+#g.agregarArista("e16","h","i", 10,0,2)
+#g.agregarArista("e17","h","j", 31,0,-2)
+#g.agregarArista("e18","i","k", 25,0,3)
+#g.agregarArista("e19","k","j", 70,0,6)
+
 g.agregarArista("e1","a","b", 6)
 g.lista_aristas['e1'].costo = 1
 g.agregarArista("e2","a","c", 3)
@@ -238,27 +284,24 @@ def agregarVertice():
     if(request.method == 'POST'):
         vertice = request.form.get('id_vertice')
         if(g.dirigida == True):
-            dir = request.form.get('fuentesumid')
+            fs = request.form.get('fuentesumid')
             flux = request.form.get('flujo')
-            if(dir == 'None'):
-                if not flux:
-                    flux = 0
-                if(flux):
-                    g.agregarVertice(vertice, flujo=int(flux))
-                else:
-                    g.agregarVertice(vertice)
+            rmin = request.form.get('restmin')
+            rmax = request.form.get('restmax')
+            if not flux:
+                flux = 0
+            if(fs == 'None'):
+                g.agregarVertice(vertice, flujo= int(flux))
             else:
-                if not flux:
-                    flux = 0
-                if(flux):
-                    g.agregarVertice(vertice, dir, int(flux))
-                else:
-                    g.agregarVertice(vertice, dir)
+                g.agregarVertice(vertice, fs, int(flux))
+            if rmin:
+                g.lista_vertices[vertice].peso_minimo = int(rmin)
+            if rmax:
+                g.lista_vertices[vertice].peso_max = int(rmax)
         else:
             g.agregarVertice(vertice)
 
-
-        mensaje = "Se agrego el vertice exitosamente!"
+        mensaje = "Se agrego el vertice "+vertice+" exitosamente!"
         g.mensaje.append(mensaje)
         print(vertice)
     return redirect(url_for('index'))

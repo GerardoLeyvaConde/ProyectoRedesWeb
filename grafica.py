@@ -892,7 +892,7 @@ class Grafica:
         i = 0
 
         for v in grafiquita:
-            if v.peso_minimo != math.inf and v.peso_min != 0:
+            if v.peso_minimo != math.inf and v.peso_minimo != 0:
                 vertices_min.append(v)
             if v.color == '+' or v.color == '-':
                 i += 1
@@ -976,6 +976,7 @@ class Grafica:
                 for b in vertaux.lista_salientes:
                     auxrista = grafiquita.buscarArista(vertaux.id, b)
                     grafiquita.agregarArista(nombres_aristas[0], v.id, b , auxrista.peso, auxrista.peso_min)
+                    grafiquita.lista_aristas[nombres_aristas[0]].peso_actual = auxrista.peso_actual
                     nombres_aristas = nombres_aristas[1:]
 
                 grafiquita.eliminarVertice(vertaux.id)
@@ -1151,6 +1152,8 @@ class Grafica:
             if ya == 2:
                 break
 
+        print(grafiquita.lista_aristas['0aux'])
+        marginal.copiar(grafiquita)
         for a in grafiquita.lista_aristas:
             marginal.agregarArista(grafiquita.lista_aristas[a].id + "aux", grafiquita.lista_aristas[a].destino, grafiquita.lista_aristas[a].origen, grafiquita.lista_aristas[a].peso_actual, 0, grafiquita.lista_aristas[a].costo * -1)
             marginal.lista_aristas[a].peso -= grafiquita.lista_aristas[a].peso_actual
@@ -1604,6 +1607,7 @@ def dijkstraGeneralPeso(grafica, inicio):
         print(v)
 
     return (grafiquita, 0, 1)
+
 def fordFulkerson(grafiquita, maximo):
     cola = list()
     fuente = None
@@ -1702,11 +1706,11 @@ def agregarFuentesYsumideros(grafica):
     for v in grafica:
         if v.color == '+':
             v.color = 'a'
-            grafica.agregarArista("aux" + str(i),"inicio", v.id, math.inf)
+            grafica.agregarArista(str(i) + "aux","inicio", v.id, math.inf)
             i += 1
         if v.color == '-':
             v.color = 'b'
-            grafica.agregarArista("fin" + str(i),v.id, "fin", math.inf)
+            grafica.agregarArista(str(i) + "fin",v.id, "fin", math.inf)
             i += 1
     v = grafica.buscarVertice("inicio")
     v.color = '+'
