@@ -266,7 +266,7 @@ def index():
 def direccionGrafica():
     g.vaciarGrafica()
     g.mensaje = []
-    mensaje = "La grafica se camio a"
+    mensaje = "La gráfica se cambio a"
 
     if g.dirigida:
         g.dirigida = False
@@ -301,7 +301,7 @@ def agregarVertice():
         else:
             g.agregarVertice(vertice)
 
-        mensaje = "Se agrego el vertice "+vertice+" exitosamente!"
+        mensaje = "Se agregó el vértice "+vertice+" correctamente!"
         g.mensaje.append(mensaje)
         print(vertice)
     return redirect(url_for('index'))
@@ -318,7 +318,7 @@ def agregarArista():
         #Cambiar clave
         i = g.numero_aristas
         mensaje = ""
-        
+
         if (g.dirigida == True):
             if not peso:
                 peso = 0
@@ -327,16 +327,16 @@ def agregarArista():
             if not cost:
                 cost = 0
             if(g.agregarArista("e"+str(i+1), a1, a2, int(peso), int(fMin), int(cost))):
-                mensaje += "Se agrego la arista exitosamente!"
+                mensaje += "Se agregó la arista correctamente!"
             else:
-                mensaje += "Error al agregar arista"
+                mensaje += "Error al agregar la arista, revise que los vértices existan"
         else:
             if not peso:
                 peso = 0
             if(g.agregarArista("e"+str(i+1), a1, a2, int(peso))):
-                mensaje += "Se agrego la arista exitosamente!"
+                mensaje += "Se agregó la arista correctamente!"
             else:
-                mensaje += "Error al agregar arista"
+                mensaje += "Error al agregar la arista, revise que los vértices existan"
         g.mensaje.append(mensaje)
 
     return redirect(url_for('index'))
@@ -350,7 +350,7 @@ def buscarVertice():
         v = g.buscarVertice(vertice)
         mensaje = ""
         if v:
-            mensaje += "Se encontro el vertice: " + v.id +"!"
+            mensaje += "Se encontró el vértice: " + v.id +"!"
             if v.color == '+':
                 v.color = 10
             elif v.color == '-':
@@ -358,7 +358,7 @@ def buscarVertice():
             else:
                 v.color = 1
         else:
-            mensaje += "No se encontro el vertice"
+            mensaje += "No existe el vértice " + vertice
         g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
@@ -373,12 +373,12 @@ def buscarArista():
         a = g.buscarArista(a1, a2)
         if a:
             a.color= 1
-            mensaje = "La arista esta marcado con rojo"
+            mensaje = "La arista esta marcada con rojo"
         else:
             if g.dirigida:
-                mensaje = "No se encontro la arista de " + a1 + " -> " + a2
+                mensaje = "No se encontró la arista " + a1 + " -> " + a2
             else:
-                mensaje = "No se encontro la arista de " + a1 + " <-> " + a2
+                mensaje = "No se encontró la arista " + a1 + " <-> " + a2
     g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
@@ -397,7 +397,6 @@ def eliminarArista():
     if(request.method == 'POST'):
         a1 = request.form.get('id_a1')
         a2 = request.form.get('id_a2')
-        #Cambiar clave
         g.eliminarArista(a1, a2)
     return redirect(url_for('index'))
 
@@ -419,7 +418,7 @@ def vaciarGrafica():
 def copiarGrafica():
     c.copiar(g)
     g.mensaje = []
-    mensaje = "Se copio la grafica exitosamente"
+    mensaje = "Se copió la grafica correctamente"
     g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
@@ -427,7 +426,7 @@ def copiarGrafica():
 def cargarCopia():
     g.copiar(c)
     g.mensaje = []
-    mensaje = "Se cargo la copia de la grafica exitosamente!"
+    mensaje = "Se cargó la copia de la grafica correctamente!"
     g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
@@ -443,9 +442,9 @@ def esBipartita():
             vertice.color = 1
         for vertice in v:
             vertice.color = 0
-        mensaje += "La grafica es bipartita"
+        mensaje += "La gráfica es bipartita, se muestran de diferentes colores los dos grupos"
     else:
-        mensaje += "La grafica no es bipartita"
+        mensaje += "La gráfica no es bipartita"
     g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
@@ -485,7 +484,7 @@ def busquedaAncho():
     g.mensaje = []
 
     g.copiar(grafica_ancho)
-    mensaje = "Se realizo la busqueda a lo ancho exitosamente!"
+    mensaje = "Se realizó la busqueda a lo ancho correctamente!"
     g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
@@ -495,7 +494,7 @@ def busquedaProfundo():
     (grafica_profundo, bosque) = g.busquedas(0)
     g.mensaje = []
     g.copiar(grafica_profundo)
-    mensaje = "Se realizo la busqueda a lo profundo exitosamente!"
+    mensaje = "Se realizó la busqueda a lo profundo correctamente!"
     g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
@@ -508,7 +507,7 @@ def kruskal():
     if bosque_kruskal:
         mensaje = "El peso del bosque es: " + str(peso_grafica_kruskal)
     else:
-        mensaje = "El peso de la grafica es: " + str(peso_grafica_kruskal)
+        mensaje = "El peso del árbol es: " + str(peso_grafica_kruskal)
     g.copiar(grafica_kruskal)
     g.mensaje.append(mensaje)
     return redirect(url_for('index'))
@@ -522,7 +521,7 @@ def prim():
     if bosque_prim:
         mensaje = "El peso del bosque es: " + str(peso_grafica_prim)
     else:
-        mensaje = "El peso de la grafica es: " + str(peso_grafica_prim)
+        mensaje = "El peso del árbol es: " + str(peso_grafica_prim)
     g.copiar(grafica_prim)
     g.mensaje.append(mensaje)
     return redirect(url_for('index'))
@@ -537,7 +536,7 @@ def dijkstra():
         mensaje = ""
         if peso_ciclo_dijkstra < 0:
             print(ciclo_negativo_dijkstra)
-            mensaje += "Se encontro un ciclo negativo con ruta: ["
+            mensaje += "Se encontró un ciclo negativo con ruta: ["
             for i in range(len(ciclo_negativo_dijkstra) - 1):
                     origen = ciclo_negativo_dijkstra[0]
                     destino = ciclo_negativo_dijkstra[1]
@@ -548,7 +547,7 @@ def dijkstra():
             mensaje += str(destino) + "]"
         else:
             g.copiar(grafica_dijkstra)
-            mensaje += "Se realizo el algortimo de Dijkstra exitosamente!"
+            mensaje += "Se realizó el algortimo de Dijkstra correctamente!"
         g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
@@ -562,7 +561,7 @@ def floyd():
 
         if booleano == True:
             print(grafica_floyd)
-            mensaje = "Se encontro un ciclo negativo con ruta: ["
+            mensaje = "Se encontró un ciclo negativo con ruta: ["
             for i in range(len(grafica_floyd) - 1):
                 origen = grafica_floyd[0]
                 destino = grafica_floyd[1]
@@ -604,14 +603,14 @@ def fordFulkerson():
     g.restablecerColores()
     grafica_fulkerson = g.AlgoritmoFordFulkerson()
     g.mensaje = []
-    mensaje = "Se realizo Ford Fulkerson exitosamente"
+    mensaje = "Se realizó Ford Fulkerson correctamente!"
     g.copiar(grafica_fulkerson)
     g.mensaje.append(mensaje)
     for a in g.lista_aristas:
         if g.lista_aristas[a].peso_actual > 0:
             g.lista_aristas[a].color = 1
         print(g.lista_aristas[a])
-    mensaje = "El flujo de la grafica es: " + str(g.peso_grafica)
+    mensaje = "El flujo de la gráfica es: " + str(g.peso_grafica)
     g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
@@ -623,14 +622,14 @@ def flujoCosteMinimoPrimal():
         flujo = int(flujo)
         grafica_primal = g.flujoCosteMinimoPrimal(flujo)
         g.mensaje = []
-        mensaje = "Se realizo correctamente el calculo de la cantidad de flujo primal"
+        mensaje = "Se realizó correctamente el cálculo del costo de flujo Primal"
         g.copiar(grafica_primal)
         g.mensaje.append(mensaje)
         for a in g.lista_aristas:
             if g.lista_aristas[a].peso_actual > 0:
                 g.lista_aristas[a].color = 1
             print(g.lista_aristas[a])
-        mensaje = "El costo de la grafica es: " + str(g.costo)
+        mensaje = "El costo de la gráfica es: " + str(g.costo)
         g.mensaje.append(mensaje)
 
     return redirect(url_for('index'))
@@ -644,17 +643,17 @@ def flujoConsumoMinimoDual():
         flujo = int(flujo)
         grafica_dual = g.flujoConsumoMinimoDual(flujo)
         if grafica_dual == False:
-            mensaje = "No se cumplio el flujo"
+            mensaje = "No se cumplió el flujo"
             g.mensaje.append(mensaje)
         else:
-            mensaje = "Se realizo correctamente el calculo de la cantidad de flujo dual"
+            mensaje = "Se realizó correctamente el cálculo del costo de flujo Dual"
             g.copiar(grafica_dual)
             g.mensaje.append(mensaje)
             for a in g.lista_aristas:
                 if g.lista_aristas[a].peso_actual > 0:
                     g.lista_aristas[a].color = 1
                 print(g.lista_aristas[a])
-            mensaje = "El costo de la grafica es: " + str(g.costo)
+            mensaje = "El costo de la gráfica es: " + str(g.costo)
             g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
@@ -664,14 +663,14 @@ def simplex():
     g.mensaje = []
 
     grafica_simplex = g.simplex()
-    mensaje = "Se realizo correctamente el calculo de la cantidad de flujo simplex"
+    mensaje = "Se realizó correctamente el cálculo del costo de flujo Simplex"
     g.copiar(grafica_simplex)
     g.mensaje.append(mensaje)
 
     for a in g.lista_aristas:
         if g.lista_aristas[a].peso_actual > 0:
             g.lista_aristas[a].color = 1
-    mensaje = "El costo de la grafica es: " + str(g.costo)
+    mensaje = "El costo de la gráfica es: " + str(g.costo)
     g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 if __name__ == '__main__':
