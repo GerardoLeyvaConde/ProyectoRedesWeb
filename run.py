@@ -31,8 +31,8 @@ g.agregarArista("e7","f","g")
 #g.agregarArista("e8","c","d")
 """
 ################################################
-#g.dirigida = False
-"""
+g.dirigida = False
+
 #Euler
 
 g.agregarVertice("a")
@@ -65,7 +65,7 @@ g.agregarArista("e15","g","h")
 #g.agregarArista("e16","c","a")
 
 g.agregarArista("e16","h","i")
-"""
+
 ################################################
 #g.dirigida = False
 """
@@ -488,8 +488,8 @@ g.agregarArista("e29","m","k", 29)
 g.agregarArista("e30","n","m", 54)
 """
 ################################################
-g.dirigida = True
-
+#g.dirigida = True
+"""
 #Primal con flujo 30
 
 g.agregarVertice("a", '+')
@@ -527,7 +527,7 @@ g.agregarArista("e16","h","i", 10,0,2)
 g.agregarArista("e17","h","j", 31,0,-2)
 g.agregarArista("e18","i","k", 25,0,3)
 g.agregarArista("e19","k","j", 70,0,6)
-
+"""
 ################################################
 #g.dirigida = True
 """
@@ -790,7 +790,25 @@ def fleury():
 
     (ruta, cerrado, paseo) = g.Fleury()
     print(ruta)
-    
+
+    ruta2 = list()
+    aristas_ruta = list()
+    ruta2 = ruta.copy()
+
+    for i in range(len(ruta2) - 1):
+        origen2 = ruta2[0]
+        destino2 = ruta2[1]
+        ruta2 = ruta2[1:]
+        for ar in g.lista_aristas:
+            if (g.lista_vertices[origen2].existeConexion(destino2, False)):
+                if ar in aristas_ruta:
+                    continue
+                else:
+                    aristas_ruta.append(ar)
+                    g.lista_aristas[ar].color = 1
+                    break   
+
+
     if paseo == True:
         mensaje += "El paseo de Euler es "
         if cerrado == 0:
@@ -802,11 +820,8 @@ def fleury():
             origen = ruta[0]
             destino = ruta[1]
             ruta = ruta[1:]
-            arista = g.buscarArista(origen, destino)
-            arista.color = 1
             mensaje += str(origen) + ", "
         mensaje += str(destino) + "]"
-        for a in g.lista_aristas: g.lista_aristas[a].color = 1
     else:
         mensaje = paseo
     g.mensaje.append(mensaje)
