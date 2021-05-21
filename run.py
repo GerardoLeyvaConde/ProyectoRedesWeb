@@ -6,10 +6,576 @@ app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 g= Grafica(True)
 c= Grafica()
-mensaje = "Aquí se muestran los mensajes"
+mensaje = "Aquí se muestran los mensajes de control"
 g.mensaje.append(mensaje)
 #Aqui puedes añardir graficas para probar
+##########################################################
+#g.dirigida = False
+"""
+#Bipartita
+g.agregarVertice("a")
+g.agregarVertice("b")
+g.agregarVertice("c")
+g.agregarVertice("d")
+g.agregarVertice("e")
+g.agregarVertice("f")
+g.agregarVertice("g")
 
+g.agregarArista("e1","a","c")
+g.agregarArista("e2","a","d")
+g.agregarArista("e3","a","g")
+g.agregarArista("e4","b","f")
+g.agregarArista("e5","c","e")
+g.agregarArista("e6","d","e")
+g.agregarArista("e7","f","g")
+#g.agregarArista("e8","c","d")
+"""
+################################################
+#g.dirigida = False
+"""
+#Euler
+
+g.agregarVertice("a")
+g.agregarVertice("b")
+g.agregarVertice("c")
+g.agregarVertice("d")
+g.agregarVertice("e")
+g.agregarVertice("f")
+g.agregarVertice("g")
+g.agregarVertice("h")
+
+g.agregarVertice("i")
+
+
+g.agregarArista("e1","a","b")
+g.agregarArista("e2","a","c")
+g.agregarArista("e3","a","d")
+g.agregarArista("e4","b","c")
+g.agregarArista("e5","b","e")
+g.agregarArista("e6","b","g")
+g.agregarArista("e7","c","d")
+g.agregarArista("e8","c","f")
+g.agregarArista("e9","c","f")
+g.agregarArista("e10","d","e")
+g.agregarArista("e11","d","g")
+g.agregarArista("e12","e","f")
+g.agregarArista("e13","e","h")
+g.agregarArista("e14","f","g")
+g.agregarArista("e15","g","h")
+#g.agregarArista("e16","c","a")
+
+g.agregarArista("e16","h","i")
+"""
+################################################
+#g.dirigida = False
+"""
+#Expansion 1
+g.agregarVertice("a")
+g.agregarVertice("b")
+g.agregarVertice("c")
+g.agregarVertice("d")
+g.agregarVertice("e")
+g.agregarVertice("f")
+g.agregarVertice("g")
+g.agregarVertice("h")
+g.agregarVertice("i")
+g.agregarVertice("j")
+g.agregarVertice("k")
+g.agregarVertice("l")
+ 
+g.agregarArista("e1", "a", "b")
+g.agregarArista("e2", "a", "h")
+g.agregarArista("e3", "b", "c")
+g.agregarArista("e4", "b", "d")
+g.agregarArista("e5", "b", "h")
+g.agregarArista("e6", "b", "j")
+g.agregarArista("e7", "c", "d")
+g.agregarArista("e8", "d", "e")
+g.agregarArista("e9", "d", "f")
+g.agregarArista("e10", "d", "k")
+g.agregarArista("e11", "e", "f")
+g.agregarArista("e12", "f", "g")
+g.agregarArista("e13", "f", "l")
+g.agregarArista("e14", "g", "h")
+g.agregarArista("e15", "h", "i")
+g.agregarArista("e16", "i", "j")
+g.agregarArista("e17", "i", "k")
+g.agregarArista("e18", "i", "l")
+g.agregarArista("e19", "j", "k")
+g.agregarArista("e20", "j", "l")
+g.agregarArista("e21", "k", "l")
+"""
+################################################
+#g.dirigida = False
+"""
+#Expansio 2
+g.agregarVertice("a")
+g.agregarVertice("b")
+g.agregarVertice("c")
+g.agregarVertice("d")
+g.agregarVertice("e")
+g.agregarVertice("f")
+g.agregarVertice("g")
+g.agregarVertice("h")
+g.agregarVertice("i")
+ 
+g.agregarArista("e1", "a", "b")
+g.agregarArista("e2", "a", "c")
+g.agregarArista("e3", "a", "d")
+g.agregarArista("e4", "b", "c")
+g.agregarArista("e5", "b", "d")
+g.agregarArista("e6", "e", "f")
+g.agregarArista("e7", "e", "h")
+g.agregarArista("e8", "f", "g")
+g.agregarArista("e9", "f", "h")
+g.agregarArista("e10", "f", "i")
+g.agregarArista("e11", "g", "h")
+g.agregarArista("e12", "g", "i")
+"""
+#g.dirigida = False
+"""
+g.agregarVertice("a")
+g.agregarVertice("b")
+g.agregarVertice("c")
+g.agregarVertice("d")
+g.agregarVertice("e")
+g.agregarVertice("f")
+g.agregarVertice("g")
+g.agregarVertice("h")
+g.agregarVertice("i")
+g.agregarVertice("j")
+g.agregarVertice("k")
+
+g.agregarArista("e1", "a", "b", 3)
+g.agregarArista("e2", "a", "c", 1)
+g.agregarArista("e3", "a", "d", 2)
+g.agregarArista("e4", "a", "f", 1)
+g.agregarArista("e5", "b", "c", 2)
+g.agregarArista("e6", "b", "d", 3)
+g.agregarArista("e7", "b", "e", 10)
+g.agregarArista("e8", "c", "e", 1)
+g.agregarArista("e9", "c", "h", 1)
+g.agregarArista("e10", "d", "e", 2)
+g.agregarArista("e11", "d", "f", 4)
+g.agregarArista("e12", "e", "f", 2)
+g.agregarArista("e13", "e", "g", 1)
+g.agregarArista("e14", "e", "h", 2)
+g.agregarArista("e15", "f", "g", 2)
+g.agregarArista("e16", "f", "i", 3)
+g.agregarArista("e17", "g", "h", 1)
+g.agregarArista("e18", "g", "i", 2)
+g.agregarArista("e19", "g", "j", 3)
+g.agregarArista("e20", "h", "j", 5)
+g.agregarArista("e21", "i", "j", 2)
+g.agregarArista("e22", "i", "k", 7)
+g.agregarArista("e23", "j", "k", 1)
+"""
+#g.dirigida = False
+"""
+g.agregarVertice("a")
+g.agregarVertice("b")
+g.agregarVertice("c")
+g.agregarVertice("d")
+g.agregarVertice("e")
+g.agregarVertice("f")
+g.agregarVertice("g")
+g.agregarVertice("h")
+g.agregarVertice("i")
+g.agregarVertice("j")
+g.agregarVertice("k")
+g.agregarVertice("l")
+g.agregarVertice("m")
+
+g.agregarArista("e1", "a", "b", 1)
+g.agregarArista("e2", "a", "d", 3)
+g.agregarArista("e3", "a", "e", 2)
+g.agregarArista("e4", "b", "c", 5)
+g.agregarArista("e5", "b", "e", 3)
+g.agregarArista("e6", "b", "f", 4)
+g.agregarArista("e7", "c", "d", 2)
+g.agregarArista("e8", "c", "f", 2)
+g.agregarArista("e9", "c", "g", 1)
+g.agregarArista("e10", "d", "g", 1)
+g.agregarArista("e11", "e", "f", 5)
+g.agregarArista("e12", "e", "g", 1)
+g.agregarArista("e13", "f", "g", 2)
+g.agregarArista("e14", "h", "i", 2)
+g.agregarArista("e15", "h", "l", 1)
+g.agregarArista("e16", "i", "j", 3)
+g.agregarArista("e17", "i", "l", 2)
+g.agregarArista("e18", "j", "k", 5)
+g.agregarArista("e19", "j", "l", 4)
+g.agregarArista("e20", "j", "m", 1)
+g.agregarArista("e21", "k", "m", 2)
+g.agregarArista("e22", "l", "m", 2)
+"""
+################################################
+################################################
+################################################
+#g.dirigida = True
+"""
+#Dikjstra
+g.agregarVertice("a")
+g.agregarVertice("b")
+g.agregarVertice("c")
+g.agregarVertice("d")
+g.agregarVertice("e")
+g.agregarVertice("f")
+ 
+g.agregarArista("e1","a","b", 7)
+g.agregarArista("e2","a","c", 9)
+g.agregarArista("e3","a","d", 14)
+g.agregarArista("e4","b","e", 15)
+g.agregarArista("e5","c","e", 11)
+g.agregarArista("e6","c","d", 2)
+g.agregarArista("e7","d","f", 9)
+g.agregarArista("e8","e","f", 6)
+"""
+#g.dirigida = True
+"""
+g.agregarVertice("a")
+
+g.agregarVertice("b")
+
+g.agregarVertice("c")
+
+g.agregarVertice("d")
+
+g.agregarVertice("e")
+
+g.agregarVertice("f")
+
+g.agregarVertice("g")
+
+g.agregarVertice("h")
+
+g.agregarVertice("i")
+
+g.agregarVertice("j")
+
+g.agregarVertice("k")
+
+g.agregarVertice("l")
+
+g.agregarVertice("m")
+
+g.agregarVertice("n")
+
+g.agregarVertice("o")
+
+g.agregarVertice("p")
+
+g.agregarVertice("q")
+
+g.agregarVertice("r")
+
+g.agregarVertice("s")
+
+g.agregarArista("e1", "a", "b", 8)
+
+g.agregarArista("e2", "a", "e", 10)
+
+g.agregarArista("e3", "b", "c", 14)
+
+g.agregarArista("e4", "b", "f", 2)
+
+g.agregarArista("e5", "c", "a", 2)
+
+g.agregarArista("e6", "c", "d", 3)
+
+g.agregarArista("e7", "c", "g", -10)
+
+g.agregarArista("e8", "d", "b", 9)
+
+g.agregarArista("e9", "d", "g", 8)
+
+g.agregarArista("e10", "d", "h", -5)
+
+g.agregarArista("e11", "e", "a", 1)
+
+g.agregarArista("e12", "e", "f", 4)
+
+g.agregarArista("e13", "e", "i", 4)
+
+g.agregarArista("e14", "e", "j", -1)
+
+g.agregarArista("e15", "f", "a", 2)
+
+g.agregarArista("e16", "f", "g", 3)
+
+g.agregarArista("e17", "g", "b", 5)
+
+g.agregarArista("e18", "g", "h", 1)
+
+g.agregarArista("e19", "g", "k", 8)
+
+g.agregarArista("e20", "h", "c", 12)
+
+g.agregarArista("e21", "h", "l", 2)
+
+g.agregarArista("e22", "i", "f", 3)
+
+g.agregarArista("e23", "i", "m", 3)
+
+g.agregarArista("e24", "i", "q", 7)
+
+g.agregarArista("e25", "j", "i", -2)
+
+g.agregarArista("e26", "j", "m", 5)
+
+g.agregarArista("e27", "j", "n", 7)
+
+g.agregarArista("e28", "k", "f", -1)
+
+g.agregarArista("e29", "k", "j", 3)
+
+g.agregarArista("e30", "k", "o", -4)
+
+g.agregarArista("e31", "l", "d", 3)
+
+g.agregarArista("e32", "l", "k", 5)
+
+g.agregarArista("e33", "m", "p", 3)
+
+g.agregarArista("e34", "m", "n", 9)
+
+g.agregarArista("e35", "n", "k", -4)
+
+g.agregarArista("e36", "n", "o", 3)
+
+g.agregarArista("e37", "n", "p", -2)
+
+g.agregarArista("e38", "o", "l", 2)
+
+g.agregarArista("e39", "o", "s", -7)
+
+g.agregarArista("e40", "p", "o", 5)
+
+g.agregarArista("e41", "p", "r", 4)
+
+g.agregarArista("e42", "p", "s", 6)
+
+g.agregarArista("e43", "q", "m", 4)
+
+g.agregarArista("e44", "q", "p", -1)
+
+g.agregarArista("e45", "q", "s", -2)
+
+g.agregarArista("e46", "r", "q", 2)
+
+g.agregarArista("e47", "s", "r", 3)
+"""
+
+################################################
+#g.dirigida = True
+"""
+#kruskal
+g.agregarVertice("a")
+g.agregarVertice("b")
+g.agregarVertice("c")
+g.agregarVertice("d")
+g.agregarVertice("e")
+g.agregarVertice("f")
+g.agregarVertice("g")
+g.agregarVertice("h")
+g.agregarVertice("i")
+g.agregarVertice("j")
+g.agregarVertice("k")
+
+ 
+g.agregarArista("e1","a","b", 7)
+g.agregarArista("e2","a","c", 9)
+g.agregarArista("e3","a","d", 14)
+g.agregarArista("e4","b","e", 15)
+g.agregarArista("e5","c","e", 11)
+g.agregarArista("e6","c","d", 2)
+g.agregarArista("e7","d","f", 9)
+g.agregarArista("e8","e","f", 6)
+"""
+################################################
+#g.dirigida = True
+"""
+#Floyd
+g.agregarVertice("a")
+g.agregarVertice("b")
+g.agregarVertice("c")
+g.agregarVertice("d")
+g.agregarVertice("e")
+g.agregarVertice("f")
+g.agregarVertice("g")
+ 
+g.agregarArista("e1", "a", "b", 3)
+g.agregarArista("e2", "a", "c", 1)
+g.agregarArista("e3", "a", "d", 2)
+g.agregarArista("e4", "b", "e", 3)
+g.agregarArista("e5", "c", "a", 1)
+g.agregarArista("e6", "c", "b", 2)
+g.agregarArista("e7", "c", "d", 3)
+g.agregarArista("e8", "c", "e", 1)
+g.agregarArista("e9", "c", "f", 5)
+g.agregarArista("e10", "d", "a", 2)
+g.agregarArista("e11", "e", "c", 1)
+g.agregarArista("e12", "e", "g", 3)
+g.agregarArista("e13", "f", "e", 1)
+g.agregarArista("e14", "f", "d", 3)
+g.agregarArista("e15", "f", "g", 2)
+g.agregarArista("e16", "g", "e", 3)
+g.agregarArista("e17", "g", "f", 2)
+"""
+
+
+##########################################################
+#g.dirigida = True
+"""
+#FordFulkerson
+g.agregarVertice("a", '+')
+g.agregarVertice("b", '+')
+g.agregarVertice("c", '+')
+g.agregarVertice("d")
+g.agregarVertice("e")
+g.agregarVertice("f")
+g.agregarVertice("g")
+g.agregarVertice("h")
+g.agregarVertice("i")
+g.agregarVertice("j")
+g.agregarVertice("k", '-')
+g.agregarVertice("l")
+g.agregarVertice("m", '-')
+g.agregarVertice("n", '-')
+
+g.booleanosalvaje = True
+g.lista_vertices['h'].peso_max = 20
+g.lista_vertices['i'].peso_minimo = 9
+
+
+g.agregarArista("e1","a","b", 75)
+g.lista_aristas['e1'].peso_min = 2
+g.agregarArista("e2","a","d", 30)
+g.agregarArista("e3","a","e", 33)
+g.lista_aristas['e3'].peso_min = 1
+g.agregarArista("e4","b","c", 46)
+g.agregarArista("e5","b","e", 42)
+g.agregarArista("e6","c","e", 29)
+g.agregarArista("e7","c","f", 21)
+g.lista_aristas['e7'].peso_min = 3
+g.agregarArista("e8","d","e", 25)
+g.agregarArista("e9","d","h", 9)
+g.agregarArista("e10","d","j", 15)
+g.agregarArista("e11","e","h", 12)
+g.agregarArista("e12","f","e", 18)
+g.agregarArista("e13","f","g", 8)
+g.agregarArista("e14","f","i", 12)
+g.agregarArista("e15","g","c", 40)
+g.lista_aristas['e15'].peso_min = 1
+g.agregarArista("e16","g","i", 40)
+g.agregarArista("e17","h","f", 17)
+g.agregarArista("e18","h","i", 10)
+g.agregarArista("e19","h","k", 14)
+g.lista_aristas['e19'].peso_min = 2
+g.agregarArista("e20","i","k", 19)
+g.agregarArista("e21","i","l", 25)
+g.agregarArista("e22","j","h", 6)
+g.agregarArista("e23","j","m", 45)
+g.agregarArista("e24","k","j", 19)
+g.lista_aristas['e24'].peso_min = 1
+g.agregarArista("e25","k","l", 18)
+g.agregarArista("e26","k","n", 50)
+g.lista_aristas['e26'].peso_min = 3
+g.agregarArista("e27","l","g", 70)
+g.lista_aristas['e27'].peso_min = 3
+g.agregarArista("e28","l","n", 62)
+g.agregarArista("e29","m","k", 29)
+g.agregarArista("e30","n","m", 54)
+"""
+################################################
+g.dirigida = True
+
+#Primal con flujo 30
+
+g.agregarVertice("a", '+')
+g.agregarVertice("b")
+g.agregarVertice("c")
+g.agregarVertice("d")
+g.agregarVertice("e")
+g.agregarVertice("f")
+g.agregarVertice("g")
+g.agregarVertice("h")
+g.agregarVertice("i")
+g.agregarVertice("j", '-')
+g.agregarVertice("k")
+
+g.booleanosalvaje = True
+g.lista_vertices['f'].peso_minimo = 3
+g.lista_vertices['f'].peso_max = 25
+
+g.agregarArista("e1","a","b", 15, 3, 2)
+g.agregarArista("e2","a","c", 26, 6, 10)
+g.agregarArista("e3","b","e", 17, 0, 7)
+g.agregarArista("e4","c","b", 14, 0, -3)
+g.agregarArista("e5","c","d", 18, 0 , 1)
+g.agregarArista("e6","c","e", 10, 0 , 5)
+g.agregarArista("e7","d","a", 13, 0, 3)
+g.agregarArista("e8","d", "f", 4, 1 ,3)
+g.agregarArista("e9","e","f", 13,0,2)
+g.agregarArista("e10","e","g", 20,0,-5)
+g.agregarArista("e11","e","h", 38,1,4)
+g.agregarArista("e12","f","i", 13,0,-6)
+g.agregarArista("e13","g","j", 19,0,6)
+g.agregarArista("e14","h","f", 10, 0 , -1)
+g.agregarArista("e15","h","g", 14,0,5)
+g.agregarArista("e16","h","i", 10,0,2)
+g.agregarArista("e17","h","j", 31,0,-2)
+g.agregarArista("e18","i","k", 25,0,3)
+g.agregarArista("e19","k","j", 70,0,6)
+
+################################################
+#g.dirigida = True
+"""
+#Dual con flujo 22
+
+g.agregarVertice("a", '+')
+g.agregarVertice("b")
+g.agregarVertice("c")
+g.agregarVertice("d")
+g.agregarVertice("e")
+g.agregarVertice("f")
+g.agregarVertice("g", '-')
+
+g.agregarArista("e1","a","b", 12, 0, 7)
+g.agregarArista("e2","a","c", 26, 0, 1)
+g.agregarArista("e3","a","d", 13, 0, 10)
+g.agregarArista("e4","b","e", 26, 0, 3)
+g.agregarArista("e5","c","b", 4, 0 ,5)
+g.agregarArista("e6","c","d", 40, 0, 2)
+g.agregarArista("e7","c", "e", 13, 0 ,7)
+g.agregarArista("e8","c","f", 19,0,6)
+g.agregarArista("e9","d","b", 10,0,2)
+g.agregarArista("e10","d","f", 26,0,3)
+g.agregarArista("e11","e","f", 30,0,10)
+g.agregarArista("e12","e","g", 50,0,3)
+g.agregarArista("e13","f","g", 41,0,2)
+"""
+################################################
+#g.dirigida = True
+"""
+#Simplex
+g.agregarVertice("1")
+g.lista_vertices["1"].flujo = 1
+g.agregarVertice("2")
+g.lista_vertices["2"].flujo = 0
+g.agregarVertice("3")
+g.lista_vertices["3"].flujo = 2
+g.agregarVertice("4")
+g.lista_vertices["4"].flujo = -3
+ 
+g.agregarArista("e1", "1", "2", 5, 2, 1)
+g.agregarArista("e2", "1", "4", 3, 1, -2)
+g.agregarArista("e3", "2", "4", 2, 0, -1)
+g.agregarArista("e4", "3", "1", 5, 0, 5)
+g.agregarArista("e5", "3", "2", 2, 0, 1)
+g.agregarArista("e6", "4", "3", 5, 0, 3)
+"""
+##################################################
 @app.route('/')
 def index():
     title = "Prueba de Interfaz"
@@ -60,8 +626,10 @@ def agregarVertice():
             else:
                 g.agregarVertice(vertice, fs, int(flux))
             if rmin:
+                g.booleanosalvaje = True
                 g.lista_vertices[vertice].peso_minimo = int(rmin)
             if rmax:
+                g.booleanosalvaje = True
                 g.lista_vertices[vertice].peso_max = int(rmax)
         else:
             g.agregarVertice(vertice)
@@ -154,6 +722,7 @@ def eliminarVertice():
         vertice = request.form.get('id_vertice')
         g.eliminarVertice(vertice)
         print("Borrado:", vertice)
+    g.restablecerColores()
     return redirect(url_for('index'))
 
 @app.route('/eliminarArista', methods= ['POST'])
@@ -221,7 +790,7 @@ def fleury():
 
     (ruta, cerrado, paseo) = g.Fleury()
     print(ruta)
-
+    
     if paseo == True:
         mensaje += "El paseo de Euler es "
         if cerrado == 0:
@@ -237,6 +806,7 @@ def fleury():
             arista.color = 1
             mensaje += str(origen) + ", "
         mensaje += str(destino) + "]"
+        for a in g.lista_aristas: g.lista_aristas[a].color = 1
     else:
         mensaje = paseo
     g.mensaje.append(mensaje)
@@ -310,10 +880,17 @@ def dijkstra():
                     arista.color = 1
                     mensaje += str(origen) + ", "
             mensaje += str(destino) + "]"
+            g.mensaje.append(mensaje)
+            mensaje = "El peso es: " + str(peso_ciclo_dijkstra)
+            g.mensaje.append(mensaje)
         else:
             g.copiar(grafica_dijkstra)
             mensaje += "Se realizó el algortimo de Dijkstra correctamente!"
-        g.mensaje.append(mensaje)
+            g.mensaje.append(mensaje)
+            for vert in g.lista_vertices:
+                if vert != vertice:
+                    mensaje = "El peso de la ruta de " + vertice + " -> " + vert + " es: " + str(g.lista_vertices[vert].peso_minimo)
+                    g.mensaje.append(mensaje)
     return redirect(url_for('index'))
 
 @app.route('/floyd', methods= ['POST'])
@@ -333,8 +910,10 @@ def floyd():
                 grafica_floyd = grafica_floyd[1:]
                 arista = g.buscarArista(origen, destino)
                 arista.color = 1
-                g.mensaje += str(origen) + ", "
+                mensaje += str(origen) + ", "
             mensaje += str(destino) + "]"
+            g.mensaje.append(mensaje)
+            mensaje = "El peso es: " + str(nombres)
             g.mensaje.append(mensaje)
         else:
             vertice = request.form.get('id_vertice_floyd')
@@ -352,7 +931,9 @@ def floyd():
                     arista.color = 1
                     mensaje += str(origen2) + ", "
                 mensaje += str(destino2) + "] con peso: " + str(grafica_floyd[i + index_vertice * len(nombres)][1])
+
                 g.mensaje.append(mensaje)
+
         return redirect(url_for('index'))
 
 @app.route('/obtenerGrado', methods= ['POST'])

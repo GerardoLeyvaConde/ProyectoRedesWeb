@@ -6,14 +6,28 @@
 
     <!--{% from "_macro.html" import imprimir_grafica %}
     {{ imprimir_grafica( grafica ) }}-->
-   <!-- {% for v in grafica %}
-        <p>{{v}}</p>
-    {% endfor %}-->
+    {% if grafica.booleanosalvaje == True  %}
+        <p>Lista de vértices con restricción: </p>
+    {% endif %}
+
+
+    {% for v in grafica %}
+        {% if v.peso_max != 0 or v.peso_minimo != grafica.infinito%}
+            {% if v.peso_max == 0 %}
+                <p>{{v.id}}: [{{v.peso_minimo}}, inf]</p>
+            {% elif v.peso_minimo == grafica.infinito %}
+                <p>{{v.id}}: [0, {{v.peso_max}}]</p>
+            {% else %}
+                <p>{{v.id}}: [{{v.peso_minimo}},{{v.peso_max}}]</p>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
     {% for m in grafica.mensaje %}
         <p>{{ m }}</p>
     {% endfor %}
     <div id="mynetwork"></div>
     <script>
+        
         var nodes = [];
         var direccion = "{{grafica.dirigida}}";
         {% for v in grafica %}

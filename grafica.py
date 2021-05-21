@@ -20,6 +20,7 @@ class Vertice:
         self.peso_max = 0
         self.peso_actual = math.inf
         self.flujo = flujo
+        
 
     """
     Destructor de la clase Vertice
@@ -153,6 +154,8 @@ class Grafica:
         self.peso_grafica= 0
         self.costo = 0
         self.mensaje = []
+        self.infinito = math.inf
+        self.booleanosalvaje = False
 
     def __contains__(self, n):
         return n in self.lista_vertices
@@ -409,7 +412,10 @@ class Grafica:
     def restablecerColores(self):
         self.peso_grafica = 0
         self.costo = 0
+        controlandoSalvaje = 0
         for vertice in self.lista_vertices:
+            if (self.lista_vertices[vertice].peso_minimo == math.inf and self.lista_vertices[vertice].peso_max == 0) and self.booleanosalvaje:
+                controlandoSalvaje += 1
             self.lista_vertices[vertice].peso_actual = math.inf
             if self.lista_vertices[vertice].color == '+' or self.lista_vertices[vertice].color == '-':
                 continue
@@ -419,6 +425,8 @@ class Grafica:
                 self.lista_vertices[vertice].color = '-'
             else:
                 self.lista_vertices[vertice].color = -1
+        if controlandoSalvaje == self.numero_vertices:
+            self.booleanosalvaje = False
         for arista in self.lista_aristas:
             self.lista_aristas[arista].peso_actual = 0
             self.lista_aristas[arista].color = -1
@@ -666,7 +674,8 @@ class Grafica:
                 for vecino in self.lista_vertices[vertice.id].lista_salientes:
 
                     if self.lista_vertices[vecino].bandera == 0:
-                        lista_vecinos.append(self.buscarArista(vertice.id, vecino))
+                        if self.buscarArista(vertice.id, vecino):
+                            lista_vecinos.append(self.buscarArista(vertice.id, vecino))
 
             # Segmento para bosques
             if len(lista_vecinos) == 0:
@@ -910,7 +919,7 @@ class Grafica:
                 for b in v.lista_salientes:
                     auxrista = grafiquita.buscarArista(v.id, b)
                     nombres_aristas.append(auxrista.id)
-                    grafiquita.agregarArista(auxrista.id + "aux", v.id + "aux", b , auxrista.peso, auxrista.peso_min)
+                    grafiquita.agregarArista(auxrista.id + "aux", v.id + "aux", b , auxrista.peso, auxrista.peso_min, auxrista.costo)
                     grafiquita.eliminarArista(auxrista.origen, auxrista.destino)
 
                 grafiquita.agregarArista("auxrista" + str(i),v.id, v.id + "aux", v.peso_max, v.peso_minimo)
@@ -975,7 +984,7 @@ class Grafica:
                 vertaux = grafiquita.buscarVertice(v.id+"aux")
                 for b in vertaux.lista_salientes:
                     auxrista = grafiquita.buscarArista(vertaux.id, b)
-                    grafiquita.agregarArista(nombres_aristas[0], v.id, b , auxrista.peso, auxrista.peso_min)
+                    grafiquita.agregarArista(nombres_aristas[0], v.id, b , auxrista.peso, auxrista.peso_min, auxrista.costo)
                     grafiquita.lista_aristas[nombres_aristas[0]].peso_actual = auxrista.peso_actual
                     nombres_aristas = nombres_aristas[1:]
 
@@ -1152,7 +1161,7 @@ class Grafica:
             if ya == 2:
                 break
 
-        print(grafiquita.lista_aristas['0aux'])
+        
         marginal.copiar(grafiquita)
         for a in grafiquita.lista_aristas:
             marginal.agregarArista(grafiquita.lista_aristas[a].id + "aux", grafiquita.lista_aristas[a].destino, grafiquita.lista_aristas[a].origen, grafiquita.lista_aristas[a].peso_actual, 0, grafiquita.lista_aristas[a].costo * -1)
