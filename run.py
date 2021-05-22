@@ -9,6 +9,249 @@ c= Grafica()
 mensaje = "Aquí se muestran los mensajes de control"
 g.mensaje.append(mensaje)
 #Aqui puedes añardir graficas para probar
+################################################
+#g.dirigida = False
+"""
+#Euler
+
+g.agregarVertice("a")
+g.agregarVertice("b")
+g.agregarVertice("c")
+g.agregarVertice("d")
+g.agregarVertice("e")
+g.agregarVertice("f")
+g.agregarVertice("g")
+g.agregarVertice("h")
+
+#g.agregarVertice("i")
+
+
+g.agregarArista("e1","a","b")
+g.agregarArista("e2","a","c")
+g.agregarArista("e3","a","d")
+g.agregarArista("e4","b","c")
+g.agregarArista("e5","b","e")
+g.agregarArista("e6","b","g")
+g.agregarArista("e7","c","d")
+g.agregarArista("e8","c","f")
+g.agregarArista("e9","c","f")
+g.agregarArista("e10","d","e")
+g.agregarArista("e11","d","g")
+g.agregarArista("e12","e","f")
+g.agregarArista("e13","e","h")
+g.agregarArista("e14","f","g")
+g.agregarArista("e15","g","h")
+#g.agregarArista("e16","c","a")
+
+#g.agregarArista("e16","h","i")
+"""
+################################################
+################################################
+g.dirigida = True
+
+#FordFulkerson
+g.agregarVertice("a", '+')
+g.agregarVertice("b", '+')
+g.agregarVertice("c", '+')
+g.agregarVertice("d")
+g.agregarVertice("e")
+g.agregarVertice("f")
+g.agregarVertice("g")
+g.agregarVertice("h")
+g.agregarVertice("i")
+g.agregarVertice("j")
+g.agregarVertice("k", '-')
+g.agregarVertice("l")
+g.agregarVertice("m", '-')
+g.agregarVertice("n", '-')
+
+g.booleanosalvaje = True
+g.lista_vertices['h'].peso_minimo = 7
+g.lista_vertices['h'].peso_max = 20
+g.lista_vertices['i'].peso_minimo = 9
+g.lista_vertices['i'].peso_max = 21
+
+
+g.agregarArista("e1","a","b", 75)
+g.lista_aristas['e1'].peso_min = 2
+g.agregarArista("e2","a","d", 30)
+g.agregarArista("e3","a","e", 33)
+g.lista_aristas['e3'].peso_min = 1
+g.agregarArista("e4","b","c", 46)
+g.agregarArista("e5","b","e", 42)
+g.agregarArista("e6","c","e", 29)
+g.agregarArista("e7","c","f", 21)
+g.lista_aristas['e7'].peso_min = 3
+g.agregarArista("e8","d","e", 25)
+g.agregarArista("e9","d","h", 9)
+g.agregarArista("e10","d","j", 15)
+g.agregarArista("e11","e","h", 12)
+g.agregarArista("e12","f","e", 18)
+g.agregarArista("e13","f","g", 8)
+g.agregarArista("e14","f","i", 12)
+g.agregarArista("e15","g","c", 40)
+g.lista_aristas['e15'].peso_min = 1
+g.agregarArista("e16","g","i", 40)
+g.agregarArista("e17","h","f", 17)
+g.agregarArista("e18","h","i", 10)
+g.agregarArista("e19","h","k", 14)
+g.lista_aristas['e19'].peso_min = 2
+g.agregarArista("e20","i","k", 19)
+g.agregarArista("e21","i","l", 25)
+g.agregarArista("e22","j","h", 6)
+g.agregarArista("e23","j","m", 45)
+g.agregarArista("e24","k","j", 19)
+g.lista_aristas['e24'].peso_min = 1
+g.agregarArista("e25","k","l", 18)
+g.agregarArista("e26","k","n", 50)
+g.lista_aristas['e26'].peso_min = 3
+g.agregarArista("e27","l","g", 70)
+g.lista_aristas['e27'].peso_min = 3
+g.agregarArista("e28","l","n", 62)
+g.agregarArista("e29","m","k", 29)
+g.agregarArista("e30","n","m", 54)
+
+
+################################################
+
+#g.dirigida = True
+"""
+g.agregarVertice("a")
+
+g.agregarVertice("b")
+
+g.agregarVertice("c")
+
+g.agregarVertice("d")
+
+g.agregarVertice("e")
+
+g.agregarVertice("f")
+
+g.agregarVertice("g")
+
+g.agregarVertice("h")
+
+g.agregarVertice("i")
+
+g.agregarVertice("j")
+
+g.agregarVertice("k")
+
+g.agregarVertice("l")
+
+g.agregarVertice("m")
+
+g.agregarVertice("n")
+
+g.agregarVertice("o")
+
+g.agregarVertice("p")
+
+g.agregarVertice("q")
+
+g.agregarVertice("r")
+
+g.agregarVertice("s")
+
+g.agregarArista("e1", "a", "b", 8)
+
+g.agregarArista("e2", "a", "e", 10)
+
+g.agregarArista("e3", "b", "c", 14)
+
+g.agregarArista("e4", "b", "f", 2)
+
+g.agregarArista("e5", "c", "a", 2)
+
+g.agregarArista("e6", "c", "d", 3)
+
+g.agregarArista("e7", "c", "g", -10)
+
+g.agregarArista("e8", "d", "b", 9)
+
+g.agregarArista("e9", "d", "g", 8)
+
+g.agregarArista("e10", "d", "h", -5)
+
+g.agregarArista("e11", "e", "a", 1)
+
+g.agregarArista("e12", "e", "f", 4)
+
+g.agregarArista("e13", "e", "i", 4)
+
+g.agregarArista("e14", "e", "j", -1)
+
+g.agregarArista("e15", "f", "a", 2)
+
+g.agregarArista("e16", "f", "g", 3)
+
+g.agregarArista("e17", "g", "b", 5)
+
+g.agregarArista("e18", "g", "h", 1)
+
+g.agregarArista("e19", "g", "k", 8)
+
+g.agregarArista("e20", "h", "c", 12)
+
+g.agregarArista("e21", "h", "l", 2)
+
+g.agregarArista("e22", "i", "f", 3)
+
+g.agregarArista("e23", "i", "m", 3)
+
+g.agregarArista("e24", "i", "q", 7)
+
+g.agregarArista("e25", "j", "i", -2)
+
+g.agregarArista("e26", "j", "m", 5)
+
+g.agregarArista("e27", "j", "n", 7)
+
+g.agregarArista("e28", "k", "f", -1)
+
+g.agregarArista("e29", "k", "j", 3)
+
+g.agregarArista("e30", "k", "o", -4)
+
+g.agregarArista("e31", "l", "d", 3)
+
+g.agregarArista("e32", "l", "k", 5)
+
+g.agregarArista("e33", "m", "p", 3)
+
+g.agregarArista("e34", "m", "n", 9)
+
+g.agregarArista("e35", "n", "k", -4)
+
+g.agregarArista("e36", "n", "o", 3)
+
+g.agregarArista("e37", "n", "p", -2)
+
+g.agregarArista("e38", "o", "l", 2)
+
+g.agregarArista("e39", "o", "s", -7)
+
+g.agregarArista("e40", "p", "o", 5)
+
+g.agregarArista("e41", "p", "r", 4)
+
+g.agregarArista("e42", "p", "s", 6)
+
+g.agregarArista("e43", "q", "m", 4)
+
+g.agregarArista("e44", "q", "p", -1)
+
+g.agregarArista("e45", "q", "s", -2)
+
+g.agregarArista("e46", "r", "q", 2)
+
+g.agregarArista("e47", "s", "r", 3)
+"""
+
+
+
+
 ##########################################################
 #g.dirigida = False
 """
@@ -31,8 +274,8 @@ g.agregarArista("e7","f","g")
 #g.agregarArista("e8","c","d")
 """
 ################################################
-g.dirigida = False
-
+#g.dirigida = False
+"""
 #Euler
 
 g.agregarVertice("a")
@@ -44,7 +287,7 @@ g.agregarVertice("f")
 g.agregarVertice("g")
 g.agregarVertice("h")
 
-g.agregarVertice("i")
+#g.agregarVertice("i")
 
 
 g.agregarArista("e1","a","b")
@@ -64,8 +307,8 @@ g.agregarArista("e14","f","g")
 g.agregarArista("e15","g","h")
 #g.agregarArista("e16","c","a")
 
-g.agregarArista("e16","h","i")
-
+#g.agregarArista("e16","h","i")
+"""
 ################################################
 #g.dirigida = False
 """
@@ -444,8 +687,10 @@ g.agregarVertice("m", '-')
 g.agregarVertice("n", '-')
 
 g.booleanosalvaje = True
+g.lista_vertices['h'].peso_minimo = 7
 g.lista_vertices['h'].peso_max = 20
 g.lista_vertices['i'].peso_minimo = 9
+g.lista_vertices['h'].peso_max = 21
 
 
 g.agregarArista("e1","a","b", 75)
@@ -619,22 +864,27 @@ def agregarVertice():
             flux = request.form.get('flujo')
             rmin = request.form.get('restmin')
             rmax = request.form.get('restmax')
-            if not flux:
-                flux = 0
-            if(fs == 'None'):
-                g.agregarVertice(vertice, flujo= int(flux))
+            if rmax>rmin:
+                if not flux:
+                    flux = 0
+                if(fs == 'None'):
+                    g.agregarVertice(vertice, flujo= int(flux))
+                else:
+                    g.agregarVertice(vertice, fs, int(flux))
+                if rmin:
+                    g.booleanosalvaje = True
+                    g.lista_vertices[vertice].peso_minimo = int(rmin)
+                if rmax:
+                    g.booleanosalvaje = True
+                    g.lista_vertices[vertice].peso_max = int(rmax)
+                mensaje = "Se agregó el vértice "+vertice+" correctamente!"
             else:
-                g.agregarVertice(vertice, fs, int(flux))
-            if rmin:
-                g.booleanosalvaje = True
-                g.lista_vertices[vertice].peso_minimo = int(rmin)
-            if rmax:
-                g.booleanosalvaje = True
-                g.lista_vertices[vertice].peso_max = int(rmax)
+                mensaje = "No pudo agregarse el vertice, revisar restriccion minima y max!"
         else:
             g.agregarVertice(vertice)
+            mensaje = "Se agregó el vértice "+vertice+" correctamente!"
 
-        mensaje = "Se agregó el vértice "+vertice+" correctamente!"
+        
         g.mensaje.append(mensaje)
         print(vertice)
     return redirect(url_for('index'))
@@ -879,6 +1129,7 @@ def prim():
 @app.route('/dijkstra', methods= ['POST'])
 def dijkstra():
     g.restablecerColores()
+    
     if request.method == 'POST':
         vertice = request.form.get('id_vertice_dijkstra')
         (grafica_dijkstra, ciclo_negativo_dijkstra, peso_ciclo_dijkstra) = g.dijkstraGeneral(vertice)
@@ -906,6 +1157,7 @@ def dijkstra():
                 if vert != vertice:
                     mensaje = "El peso de la ruta de " + vertice + " -> " + vert + " es: " + str(g.lista_vertices[vert].peso_minimo)
                     g.mensaje.append(mensaje)
+    g.booleanosalvaje =False
     return redirect(url_for('index'))
 
 @app.route('/floyd', methods= ['POST'])
